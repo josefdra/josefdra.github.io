@@ -1,1 +1,50 @@
- test
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gutscheinoptimierung - Paulaner Festzelt</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:800px;margin:0 auto;padding:10px;background:#f9f9f9;color:#333}
+h1,h2,h3{color:#0066b3;margin-top:20px}
+.menu-category{background:white;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.1);padding:15px;margin-bottom:20px}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.menu-item{background:#f0f0f0;padding:8px;border-radius:5px;cursor:pointer;position:relative}
+.menu-item:hover{background:#e0e0e0}
+.menu-item-name{font-weight:bold}
+.menu-item-price{color:#0066b3}
+.item-counter{position:absolute;bottom:3px;right:3px;background:#0066b3;color:white;border-radius:50%;width:18px;height:18px;display:none;justify-content:center;align-items:center;font-size:11px}
+#warenkorb,#total,#payment{background:white;padding:15px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.1);margin-top:20px}
+#warenkorb-liste{list-style-type:none;padding:0}
+#warenkorb-liste li{padding:8px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center}
+.cart-item-details{flex-grow:1}
+.cart-item-quantity{margin-left:10px;font-weight:bold}
+footer{margin-top:30px;text-align:center;color:#666}
+</style>
+</head>
+<body>
+<h1>Gutscheinoptimierung - Paulaner Festzelt</h1>
+<div id="menu"></div>
+<div id="warenkorb">
+<h2>Warenkorb</h2>
+<ul id="warenkorb-liste"></ul>
+</div>
+<div id="total"></div>
+<div id="payment"></div>
+<footer>
+<p>Erstellt von Josef Dräxl</p>
+</footer>
+<script>
+const menu=[{category:"Brotzeit & Suppen",items:[{name:"Münchner Wurstsalat",price:15.30},{name:"Schweizer Wurstsalat",price:16.40},{name:"Obatzter",price:15.30},{name:"Bayer. Carpaccio",price:18.00},{name:"Geflügelsalat",price:16.20},{name:"Pfannkuchensuppe",price:8.00},{name:"Tomaten-Orangensuppe",price:9.85},{name:"Leberknödelsuppe",price:9.85}]},{category:"Würstl",items:[{name:"Würstl-Mix",price:16.20},{name:"Weißwurst (2 Stück)",price:9.85},{name:"Nürnberger (6 Stück)",price:17.10},{name:"Leberkäs' & Karl.-Salat",price:16.20}]},{category:"Hauptgänge",items:[{name:"1/2 BIO-Hendl",price:20.95},{name:"Backhendl",price:23.50},{name:"1/2 Ente",price:36.25},{name:"1/4 Ente",price:27.15},{name:"1/2 Schweinshaxe",price:24.40},{name:"Schweinsbraten",price:22.60},{name:"Kalbshaxe",price:27.15},{name:"Hirschbraten",price:28.00},{name:"Ochsenbraten",price:27.15},{name:"Rindsgulasch",price:23.50},{name:"Wiener Schnitzel (Kalb)",price:27.15},{name:"Burschen-Reindl",price:33.50},{name:"Spinatknödel",price:20.75}]},{category:"Vegetarisch & Vegan",items:[{name:"Nudeltascherl",price:18.00},{name:"Käsespätzle",price:17.10},{name:"Rahm-Schwammerl",price:19.85},{name:"Currywurst (vegan)",price:17.10}]},{category:"Salate",items:[{name:"Kartoffelsalat",price:5.90},{name:"Krautsalat",price:5.90},{name:"Blaukraut",price:5.90},{name:"Sauerkraut",price:5.90},{name:"Bayrisch Kraut",price:5.90},{name:"1 Kartoffelknödel",price:5.90},{name:"1 Semmelknödel",price:5.90}]},{category:"Dessert",items:[{name:"Schokoladen-Mousse",price:12.75},{name:"Apfelstrudel",price:12.75},{name:"Dampfnudel",price:12.75},{name:"Kaiserschmarrn",price:18.00}]},{category:"Kinder",items:[{name:"Kl. Port. Backhendl",price:16.40},{name:"Kl. Port. Käsespätzle",price:13.65}]}];
+let warenkorb=[];
+function renderMenu(){document.getElementById('menu').innerHTML=menu.map(c=>`<div class="menu-category"><h3>${c.category}</h3><div class="menu-grid">${c.items.map(i=>`<div class="menu-item" onclick="addToCart('${i.name}')"><div class="menu-item-name">${i.name}</div><div class="menu-item-price">${i.price.toFixed(2)} €</div><div class="item-counter" id="counter-${i.name.replace(/\s+/g,'-')}"></div></div>`).join('')}</div></div>`).join('');updateCounters()}
+function addToCart(n){const i=menu.flatMap(c=>c.items).find(i=>i.name===n),e=warenkorb.find(i=>i.name===n);e?e.quantity++:warenkorb.push({...i,quantity:1});updateCart();updateCounters()}
+function removeFromCart(n,a=false){const i=warenkorb.findIndex(i=>i.name===n);if(i!==-1){if(a||warenkorb[i].quantity===1)warenkorb.splice(i,1);else warenkorb[i].quantity--}updateCart();updateCounters()}
+function updateCounters(){menu.flatMap(c=>c.items).forEach(i=>{const c=document.getElementById(`counter-${i.name.replace(/\s+/g,'-')}`),e=warenkorb.find(w=>w.name===i.name);if(e&&e.quantity>0){c.textContent=e.quantity;c.style.display='flex'}else c.style.display='none'})}
+function updateCart(){document.getElementById('warenkorb-liste').innerHTML=warenkorb.map(i=>`<li><div class="cart-item-details" onclick="removeFromCart('${i.name}')">${i.name} - ${i.price.toFixed(2)} €</div><span class="cart-item-quantity">x${i.quantity}</span></li>`).join('');updateTotal()}
+function updateTotal(){const t=warenkorb.reduce((s,i)=>s+i.price*i.quantity,0);document.getElementById('total').innerHTML=`<h2>Gesamtpreis: ${t.toFixed(2)} €</h2>`;calculatePayment(t)}
+function calculatePayment(p){if(p===0){document.getElementById('payment').innerHTML='<h2>Bezahlung:</h2><p>Kein Betrag zu zahlen.</p>';return}let b11=0,b18=0,br=9999;const m=Math.floor(p/11.5);for(let i=0;i<=m;i++){let v=i*11.5,n=0;while(v<p){n++;v+=18}n--;v-=18;let r=p-v;if(r<br&&r>=0){b11=i;b18=n;br=r}}document.getElementById('payment').innerHTML=`<h2>Optimale Bezahlung:</h2><p>${b11} x 11,50 € Marken</p><p>${b18} x 18,00 € Marken</p><p>Restbetrag in bar: ${br.toFixed(2)} €</p>`}
+renderMenu();
+</script>
+</body>
+</html>
