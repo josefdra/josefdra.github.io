@@ -7,7 +7,7 @@
 <style>
 body{font-family:Arial,sans-serif;max-width:800px;margin:0 auto;padding:10px;background:#f9f9f9;color:#333}
 h1,h2,h3{color:#0066b3;margin-top:20px}
-.menu-category{background:white;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.1);padding:15px;margin-bottom:20px}
+.menu-category{background:white;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.1);padding:15px;margin-bottom:20px;position:relative}
 .menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
 .menu-item{background:#f0f0f0;padding:8px;border-radius:5px;cursor:pointer;position:relative}
 .menu-item:hover{background:#e0e0e0}
@@ -20,6 +20,10 @@ h1,h2,h3{color:#0066b3;margin-top:20px}
 .cart-item-details{flex-grow:1}
 .cart-item-quantity{margin-left:10px;font-weight:bold}
 footer{margin-top:30px;text-align:center;color:#666}
+.mode-toggle{position:absolute;top:10px;right:10px;background:#0066b3;color:white;border:none;border-radius:50%;width:30px;height:30px;font-size:20px;cursor:pointer;display:flex;justify-content:center;align-items:center;line-height:1;padding:0}
+.remove-mode .menu-item{background:#ffcccc}
+.remove-mode .menu-item:hover{background:#ffaaaa}
+.cart-hint{font-style:italic;color:#666;margin-bottom:10px}
 </style>
 </head>
 <body>
@@ -27,6 +31,7 @@ footer{margin-top:30px;text-align:center;color:#666}
 <div id="menu"></div>
 <div id="warenkorb">
 <h2>Warenkorb</h2>
+<p class="cart-hint">Tippen Sie auf einen Artikel, um ihn zu entfernen.</p>
 <ul id="warenkorb-liste"></ul>
 </div>
 <div id="total"></div>
@@ -37,7 +42,10 @@ footer{margin-top:30px;text-align:center;color:#666}
 <script>
 const menu=[{category:"Brotzeit & Suppen",items:[{name:"Münchner Wurstsalat",price:15.30},{name:"Schweizer Wurstsalat",price:16.40},{name:"Obatzter",price:15.30},{name:"Bayer. Carpaccio",price:18.00},{name:"Geflügelsalat",price:16.20},{name:"Pfannkuchensuppe",price:8.00},{name:"Tomaten-Orangensuppe",price:9.85},{name:"Leberknödelsuppe",price:9.85}]},{category:"Würstl",items:[{name:"Würstl-Mix",price:16.20},{name:"Weißwurst (2 Stück)",price:9.85},{name:"Nürnberger (6 Stück)",price:17.10},{name:"Leberkäs' & Karl.-Salat",price:16.20}]},{category:"Hauptgänge",items:[{name:"1/2 BIO-Hendl",price:20.95},{name:"Backhendl",price:23.50},{name:"1/2 Ente",price:36.25},{name:"1/4 Ente",price:27.15},{name:"1/2 Schweinshaxe",price:24.40},{name:"Schweinsbraten",price:22.60},{name:"Kalbshaxe",price:27.15},{name:"Hirschbraten",price:28.00},{name:"Ochsenbraten",price:27.15},{name:"Rindsgulasch",price:23.50},{name:"Wiener Schnitzel (Kalb)",price:27.15},{name:"Burschen-Reindl",price:33.50},{name:"Spinatknödel",price:20.75}]},{category:"Vegetarisch & Vegan",items:[{name:"Nudeltascherl",price:18.00},{name:"Käsespätzle",price:17.10},{name:"Rahm-Schwammerl",price:19.85},{name:"Currywurst (vegan)",price:17.10}]},{category:"Salate",items:[{name:"Kartoffelsalat",price:5.90},{name:"Krautsalat",price:5.90},{name:"Blaukraut",price:5.90},{name:"Sauerkraut",price:5.90},{name:"Bayrisch Kraut",price:5.90},{name:"1 Kartoffelknödel",price:5.90},{name:"1 Semmelknödel",price:5.90}]},{category:"Dessert",items:[{name:"Schokoladen-Mousse",price:12.75},{name:"Apfelstrudel",price:12.75},{name:"Dampfnudel",price:12.75},{name:"Kaiserschmarrn",price:18.00}]},{category:"Kinder",items:[{name:"Kl. Port. Backhendl",price:16.40},{name:"Kl. Port. Käsespätzle",price:13.65}]}];
 let warenkorb=[];
-function renderMenu(){document.getElementById('menu').innerHTML=menu.map(c=>`<div class="menu-category"><h3>${c.category}</h3><div class="menu-grid">${c.items.map(i=>`<div class="menu-item" onclick="addToCart('${i.name}')"><div class="menu-item-name">${i.name}</div><div class="menu-item-price">${i.price.toFixed(2)} €</div><div class="item-counter" id="counter-${i.name.replace(/\s+/g,'-')}"></div></div>`).join('')}</div></div>`).join('');updateCounters()}
+let removeModes={};
+function renderMenu(){document.getElementById('menu').innerHTML=menu.map(c=>`<div class="menu-category" id="category-${c.category.replace(/\s+/g,'-')}"><h3>${c.category}</h3><button class="mode-toggle" onclick="toggleMode('${c.category}')">-</button><div class="menu-grid">${c.items.map(i=>`<div class="menu-item" onclick="handleItemClick('${c.category}','${i.name}')"><div class="menu-item-name">${i.name}</div><div class="menu-item-price">${i.price.toFixed(2)} €</div><div class="item-counter" id="counter-${i.name.replace(/\s+/g,'-')}"></div></div>`).join('')}</div></div>`).join('');updateCounters()}
+function toggleMode(c){removeModes[c]=!removeModes[c];const e=document.getElementById(`category-${c.replace(/\s+/g,'-')}`);e.classList.toggle('remove-mode',removeModes[c]);e.querySelector('.mode-toggle').textContent=removeModes[c]?'+':'-'}
+function handleItemClick(c,n){removeModes[c]?removeFromCart(n):addToCart(n)}
 function addToCart(n){const i=menu.flatMap(c=>c.items).find(i=>i.name===n),e=warenkorb.find(i=>i.name===n);e?e.quantity++:warenkorb.push({...i,quantity:1});updateCart();updateCounters()}
 function removeFromCart(n,a=false){const i=warenkorb.findIndex(i=>i.name===n);if(i!==-1){if(a||warenkorb[i].quantity===1)warenkorb.splice(i,1);else warenkorb[i].quantity--}updateCart();updateCounters()}
 function updateCounters(){menu.flatMap(c=>c.items).forEach(i=>{const c=document.getElementById(`counter-${i.name.replace(/\s+/g,'-')}`),e=warenkorb.find(w=>w.name===i.name);if(e&&e.quantity>0){c.textContent=e.quantity;c.style.display='flex'}else c.style.display='none'})}
