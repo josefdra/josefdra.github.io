@@ -188,12 +188,22 @@ footer {
 .voucher-input {
     display: flex;
     justify-content: space-between;
-    margin-top: 10px;
+    margin-top: 15px;
+    gap: 10px;
+}
+.voucher-input label {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 .voucher-input input {
-    width: 60px;
-    padding: 5px;
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #0066b3;
+    border-radius: 4px;
     text-align: center;
+    font-size: 14px;
 }
 </style>
 </head>
@@ -216,11 +226,11 @@ footer {
     <div class="voucher-input">
         <label>
             Max. 11,5€ Gutscheine:
-            <input type="number" id="max115" value="999" min="0" onchange="updateTotal()">
+            <input type="number" id="max115" min="0" onchange="updateTotal()">
         </label>
         <label>
             Max. 18€ Gutscheine:
-            <input type="number" id="max18" value="999" min="0" onchange="updateTotal()">
+            <input type="number" id="max18" min="0" onchange="updateTotal()">
         </label>
     </div>
 </div>
@@ -345,8 +355,8 @@ function calculatePayment(p){
         return;
     }
     let b11 = 0, b18 = 0, br = 0;
-    const max115 = parseInt(document.getElementById('max115').value) || 999;
-    const max18 = parseInt(document.getElementById('max18').value) || 999;
+    const max115 = document.getElementById('max115').value === '' ? Infinity : parseInt(document.getElementById('max115').value);;
+    const max18 = document.getElementById('max18').value) === '' ? Infinity : parseInt(document.getElementById('max18').value);
     
     switch(paymentMode) {
         case 'only115':
