@@ -185,6 +185,16 @@ footer {
 .remove-mode .menu-item:hover {
     background: #ffaaaa;
 }
+.voucher-input {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+.voucher-input input {
+    width: 60px;
+    padding: 5px;
+    text-align: center;
+}
 </style>
 </head>
 <body>
@@ -202,6 +212,16 @@ footer {
         <button id="mixed" class="payment-button active" onclick="setPaymentMode('mixed')">Gemischt</button>
         <button id="only115" class="payment-button" onclick="setPaymentMode('only115')">Nur 11,5€</button>
         <button id="only18" class="payment-button" onclick="setPaymentMode('only18')">Nur 18€</button>
+    </div>
+    <div class="voucher-input">
+        <label>
+            Max. 11,5€ Gutscheine:
+            <input type="number" id="max115" value="999" min="0" onchange="updateTotal()">
+        </label>
+        <label>
+            Max. 18€ Gutscheine:
+            <input type="number" id="max18" value="999" min="0" onchange="updateTotal()">
+        </label>
     </div>
 </div>
 <button id="reset-button" onclick="resetAll()"><span>Reset</span>↺</button>
@@ -324,25 +344,26 @@ function calculatePayment(p){
         updateSummaryBar(0,0,0,0);
         return;
     }
-    
     let b11 = 0, b18 = 0, br = 0;
+    const max115 = parseInt(document.getElementById('max115').value) || 999;
+    const max18 = parseInt(document.getElementById('max18').value) || 999;
     
     switch(paymentMode) {
         case 'only115':
-            b11 = Math.floor(p / 11.5);
+            b11 = Math.min(Math.floor(p / 11.5), max115);
             br = p - (b11 * 11.5);
             break;
         case 'only18':
-            b18 = Math.floor(p / 18);
+            b18 = Math.min(Math.floor(p / 18), max18);
             br = p - (b18 * 18);
             break;
         case 'mixed':
         default:
             let minRest = 9999;
             const m = Math.floor(p / 11.5);
-            for(let i = 0; i <= m; i++) {
+            for(let i = 0; i <= m && i <= max115; i++) {
                 let v = i * 11.5, n = 0;
-                while(v < p) {
+                while(v < p && n < max18) {
                     n++;
                     v += 18;
                 }
