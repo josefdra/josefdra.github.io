@@ -19,6 +19,11 @@ h1, h2, h3 {
 @media (max-width: 400px) {
     .menu-item {
         font-size: 0.8em;
+        padding: 8px;
+    }
+    .menu-grid {
+        gap: 5px;
+        padding: 5px;
     }
 }
 .menu-category {
@@ -28,15 +33,17 @@ h1, h2, h3 {
     padding: 15px;
     margin-bottom: 20px;
     position: relative;
+    overflow: hidden;
 }
 .menu-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
+    padding: 10px;
 }
 .menu-item {
     background: #e6f2ff;
-    padding: 8px;
+    padding: 10px;
     border-radius: 5px;
     cursor: pointer;
     position: relative;
@@ -46,9 +53,14 @@ h1, h2, h3 {
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
+    box-sizing: border-box;
 }
 .menu-item:hover {
     background: #cce5ff;
+}
+.menu-item-price {
+    margin-top: 5px;
+    font-weight: bold;
 }
 .menu-item-name {
     font-weight: bold;
