@@ -135,6 +135,25 @@ footer {
     align-items: center;
     box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
 }
+.payment-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+.payment-button {
+    flex: 1;
+    margin: 0 5px;
+    padding: 10px;
+    background-color: #e6f2ff;
+    border: 1px solid #0066b3;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.payment-button.active {
+    background-color: #0066b3;
+    color: white;
+}
 .remove-mode .menu-item {
     background: #ffcccc;
 }
@@ -151,7 +170,15 @@ footer {
 <ul id="bestellung-liste"></ul>
 </div>
 <div id="total"></div>
-<div id="payment"></div>
+<div id="payment">
+    <h2>Optimale Bezahlung:</h2>
+    <div id="payment-details"></div>
+    <div class="payment-buttons">
+        <button id="mixed" class="payment-button active" onclick="setPaymentMode('mixed')">Gemischt</button>
+        <button id="only115" class="payment-button" onclick="setPaymentMode('only115')">Nur 11,5€</button>
+        <button id="only18" class="payment-button" onclick="setPaymentMode('only18')">Nur 18€</button>
+    </div>
+</div>
 <button id="reset-button" onclick="resetAll()"><span>Reset</span>↺</button>
 <button id="remove-button" onclick="toggleRemoveMode()">-</button>
 <div id="summary-bar"></div>
@@ -162,6 +189,7 @@ footer {
 const menu=[{category:"Brotzeit & Suppen",items:[{name:"Münchner Wurstsalat",price:15.30},{name:"Schweizer Wurstsalat",price:16.40},{name:"Obatzter",price:15.30},{name:"Bayer. Carpaccio",price:18.00},{name:"Geflügelsalat",price:16.20},{name:"Pfannkuchensuppe",price:8.00},{name:"Tomaten-Orangensuppe",price:9.85},{name:"Leberknödelsuppe",price:9.85}]},{category:"Würstl",items:[{name:"Würstl-Mix",price:16.20},{name:"Weißwurst (2 Stück)",price:9.85},{name:"Nürnberger (6 Stück)",price:17.10},{name:"Leberkäs' & Karl.-Salat",price:16.20}]},{category:"Hauptgänge",items:[{name:"1/2 BIO-Hendl",price:20.95},{name:"Backhendl",price:23.50},{name:"1/2 Ente",price:36.25},{name:"1/4 Ente",price:27.15},{name:"1/2 Schweinshaxe",price:24.40},{name:"Schweinsbraten",price:22.60},{name:"Kalbshaxe",price:27.15},{name:"Hirschbraten",price:28.00},{name:"Ochsenbraten",price:27.15},{name:"Rindsgulasch",price:23.50},{name:"Wiener Schnitzel (Kalb)",price:27.15},{name:"Burschen-Reindl",price:33.50},{name:"Spinatknödel",price:20.75}]},{category:"Vegetarisch & Vegan",items:[{name:"Nudeltascherl",price:18.00},{name:"Käsespätzle",price:17.10},{name:"Rahm-Schwammerl",price:19.85},{name:"Currywurst (vegan)",price:17.10}]},{category:"Salate",items:[{name:"Kartoffelsalat",price:5.90},{name:"Krautsalat",price:5.90},{name:"Blaukraut",price:5.90},{name:"Sauerkraut",price:5.90},{name:"Bayrisch Kraut",price:5.90},{name:"1 Kartoffelknödel",price:5.90},{name:"1 Semmelknödel",price:5.90}]},{category:"Dessert",items:[{name:"Schokoladen-Mousse",price:12.75},{name:"Apfelstrudel",price:12.75},{name:"Dampfnudel",price:12.75},{name:"Kaiserschmarrn",price:18.00}]},{category:"Kinder",items:[{name:"Kl. Port. Backhendl",price:16.40},{name:"Kl. Port. Käsespätzle",price:13.65}]}];
 let warenkorb=[];
 let removeMode=false;
+let paymentMode = 'mixed';
 
 function safeEncodeURIComponent(str) {
     return encodeURIComponent(str).replace(/[!'()*]/g, escape);
@@ -258,31 +286,55 @@ function updateTotal(){
     calculatePayment(t);
 }
 
+function setPaymentMode(mode) {
+    paymentMode = mode;
+    document.querySelectorAll('.payment-button').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(mode).classList.add('active');
+    updateTotal();
+}
+
 function calculatePayment(p){
     if(p === 0) {
-        document.getElementById('payment').innerHTML = '<h2>Bezahlung:</h2><p>Kein Betrag zu zahlen.</p>';
+        document.getElementById('payment-details').innerHTML = '<p>Kein Betrag zu zahlen.</p>';
         updateSummaryBar(0,0,0,0);
         return;
     }
-    let b11 = 0, b18 = 0, br = 9999;
-    const m = Math.floor(p / 11.5);
-    for(let i = 0; i <= m; i++) {
-        let v = i * 11.5, n = 0;
-        while(v < p) {
-            n++;
-            v += 18;
-        }
-        n--;
-        v -= 18;
-        let r = p - v;
-        if(r < br && r >= 0) {
-            b11 = i;
-            b18 = n;
-            br = r;
-        }
+    
+    let b11 = 0, b18 = 0, br = 0;
+    
+    switch(paymentMode) {
+        case 'only115':
+            b11 = Math.floor(p / 11.5);
+            br = p - (b11 * 11.5);
+            break;
+        case 'only18':
+            b18 = Math.floor(p / 18);
+            br = p - (b18 * 18);
+            break;
+        case 'mixed':
+        default:
+            let minRest = 9999;
+            const m = Math.floor(p / 11.5);
+            for(let i = 0; i <= m; i++) {
+                let v = i * 11.5, n = 0;
+                while(v < p) {
+                    n++;
+                    v += 18;
+                }
+                n--;
+                v -= 18;
+                let r = p - v;
+                if(r < minRest && r >= 0) {
+                    b11 = i;
+                    b18 = n;
+                    minRest = r;
+                }
+            }
+            br = minRest;
+            break;
     }
-    document.getElementById('payment').innerHTML = `
-        <h2>Optimale Bezahlung:</h2>
+
+    document.getElementById('payment-details').innerHTML = `
         <p>${b11} x 11,50 € Marken</p>
         <p>${b18} x 18,00 € Marken</p>
         <p>Restbetrag in bar: ${br.toFixed(2)} €</p>
