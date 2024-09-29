@@ -6,318 +6,457 @@
 <title>Küchenrechner</title>
 <style>
 body {
-	    font-family: Arial, sans-serif;
-	        margin: 0;
-			    padding: 10px;
-				         background: #1e1e1e;
-						         color: #333;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 10px;
+    background: #1e1e1e;
+    color: #333;
 }
 h1, h2, h3 {
-	    color: #0066b3;
-		       margin-top: 20px;
+    color: #0066b3;
+    margin-top: 20px;
 }
 @media (max-width: 400px) {
-	    .menu-item {
-		            font-size: 0.8em;
-			            padding: 8px;
-					         }
-	        .menu-grid {
-			        gap: 5px;
-				             padding: 5px;
-						          }
+    .menu-item {
+        font-size: 0.8em;
+        padding: 8px;
+    }
+    .menu-grid {
+        gap: 5px;
+        padding: 5px;
+    }
 }
 .menu-category {
-	    background: white;
-			    border-radius: 8px;
-			        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-				    padding: 15px;
-					         margin-bottom: 20px;
-						     position: relative;
-							           overflow: hidden;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
 }
 .menu-grid {
-	    display: grid;
-		         grid-template-columns: repeat(2, 1fr);
-			     gap: 10px;
-				      padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 10px;
 }
 .menu-item {
-	    background: #e6f2ff;
-			    padding: 10px;
-				         border-radius: 5px;
-					     cursor: pointer;
-						         position: relative;
-								       font-size: 0.9em;
-								           transition: background-color 0.3s;
-										           display: flex;
-												        flex-direction: column;
-													    justify-content: space-between;
-													        height: 100%;
-															    box-sizing: border-box;
+    background: #e6f2ff;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+    font-size: 0.9em;
+    transition: background-color 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    box-sizing: border-box;
 }
 .menu-item:hover {
-	    background: #cce5ff;
+    background: #cce5ff;
 }
 .menu-item-price {
-	    margin-top: 5px;
-	        font-weight: bold;
+    margin-top: 5px;
+    font-weight: bold;
 }
 .menu-item-name {
-	    font-weight: bold;
+    font-weight: bold;
 }
 .menu-item-price {
-	    color: #0066b3;
+    color: #0066b3;
 }
 .item-counter {
-	    position: absolute;
-		          bottom: 3px;
-				      right: 3px;
-					         background: #0066b3;
-							         color: white;
-									    border-radius: 50%;
-									        width: 18px;
-										           height: 18px;
-												       display: none;
-														    justify-content: center;
-														        align-items: center;
-															    font-size: 11px;
-															        line-height: 1;
-																    text-align: center;
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    background: #0066b3;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 11px;
+    line-height: 1;
+    text-align: center;
 }
 #menu {
-	    max-width: 600px;
-	        margin: 0 auto;
+    max-width: 600px;
+    margin: 0 auto;
 }
 #bestellung, #total, #payment {
-	    background: white;
-			    padding: 15px;
-				         border-radius: 8px;
-					     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-					         margin-top: 20px;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-top: 20px;
 }
 #bestellung-liste {
-	    list-style-type: none;
-	        padding: 0;
+    list-style-type: none;
+    padding: 0;
 }
 #bestellung-liste li {
-	    padding: 8px;
-		         border-bottom: 1px solid #eee;
-			     display: flex;
-				          justify-content: space-between;
-					      align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .cart-item-details {
-	    flex-grow: 1;
+    flex-grow: 1;
 }
 .cart-item-quantity {
-	    margin-left: 10px;
-	        font-weight: bold;
+    margin-left: 10px;
+    font-weight: bold;
 }
 footer {
-	    text-align: center;
-	        color: #888;
-		           padding: 20px 0 70px 0;
+    text-align: center;
+    color: #888;
+    padding: 20px 0 70px 0;
 }
 #reset-button, #remove-button {
-	    position: fixed;
-		          bottom: 50px;
-				      background: #ff4444;
-						      color: white;
-							         border: none;
-									     border-radius: 5px;
-									         padding: 10px 15px;
-											      font-size: 16px;
-											          cursor: pointer;
-													      display: flex;
-														           justify-content: center;
-															       align-items: center;
-															           z-index: 1000;
+    position: fixed;
+    bottom: 50px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 #reset-button {
-	    left: 10px;
+    left: 10px;
 }
 #remove-button {
-	    right: 10px;
-		       width: 40px;
-			          height: 40px;
-					      padding: 0;
-						           border-radius: 50%;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%;
 }
 #reset-button span {
-	    margin-right: 5px;
+    margin-right: 5px;
 }
 #summary-bar {
-	    position: fixed;
-		          bottom: 0;
-				      left: 0;
-					        right: 0;
-						           background: #0066b3;
-								           color: white;
-										      padding: 10px;
-											           font-size: 1em;
-												       display: flex;
-														    justify-content: space-between;
-														        align-items: center;
-															    box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #0066b3;
+    color: white;
+    padding: 10px;
+    font-size: 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
 }
 .payment-buttons {
-	    display: flex;
-		         justify-content: space-between;
-			     margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
 }
 .payment-button {
-	    flex: 1;
-		      margin: 0 5px;
-			          padding: 10px;
-					       background-color: #e6f2ff;
-					           border: 1px solid #0066b3;
-							       border-radius: 5px;
-							           cursor: pointer;
-									       transition: background-color 0.3s;
+    flex: 1;
+    margin: 0 5px;
+    padding: 10px;
+    background-color: #e6f2ff;
+    border: 1px solid #0066b3;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 .payment-button.active {
-	    background-color: #0066b3;
-	        color: white;
+    background-color: #0066b3;
+    color: white;
 }
 .remove-mode .menu-item {
-	    background: #ffcccc;
+    background: #ffcccc;
 }
 .remove-mode .menu-item:hover {
-	    background: #ffaaaa;
+    background: #ffaaaa;
 }
 .voucher-input {
-	    display: flex;
-		         flex-direction: column;
-			     gap: 10px;
-				      margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
 }
 .voucher-input label {
-	    display: flex;
-		         justify-content: space-between;
-			     align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .voucher-input input {
-	    width: 60%;
-		       padding: 8px;
-				    border: 1px solid #0066b3;
-					        border-radius: 4px;
-						    text-align: center;
-						        font-size: 14px;
+    width: 60%;
+    padding: 8px;
+    border: 1px solid #0066b3;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
 }
 #wertmarken {
-	    background: white;
-			    padding: 15px;
-				         border-radius: 8px;
-					     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-					         margin-top: 20px;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-top: 20px;
 }
-#we.name} - ${i.price.toFixed(2)} €
+#wertmarken input {
+    width: 60px;
+    padding: 5px;
+    margin-left: 10px;
+}
+</style>
+</head>
+<body>
+<h1>Küchenrechner</h1>
+<div id="wertmarken">
+    <h2>Wertmarken</h2>
+    <div>
+        <label>Bierzeichen (13,74€): <input type="number" id="bierzeichen" min="0" value="0" onchange="updateTotal()"></label>
+    </div>
+    <div>
+        <label>Essensmarke (11,5€): <input type="number" id="essensmarke" min="0" value="0" onchange="updateTotal()"></label>
+    </div>
+    <div>
+        <label>Wertmarke (18€): <input type="number" id="wertmarke" min="0" value="0" onchange="updateTotal()"></label>
+    </div>
+</div>
+<div id="menu"></div>
+<div id="bestellung">
+<h2>Bestellung</h2>
+<ul id="bestellung-liste"></ul>
+</div>
+<div id="total"></div>
+<div id="payment">
+    <h2>Optimale Bezahlung:</h2>
+    <div id="payment-details"></div>
+    <div class="payment-buttons">
+        <button id="mixed" class="payment-button active" onclick="setPaymentMode('mixed')">Gemischt</button>
+        <button id="only115" class="payment-button" onclick="setPaymentMode('only115')">Nur 11,5€</button>
+        <button id="only18" class="payment-button" onclick="setPaymentMode('only18')">Nur 18€</button>
+    </div>
+    <div class="voucher-input">
+        <label>
+            Max. 11,5€ Gutscheine:
+            <input type="number" id="max115" min="0" onchange="updateTotal()">
+        </label>
+        <label>
+            Max. 18€ Gutscheine:
+            <input type="number" id="max18" min="0" onchange="updateTotal()">
+        </label>
+    </div>
+</div>
+<button id="reset-button" onclick="resetAll()"><span>Reset</span>↺</button>
+<button id="remove-button" onclick="toggleRemoveMode()">-</button>
+<div id="summary-bar"></div>
+<footer>
+<p>Erstellt von Josef Dräxl</p>
+</footer>
+<script>
+const menu=[{category:"Brotzeit & Suppen",items:[{name:"Münchner Wurstsalat",price:15.30},{name:"Schweizer Wurstsalat",price:16.40},{name:"Obatzter",price:15.30},{name:"Bayer. Carpaccio",price:18.00},{name:"Geflügelsalat",price:16.20},{name:"Pfannkuchensuppe",price:8.00},{name:"Tomaten-Orangensuppe",price:9.85},{name:"Leberknödelsuppe",price:9.85}]},{category:"Würstl",items:[{name:"Würstl-Mix",price:16.20},{name:"Weißwurst (2 Stück)",price:9.85},{name:"Nürnberger (6 Stück)",price:17.10},{name:"Leberkäs' & Karl.-Salat",price:16.20}]},{category:"Hauptgänge",items:[{name:"1/2 BIO-Hendl",price:20.95},{name:"Backhendl",price:23.50},{name:"1/2 Ente",price:36.25},{name:"1/4 Ente",price:27.15},{name:"1/2 Schweinshaxe",price:24.40},{name:"Schweinsbraten",price:22.60},{name:"Kalbshaxe",price:27.15},{name:"Hirschbraten",price:28.00},{name:"Ochsenbraten",price:27.15},{name:"Rindsgulasch",price:23.50},{name:"Wiener Schnitzel (Kalb)",price:27.15},{name:"Burschen-Reindl",price:33.50},{name:"Spinatknödel",price:20.75}]},{category:"Vegetarisch & Vegan",items:[{name:"Nudeltascherl",price:18.00},{name:"Käsespätzle",price:17.10},{name:"Rahm-Schwammerl",price:19.85},{name:"Currywurst (vegan)",price:17.10}]},{category:"Salate",items:[{name:"Kartoffelsalat",price:5.90},{name:"Krautsalat",price:5.90},{name:"Blaukraut",price:5.90},{name:"Sauerkraut",price:5.90},{name:"Bayrisch Kraut",price:5.90},{name:"1 Kartoffelknödel",price:5.90},{name:"1 Semmelknödel",price:5.90}]},{category:"Dessert",items:[{name:"Schokoladen-Mousse",price:12.75},{name:"Apfelstrudel",price:12.75},{name:"Dampfnudel",price:12.75},{name:"Kaiserschmarrn",price:18.00}]},{category:"Kinder",items:[{name:"Kl. Port. Backhendl",price:16.40},{name:"Kl. Port. Käsespätzle",price:13.65}]}];
+let warenkorb=[];
+let removeMode=false;
+let paymentMode = 'mixed';
+
+function safeEncodeURIComponent(str) {
+    return encodeURIComponent(str).replace(/[!'()*]/g, escape);
+}
+
+function safeDecodeURIComponent(str) {
+    return decodeURIComponent(str.replace(/\+/g, ' '));
+}
+
+function createSafeId(str) {
+    return str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+}
+
+function renderMenu(){
+    document.getElementById('menu').innerHTML = menu.map(c => `
+        <div class="menu-category" id="category-${createSafeId(c.category)}">
+            <h3>${c.category}</h3>
+            <div class="menu-grid">
+                ${c.items.map(i => `
+                    <div class="menu-item" onclick="handleItemClick('${safeEncodeURIComponent(i.name)}')">
+                        <div class="menu-item-name">${i.name}</div>
+                        <div class="menu-item-price">${i.price.toFixed(2)} €</div>
+                        <div class="item-counter" id="counter-${createSafeId(i.name)}"></div>
+                    </div>
+                `).join('')}
             </div>
-	                <span class="cart-item-quantity">x${i.quantity}</span>
-			        </li>
-				    `).join('');
-				        updateTotal();
-					}
+        </div>
+    `).join('');
+    updateCounters();
+}
+
+function handleItemClick(n){
+    const decodedName = safeDecodeURIComponent(n);
+    if(removeMode) {
+        removeFromCart(decodedName);
+    } else {
+        addToCart(decodedName);
+    }
+}
+
+function addToCart(n){
+    const i = menu.flatMap(c => c.items).find(i => i.name === n);
+    const e = warenkorb.find(i => i.name === n);
+    if(e) {
+        e.quantity++;
+    } else {
+        warenkorb.push({...i, quantity: 1});
+    }
+    updateCart();
+    updateCounters();
+}
+
+function removeFromCart(n, a=false){
+    const i = warenkorb.findIndex(i => i.name === n);
+    if(i !== -1) {
+        if(a || warenkorb[i].quantity === 1) {
+            warenkorb.splice(i, 1);
+        } else {
+            warenkorb[i].quantity--;
+        }
+    }
+    updateCart();
+    updateCounters();
+}
+
+function updateCounters(){
+    menu.flatMap(c => c.items).forEach(i => {
+        const c = document.getElementById(`counter-${createSafeId(i.name)}`);
+        const e = warenkorb.find(w => w.name === i.name);
+        if(e && e.quantity > 0) {
+            c.textContent = e.quantity;
+            c.style.display = 'flex';
+        } else {
+            c.style.display = 'none';
+        }
+    });
+}
+
+function updateCart(){
+    document.getElementById('bestellung-liste').innerHTML = warenkorb.map(i => `
+        <li>
+            <div class="cart-item-details" onclick="removeFromCart('${safeEncodeURIComponent(i.name)}')">
+                ${i.name} - ${i.price.toFixed(2)} €
+            </div>
+            <span class="cart-item-quantity">x${i.quantity}</span>
+        </li>
+    `).join('');
+    updateTotal();
+}
 
 function updateTotal(){
-	    const subtotal = warenkorb.reduce((s,i) => s + i.price * i.quantity, 0);
-	        const bierzeichen = parseInt(document.getElementById('bierzeichen').value) || 0;
-		    const essensmarke = parseInt(document.getElementById('essensmarke').value) || 0;
-		        const wertmarke = parseInt(document.getElementById('wertmarke').value) || 0;
-			    
-			    const voucherTotal = (bierzeichen * 13.74) + (essensmarke * 11.5) + (wertmarke * 18);
-			        const total = Math.max(subtotal - voucherTotal, 0);
+    const subtotal = warenkorb.reduce((s,i) => s + i.price * i.quantity, 0);
+    const bierzeichen = parseInt(document.getElementById('bierzeichen').value) || 0;
+    const essensmarke = parseInt(document.getElementById('essensmarke').value) || 0;
+    const wertmarke = parseInt(document.getElementById('wertmarke').value) || 0;
+    
+    const voucherTotal = (bierzeichen * 13.74) + (essensmarke * 11.5) + (wertmarke * 18);
+    const total = Math.max(subtotal - voucherTotal, 0);
 
-				    document.getElementById('total').innerHTML = `
-					            <h2>Gesamtpreis: ${subtotal.toFixed(2)} €</h2>
-						            <p>Abzug durch Wertmarken: ${voucherTotal.toFixed(2)} €</p>
-							            <h3>Zu zahlen: ${total.toFixed(2)} €</h3>
-								        `;
-				        calculatePayment(total);
+    document.getElementById('total').innerHTML = `
+        <h2>Gesamtpreis: ${subtotal.toFixed(2)} €</h2>
+        <p>Abzug durch Wertmarken: ${voucherTotal.toFixed(2)} €</p>
+        <h3>Zu zahlen: ${total.toFixed(2)} €</h3>
+    `;
+    calculatePayment(total);
 }
 
 function setPaymentMode(mode) {
-	    paymentMode = mode;
-	        document.querySelectorAll('.payment-button').forEach(btn => btn.classList.remove('active'));
-		    document.getElementById(mode).classList.add('active');
-		        updateTotal();
+    paymentMode = mode;
+    document.querySelectorAll('.payment-button').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(mode).classList.add('active');
+    updateTotal();
 }
 
 function calculatePayment(p){
-	    if(p === 0) {
-		            document.getElementById('payment-details').innerHTML = '<p>Kein Betrag zu zahlen.</p>';
-			            updateSummaryBar(0,0,0,0);
-				            return;
-					        }
-	        let b11 = 0, b18 = 0, br = 0;
-		    const max115 = document.getElementById('max115').value === '' ? Infinity : parseInt(document.getElementById('max115').value);
-		        const max18 = document.getElementById('max18').value === '' ? Infinity : parseInt(document.getElementById('max18').value);
-			    
-			    switch(paymentMode) {
-				            case 'only115':
-						                b11 = Math.min(Math.floor(p / 11.5), max115);
-								            br = p - (b11 * 11.5);
-									                break;
-											        case 'only18':
-											            b18 = Math.min(Math.floor(p / 18), max18);
-												                br = p - (b18 * 18);
-														            break;
-															            case 'mixed':
-															            default:
-															                let minRest = 9999;
-																	            const m = Math.floor(p / 11.5);
-																		                for(let i = 0; i <= m && i <= max115; i++) {
-																					                let v = i * 11.5, n = 0;
-																							                while(v < p && n < max18) {
-																										                    n++;
-																												                        v += 18;
-																															                }
-																									                n--;
-																											                v -= 18;
-																													                let r = p - v;
-																															                if(r < minRest && r >= 0) {
-																																		                    b11 = i;
-																																				                        b18 = n;
-																																							                    minRest = r;
-																																									                    }
-																																	            }
-																				            br = minRest;
-																					                break;
-																							    }
+    if(p === 0) {
+        document.getElementById('payment-details').innerHTML = '<p>Kein Betrag zu zahlen.</p>';
+        updateSummaryBar(0,0,0,0);
+        return;
+    }
+    let b11 = 0, b18 = 0, br = 0;
+    const max115 = document.getElementById('max115').value === '' ? Infinity : parseInt(document.getElementById('max115').value);
+    const max18 = document.getElementById('max18').value === '' ? Infinity : parseInt(document.getElementById('max18').value);
+    
+    switch(paymentMode) {
+        case 'only115':
+            b11 = Math.min(Math.floor(p / 11.5), max115);
+            br = p - (b11 * 11.5);
+            break;
+        case 'only18':
+            b18 = Math.min(Math.floor(p / 18), max18);
+            br = p - (b18 * 18);
+            break;
+        case 'mixed':
+        default:
+            let minRest = 9999;
+            const m = Math.floor(p / 11.5);
+            for(let i = 0; i <= m && i <= max115; i++) {
+                let v = i * 11.5, n = 0;
+                while(v < p && n < max18) {
+                    n++;
+                    v += 18;
+                }
+                n--;
+                v -= 18;
+                let r = p - v;
+                if(r < minRest && r >= 0) {
+                    b11 = i;
+                    b18 = n;
+                    minRest = r;
+                }
+            }
+            br = minRest;
+            break;
+    }
 
-			        document.getElementById('payment-details').innerHTML = `
-					        <p>${b11} x 11,50 € Marken</p>
-						        <p>${b18} x 18,00 € Marken</p>
-							        <p>Restbetrag in bar: ${br.toFixed(2)} €</p>
-								    `;
-				    updateSummaryBar(p,b11,b18,br);
+    document.getElementById('payment-details').innerHTML = `
+        <p>${b11} x 11,50 € Marken</p>
+        <p>${b18} x 18,00 € Marken</p>
+        <p>Restbetrag in bar: ${br.toFixed(2)} €</p>
+    `;
+    updateSummaryBar(p,b11,b18,br);
 }
 
 function updateSummaryBar(total,b11,b18,rest){
-	    const subtotal = warenkorb.reduce((s,i) => s + i.price * i.quantity, 0);
-	        document.getElementById('summary-bar').innerHTML = `
-			        <span>Gesamt: ${subtotal.toFixed(2)} €</span>
-				        <span>Zu zahlen: ${total.toFixed(2)} €</span>
-					        <span>11,5€: ${b11}</span>
-						        <span>18€: ${b18}</span>
-							        <span>Rest: ${rest.toFixed(2)} €</span>
-								    `;
+    const subtotal = warenkorb.reduce((s,i) => s + i.price * i.quantity, 0);
+    document.getElementById('summary-bar').innerHTML = `
+        <span>Gesamt: ${subtotal.toFixed(2)} €</span>
+        <span>Zu zahlen: ${total.toFixed(2)} €</span>
+        <span>11,5€: ${b11}</span>
+        <span>18€: ${b18}</span>
+        <span>Rest: ${rest.toFixed(2)} €</span>
+    `;
 }
 
 function resetAll(){
-	    warenkorb = [];
-	        document.getElementById('bierzeichen').value = 0;
-		    document.getElementById('essensmarke').value = 0;
-		        document.getElementById('wertmarke').value = 0;
-			    updateCart();
-			        updateCounters();
-				    renderMenu();
+    warenkorb = [];
+    document.getElementById('bierzeichen').value = 0;
+    document.getElementById('essensmarke').value = 0;
+    document.getElementById('wertmarke').value = 0;
+    updateCart();
+    updateCounters();
+    renderMenu();
 }
 
 function toggleRemoveMode(){
-	    removeMode = !removeMode;
-	        document.body.classList.toggle('remove-mode', removeMode);
-		    document.getElementById('remove-button').textContent = removeMode ? '+' : '-';
+    removeMode = !removeMode;
+    document.body.classList.toggle('remove-mode', removeMode);
+    document.getElementById('remove-button').textContent = removeMode ? '+' : '-';
 }
 
 renderMenu();
