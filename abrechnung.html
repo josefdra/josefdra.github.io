@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abrechnung</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background: #1e1e1e;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #0066b3;
+            margin-top: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .menu-category {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+        .menu-item {
+            background: #e6f2ff;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .menu-item-name {
+            font-weight: bold;
+        }
+        .menu-item-price {
+            color: #0066b3;
+            margin-top: 5px;
+        }
+        .item-quantity {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+        .item-quantity button {
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            border: none;
+            background: #0066b3;
+            color: white;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        .item-quantity input {
+            width: 40px;
+            height: 30px;
+            text-align: center;
+            font-size: 16px;
+            border: 1px solid #0066b3;
+            margin: 0 5px;
+            border-radius: 5px;
+        }
+        #total, #teamInfo {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        #teamInfo .menu-grid {
+            grid-template-columns: 1fr;
+        }
+        #teamInfo .menu-item {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #teamInfo input {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #0066b3;
+            border-radius: 5px;
+        }
+        @media (max-width: 480px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Abrechnung</h1>
+        
+        <div id="menu"></div>
+        
+        <div id="teamInfo" class="menu-category">
+            <h3>Team Informationen</h3>
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <div class="menu-item-name">Anzahl Personen im Team:</div>
+                    <input type="number" id="teamSize" value="1" min="1" onchange="updateTotal()">
+                </div>
+                <div class="menu-item">
+                    <div class="menu-item-name">Startsumme pro Person (€):</div>
+                    <input type="number" id="startAmount" value="0" min="0" step="0.01" onchange="updateTotal()">
+                </div>
+            </div>
+        </div>
+
+        <div id="total"></div>
+    </div>
+
+    <script>
+        const menu = [
+            {
+                category: "Bargeld",
+                items: [
+                    {name: "Kleingeld", price: 1},
+                    {name: "5€ Schein", price: 5},
+                    {name: "10€ Schein", price: 10},
+                    {name: "20€ Schein", price: 20},
+                    {name: "50€ Schein", price: 50},
+                    {name: "100€ Schein", price: 100},
+                    {name: "200€ Schein", price: 200}
+                ]
+            },
+            {
+                category: "Gutscheine",
+                items: [
+                    {name: "Essenszeichen", price: 11.5},
+                    {name: "Wertmarken", price: 18},
+                    {name: "Bierzeichen", price: 13.74}
+                ]
+            },
+            {
+                category: "Getränke",
+                items: [
+                    {name: "Wasser", price: 5.4},
+                    {name: "Apfelschorle", price: 5.6},
+                    {name: "Spezi", price: 5.9}
+                ]
+            },
+            {
+                category: "Menü",
+                items: [
+                    {name: "Enten-Menü", price: 58.7},
+                    {name: "Braumeister-Menü", price: 59.6},
+                    {name: "Veggie-Menü", price: 48.7}
+                ]
+            }
+        ];
+
+        function renderMenu() {
+            document.getElementById('menu').innerHTML = menu.map(category => `
+                <div class="menu-category">
+                    <h3>${category.category}</h3>
+                    <div class="menu-grid">
+                        ${category.items.map(item => `
+                            <div class="menu-item">
+                                <div>
+                                    <div class="menu-item-name">${item.name}</div>
+                                    <div class="menu-item-price">${item.price.toFixed(2)} €</div>
+                                </div>
+                                <div class="item-quantity">
+                                    <button onclick="changeQuantity('${item.name}', -1)">-</button>
+                                    <input type="number" id="${item.name.replace(/\s+/g, '-')}" value="0" min="0" onchange="updateTotal()">
+                                    <button onclick="changeQuantity('${item.name}', 1)">+</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function changeQuantity(itemName, change) {
+            const input = document.getElementById(itemName.replace(/\s+/g, '-'));
+            input.value = Math.max(0, parseInt(input.value) + change);
+            updateTotal();
+        }
+
+        function updateTotal() {
+            let total = 0;
+            
+            menu.forEach(category => {
+                category.items.forEach(item => {
+                    const quantity = parseInt(document.getElementById(item.name.replace(/\s+/g, '-')).value);
+                    total += item.price * quantity;
+                });
+            });
+
+            const teamSize = parseInt(document.getElementById('teamSize').value) || 1;
+            const startAmount = parseFloat(document.getElementById('startAmount').value) || 0;
+            const totalStartAmount = teamSize * startAmount;
+            const profit = total - totalStartAmount;
+            const profitPerPerson = profit / teamSize;
+
+            document.getElementById('total').innerHTML = `
+                <p>Gesamtsumme: ${total.toFixed(2)} €</p>
+                <p>Startsumme insgesamt: ${totalStartAmount.toFixed(2)} €</p>
+                <p>Gewinn: ${profit.toFixed(2)} €</p>
+                <p>Gewinn pro Person: ${profitPerPerson.toFixed(2)} €</p>
+            `;
+        }
+
+        renderMenu();
+        updateTotal();
+    </script>
+</body>
+</html>
