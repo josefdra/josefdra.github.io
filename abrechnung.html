@@ -122,6 +122,25 @@
                 grid-template-columns: 1fr;
             }
         }
+		#reset-button {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #reset-button span {
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
@@ -152,6 +171,7 @@
 <footer>
     <p>Erstellt von Josef Dräxl</p>
 </footer>
+<button id="reset-button" onclick="resetAll()"><span>Reset</span>↺</button>
     <script>
         const menu = [
             {
@@ -185,12 +205,24 @@
             {
                 category: "Menü",
                 items: [
-                    {name: "Enten-Menü", price: 58.7},
-                    {name: "Braumeister-Menü", price: 59.6},
-                    {name: "Veggie-Menü", price: 48.7}
+                    {name: "Enten-Menü", price: 58},
+                    {name: "Braumeister-Menü", price: 59},
+                    {name: "Veggie-Menü", price: 48}
                 ]
             }
         ];
+		
+		function resetAll() {
+            menu.forEach(category => {
+                category.items.forEach(item => {
+                    const input = document.getElementById(item.name.replace(/\s+/g, '-'));
+                    input.value = 0;
+                });
+            });
+            document.getElementById('teamSize').value = 1;
+            document.getElementById('startAmount').value = 0;
+            updateTotal();
+        }
 
         function renderMenu() {
             document.getElementById('menu').innerHTML = menu.map(category => `

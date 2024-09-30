@@ -108,6 +108,25 @@
                 grid-template-columns: 1fr;
             }
         }
+		#reset-button {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #reset-button span {
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
@@ -124,6 +143,7 @@
 <footer>
     <p>Erstellt von Josef Dräxl</p>
 </footer>
+<button id="reset-button" onclick="resetAll()"><span>Reset</span>↺</button>
     <script>
         // Preisdefinitionen für Menüs
         const PREIS_ENTEN_MENU = 645;
@@ -244,6 +264,16 @@
                 ]
             }
         ];
+		
+		function resetAll() {
+            menu.forEach(category => {
+                category.items.forEach(item => {
+                    const input = document.getElementById(item.name.replace(/\s+/g, '-'));
+                    input.value = 0;
+                });
+            });
+            updateTotal();
+        }
 
         function renderMenu() {
             document.getElementById('menu').innerHTML = menu.map(category => `
