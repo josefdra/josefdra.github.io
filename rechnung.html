@@ -16,16 +16,16 @@
             color: #0066b3;
             margin-top: 20px;
         }
-		footer {
-			text-align: center;
-			color: #888;
-			padding: 20px 0;
-			background: #1e1e1e; /* Gleiche Farbe wie der Hintergrund */
-			margin-top: 20px;
-		}
-		.main-container {
-			padding-top: 8px;
-		}
+        footer {
+            text-align: center;
+            color: #888;
+            padding: 20px 0;
+            background: #1e1e1e;
+            margin-top: 20px;
+        }
+        .main-container {
+            padding-top: 8px;
+        }
         .container {
             max-width: 600px;
             margin: 0 auto;
@@ -64,28 +64,26 @@
             margin-top: 10px;
         }
         .item-quantity button {
-			width: 30px;
-			height: 30px;
-			font-size: 18px;
-			border: none;
-			background: #0066b3;
-			color: white;
-			cursor: pointer;
-			border-radius: 50%;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			padding: 0;
-			line-height: 1;
-		}
-
-		.item-quantity button:hover {
-			background: #004080;
-		}
-
-		.item-quantity button:active {
-			transform: scale(0.95);
-		}
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            border: none;
+            background: #0066b3;
+            color: white;
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            line-height: 1;
+        }
+        .item-quantity button:hover {
+            background: #004080;
+        }
+        .item-quantity button:active {
+            transform: scale(0.95);
+        }
         .item-quantity input {
             width: 40px;
             height: 30px;
@@ -108,7 +106,7 @@
                 grid-template-columns: 1fr;
             }
         }
-		#reset-button {
+        #reset-button {
             position: fixed;
             bottom: 10px;
             left: 10px;
@@ -127,23 +125,35 @@
         #reset-button span {
             margin-right: 5px;
         }
+        .gesamt-category {
+            background: #f0f8ff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .gesamt-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
-<a href="index.html" style="position: fixed; top: 10px; left: 10px; background: #0066b3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px;">Zurück</a>
+    <a href="index.html" style="position: fixed; top: 10px; left: 10px; background: #0066b3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px;">Zurück</a>
     <div class="container main-container">
-	</div>
-	<div class="container">
+    </div>
+    <div class="container">
         <h1>Rechnung</h1>
         
         <div id="menu"></div>
         
         <div id="total"></div>
     </div>
-<footer>
-    <p>Erstellt von Josef Dräxl</p>
-</footer>
-<button id="reset-button" onclick="resetAll()"><span>Reset</span>↺</button>
+    <footer>
+        <p>Erstellt von Josef Dräxl</p>
+    </footer>
+    <button id="reset-button" onclick="resetAll()"><span>Reset</span>↺</button>
     <script>
         // Preisdefinitionen für Menüs
         const PREIS_ENTEN_MENU = 645;
@@ -264,8 +274,8 @@
                 ]
             }
         ];
-		
-		function resetAll() {
+        
+        function resetAll() {
             menu.forEach(category => {
                 category.items.forEach(item => {
                     const input = document.getElementById(item.name.replace(/\s+/g, '-'));
@@ -287,15 +297,23 @@
                                     <div class="menu-item-price">${item.price.toFixed(2)} €</div>
                                 </div>
                                 <div class="item-quantity">
-									<button onclick="changeQuantity('${item.name}', -1)">-</button>
-									<input type="number" id="${item.name.replace(/\s+/g, '-')}" value="0" min="0" onchange="updateTotal()">
-									<button onclick="changeQuantity('${item.name}', 1)">+</button>
-								</div>
+                                    <button onclick="changeQuantity('${item.name}', -1)">-</button>
+                                    <input type="number" id="${item.name.replace(/\s+/g, '-')}" value="0" min="0" onchange="updateTotal()">
+                                    <button onclick="changeQuantity('${item.name}', 1)">+</button>
+                                </div>
                             </div>
                         `).join('')}
                     </div>
                 </div>
             `).join('');
+            
+            // Füge die Gesamt-Kategorie hinzu
+            document.getElementById('menu').innerHTML += `
+                <div class="gesamt-category">
+                    <h3>Gesamt</h3>
+                    <div id="gesamt-list"></div>
+                </div>
+            `;
         }
 
         function changeQuantity(itemName, change) {
@@ -308,16 +326,22 @@
             let total = 0;
             let gutscheinTotal = 0;
             let menuTotal = 0;
+            let gesamtList = [];
             
             menu.forEach(category => {
                 category.items.forEach(item => {
                     const quantity = parseInt(document.getElementById(item.name.replace(/\s+/g, '-')).value);
-                    if (category.category === "Gutscheine") {
-                        gutscheinTotal += item.price * quantity;
-                    } else if (category.category === "Menü") {
-                        menuTotal += item.price * quantity;
-                    } else {
-                        total += item.price * quantity;
+                    if (quantity > 0) {
+                        const itemTotal = item.price * quantity;
+                        gesamtList.push({name: item.name, quantity: quantity, total: itemTotal});
+                        
+                        if (category.category === "Gutscheine") {
+                            gutscheinTotal += itemTotal;
+                        } else if (category.category === "Menü") {
+                            menuTotal += itemTotal;
+                        } else {
+                            total += itemTotal;
+                        }
                     }
                 });
             });
@@ -331,6 +355,14 @@
                 <p>Restbetrag: ${restbetrag.toFixed(2)} €</p>
                 <p>Davon Menü-Umsatz: ${menuTotal.toFixed(2)} €</p>
             `;
+
+            // Aktualisiere die Gesamt-Liste
+            document.getElementById('gesamt-list').innerHTML = gesamtList.map(item => `
+                <div class="gesamt-item">
+                    <span>${item.quantity}x ${item.name}</span>
+                    <span>${item.total.toFixed(2)} €</span>
+                </div>
+            `).join('');
         }
 
         renderMenu();
