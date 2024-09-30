@@ -285,6 +285,19 @@
             updateTotal();
         }
 
+        // Fügen Sie diese neue Funktion hinzu
+        function handleFocus(input) {
+            if (input.value === '0') {
+                input.value = '';
+            }
+        }
+        
+        function handleBlur(input) {
+            if (input.value === '') {
+                input.value = '0';
+            }
+        }
+        
         function renderMenu() {
             document.getElementById('menu').innerHTML = menu.map(category => `
                 <div class="menu-category">
@@ -298,7 +311,10 @@
                                 </div>
                                 <div class="item-quantity">
                                     <button onclick="changeQuantity('${item.name}', -1)">-</button>
-                                    <input type="number" id="${item.name.replace(/\s+/g, '-')}" value="0" min="0" onchange="updateTotal()">
+                                    <input type="number" id="${item.name.replace(/\s+/g, '-')}" value="0" min="0" 
+                                        onchange="updateTotal()" 
+                                        onfocus="handleFocus(this)" 
+                                        onblur="handleBlur(this)">
                                     <button onclick="changeQuantity('${item.name}', 1)">+</button>
                                 </div>
                             </div>
@@ -315,13 +331,14 @@
                 </div>
             `;
         }
-
+        
         function changeQuantity(itemName, change) {
             const input = document.getElementById(itemName.replace(/\s+/g, '-'));
-            input.value = Math.max(0, parseInt(input.value) + change);
+            const newValue = Math.max(0, parseInt(input.value || '0') + change);
+            input.value = newValue === 0 ? '' : newValue;
             updateTotal();
         }
-
+        
         function updateTotal() {
             let total = 0;
             let gutscheinTotal = 0;
@@ -330,7 +347,8 @@
             
             menu.forEach(category => {
                 category.items.forEach(item => {
-                    const quantity = parseInt(document.getElementById(item.name.replace(/\s+/g, '-')).value);
+                    const input = document.getElementById(item.name.replace(/\s+/g, '-'));
+                    const quantity = parseInt(input.value || '0');
                     if (quantity > 0) {
                         const itemTotal = item.price * quantity;
                         gesamtList.push({name: item.name, quantity: quantity, total: itemTotal});
@@ -345,17 +363,17 @@
                     }
                 });
             });
-
+        
             const gesamtumsatz = total + menuTotal;
             const restbetrag = total - gutscheinTotal;
-
+        
             document.getElementById('total').innerHTML = `
                 <p>Gesamtumsatz: ${gesamtumsatz.toFixed(2)} €</p>
                 <p>Gutscheine: ${gutscheinTotal.toFixed(2)} €</p>
                 <p>Restbetrag: ${restbetrag.toFixed(2)} €</p>
                 <p>Davon Menü-Umsatz: ${menuTotal.toFixed(2)} €</p>
             `;
-
+        
             // Aktualisiere die Gesamt-Liste
             document.getElementById('gesamt-list').innerHTML = gesamtList.map(item => `
                 <div class="gesamt-item">
