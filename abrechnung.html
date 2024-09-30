@@ -16,6 +16,13 @@
             color: #0066b3;
             margin-top: 20px;
         }
+		footer {
+			text-align: center;
+			color: #888;
+			padding: 20px 0;
+			background: #1e1e1e; /* Gleiche Farbe wie der Hintergrund */
+			margin-top: 20px;
+		}
         .container {
             max-width: 600px;
             margin: 0 auto;
@@ -54,15 +61,28 @@
             margin-top: 10px;
         }
         .item-quantity button {
-            width: 30px;
-            height: 30px;
-            font-size: 18px;
-            border: none;
-            background: #0066b3;
-            color: white;
-            cursor: pointer;
-            border-radius: 50%;
-        }
+			width: 30px;
+			height: 30px;
+			font-size: 18px;
+			border: none;
+			background: #0066b3;
+			color: white;
+			cursor: pointer;
+			border-radius: 50%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			padding: 0;
+			line-height: 1;
+		}
+
+		.item-quantity button:hover {
+			background: #004080;
+		}
+
+		.item-quantity button:active {
+			transform: scale(0.95);
+		}
         .item-quantity input {
             width: 40px;
             height: 30px;
@@ -102,6 +122,7 @@
     </style>
 </head>
 <body>
+<a href="index.html" style="position: fixed; top: 10px; left: 10px; background: #0066b3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px;">Zurück</a>
     <div class="container">
         <h1>Abrechnung</h1>
         
@@ -123,7 +144,9 @@
 
         <div id="total"></div>
     </div>
-
+<footer>
+    <p>Erstellt von Josef Dräxl</p>
+</footer>
     <script>
         const menu = [
             {
@@ -176,10 +199,10 @@
                                     <div class="menu-item-price">${item.price.toFixed(2)} €</div>
                                 </div>
                                 <div class="item-quantity">
-                                    <button onclick="changeQuantity('${item.name}', -1)">-</button>
-                                    <input type="number" id="${item.name.replace(/\s+/g, '-')}" value="0" min="0" onchange="updateTotal()">
-                                    <button onclick="changeQuantity('${item.name}', 1)">+</button>
-                                </div>
+									<button onclick="changeQuantity('${item.name}', -1)">-</button>
+									<input type="number" id="${item.name.replace(/\s+/g, '-')}" value="0" min="0" onchange="updateTotal()">
+									<button onclick="changeQuantity('${item.name}', 1)">+</button>
+								</div>
                             </div>
                         `).join('')}
                     </div>
