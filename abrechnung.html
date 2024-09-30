@@ -212,19 +212,7 @@
             }
         ];
 		
-		function resetAll() {
-            menu.forEach(category => {
-                category.items.forEach(item => {
-                    const input = document.getElementById(item.name.replace(/\s+/g, '-'));
-                    input.value = 0;
-                });
-            });
-            document.getElementById('teamSize').value = 1;
-            document.getElementById('startAmount').value = 0;
-            updateTotal();
-        }
-
-        function handleFocus(input) {
+		function handleFocus(input) {
             if (input.value === '0') {
                 input.value = '';
             }
@@ -240,11 +228,11 @@
             menu.forEach(category => {
                 category.items.forEach(item => {
                     const input = document.getElementById(item.name.replace(/\s+/g, '-'));
-                    input.value = '';
+                    input.value = '0';
                 });
             });
             document.getElementById('teamSize').value = '1';
-            document.getElementById('startAmount').value = '';
+            document.getElementById('startAmount').value = '0';
             updateTotal();
         }
         
@@ -261,7 +249,7 @@
                                 </div>
                                 <div class="item-quantity">
                                     <button onclick="changeQuantity('${item.name}', -1)">-</button>
-                                    <input type="number" id="${item.name.replace(/\s+/g, '-')}" value="" min="0" 
+                                    <input type="number" id="${item.name.replace(/\s+/g, '-')}" value="0" min="0" 
                                         onchange="updateTotal()" 
                                         onfocus="handleFocus(this)" 
                                         onblur="handleBlur(this)">
@@ -277,7 +265,7 @@
         function changeQuantity(itemName, change) {
             const input = document.getElementById(itemName.replace(/\s+/g, '-'));
             const newValue = Math.max(0, parseInt(input.value || '0') + change);
-            input.value = newValue === 0 ? '' : newValue;
+            input.value = newValue;
             updateTotal();
         }
         
