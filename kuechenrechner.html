@@ -155,6 +155,23 @@ footer {
     padding: 0;
     border-radius: 50%;
 }
+#price-mode-button {
+	position: fixed;
+	bottom: 50px;
+	right: 60px; /* Positioniert über dem Remove-Button */
+	background: #ff4444;
+	color: white;
+	border: none;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	font-size: 16px;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
 #reset-button span {
     margin-right: 5px;
 }
@@ -263,6 +280,7 @@ footer {
 </div>
 <button id="reset-button" onclick="resetAll()"><span>Reset</span>↺</button>
 <button id="remove-button" onclick="toggleRemoveMode()">-</button>
+<button id="price-mode-button" onclick="togglePriceMode()">VK</button>
 <div id="summary-bar"></div>
 <footer>
     <p>Erstellt von Josef Dräxl</p>
@@ -272,6 +290,52 @@ const menu=[{category:"Brotzeit & Suppen",items:[{name:"Münchner Wurstsalat",pr
 let warenkorb=[];
 let removeMode=false;
 let paymentMode = 'mixed';
+let priceMode = 'VK';
+
+const vkPrices = {
+    "Münchner Wurstsalat": 16.50,
+    "Schweizer Wurstsalat": 18.00,
+    "Obatzter": 16.50,
+    "Bayer. Carpaccio": 19.80,
+    "Geflügelsalat": 17.80,
+    "Pfannkuchensuppe": 8.50,
+    "Tomaten-Orangensuppe": 10.80,
+    "Leberknödelsuppe": 10.80,
+    "Würstl-Mix": 17.80,
+    "Weißwurst (2 Stück)": 10.80,
+    "Nürnberger (6 Stück)": 18.80,
+    "Leberkäs' & Kart.-Salat": 17.80,
+    "1/2 BIO-Hendl": 23.00,
+    "Backhendl": 25.80,
+    "1/2 Ente": 39.80,
+    "1/4 Ente": 29.80,
+    "1/2 Schweinshaxe": 26.80,
+    "Schweinsbraten": 24.80,
+    "Kalbshaxe": 29.80,
+    "Hirschbraten": 30.80,
+    "Ochsenbraten": 29.80,
+    "Rindsgulasch": 25.80,
+    "Wiener Schnitzel (Kalb)": 29.80,
+    "Burschen-Reindl": 36.80,
+    "Spinatknödel": 22.80,
+    "Nudeltascherl": 19.80,
+    "Käsespätzle": 18.80,
+    "Rahm-Schwammerl": 21.80,
+	"Currywurst (vegan)": 18.80,
+    "Kartoffelsalat": 6.50,
+    "Krautsalat": 6.50,
+    "Blaukraut": 6.50,
+    "Sauerkraut": 6.50,
+    "Bayrisch Kraut": 6.50,
+    "1 Kartoffelknödel": 6.50,
+    "1 Semmelknödel": 6.50,
+    "Schokoladen-Mousse": 14.00,
+    "Apfelstrudel": 14.00,
+    "Dampfnudel": 14.00,
+    "Kaiserschmarrn": 19.80,
+    "Kl. Port. Backhendl": 18.00,
+    "Kl. Port. Käsespätzle": 15.00
+};
 
 function safeEncodeURIComponent(str) {
     return encodeURIComponent(str).replace(/[!'()*]/g, escape);
@@ -280,6 +344,12 @@ function safeEncodeURIComponent(str) {
 function safeDecodeURIComponent(str) {
     return decodeURIComponent(str.replace(/\+/g, ' '));
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+	renderMenu();
+	updateTotal();
+	calculatePayment(0);
+});
 
 function createSafeId(str) {
     return str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
@@ -293,7 +363,7 @@ function renderMenu(){
                 ${c.items.map(i => `
                     <div class="menu-item" onclick="handleItemClick('${safeEncodeURIComponent(i.name)}')">
                         <div class="menu-item-name">${i.name}</div>
-                        <div class="menu-item-price">${i.price.toFixed(2)} €</div>
+                        <div class="menu-item-price">${getDisplayPrice(i).toFixed(2)} €</div>
                         <div class="item-counter" id="counter-${createSafeId(i.name)}"></div>
                     </div>
                 `).join('')}
@@ -354,7 +424,7 @@ function updateCart(){
     document.getElementById('bestellung-liste').innerHTML = warenkorb.map(i => `
         <li>
             <div class="cart-item-details" onclick="removeFromCart('${safeEncodeURIComponent(i.name)}')">
-                ${i.name} - ${i.price.toFixed(2)} €
+                ${i.name} - ${getDisplayPrice(i).toFixed(2)} €
             </div>
             <span class="cart-item-quantity">x${i.quantity}</span>
         </li>
@@ -362,8 +432,16 @@ function updateCart(){
     updateTotal();
 }
 
+function getDisplayPrice(item) {
+    return priceMode === 'VK' && vkPrices[item.name] !== undefined ? vkPrices[item.name] : item.price;
+}
+
+function getCalculationPrice(item) {
+    return item.price; // Immer EK-Preis für Berechnungen
+}
+
 function updateTotal(){
-    const t = warenkorb.reduce((s,i) => s + i.price * i.quantity, 0);
+    const t = warenkorb.reduce((s, i) => s + getCalculationPrice(i) * i.quantity, 0);
     document.getElementById('total').innerHTML = `<h2>Gesamtpreis: ${t.toFixed(2)} €</h2>`;
     calculatePayment(t);
 }
@@ -445,6 +523,13 @@ function toggleRemoveMode(){
     removeMode = !removeMode;
     document.body.classList.toggle('remove-mode', removeMode);
     document.getElementById('remove-button').textContent = removeMode ? '+' : '-';
+}
+
+function togglePriceMode() {
+    priceMode = priceMode === 'EK' ? 'VK' : 'EK';
+    document.getElementById('price-mode-button').textContent = priceMode;
+    renderMenu();
+    updateCart();
 }
 
 renderMenu();
