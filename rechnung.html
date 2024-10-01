@@ -335,7 +335,7 @@
         function changeQuantity(itemName, change) {
             const input = document.getElementById(itemName.replace(/\s+/g, '-'));
             const newValue = Math.max(0, parseInt(input.value || '0') + change);
-            input.value = newValue === 0 ? '' : newValue;
+            input.value = newValue;  // Hier wurde die Änderung vorgenommen
             updateTotal();
         }
         
