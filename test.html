@@ -21,11 +21,15 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             text-align: center;
         }
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+        }
         .logo {
             max-width: 80%;
             height: auto;
-            margin: 10px auto;
-            display: block;
         }
         h1 {
             color: #0066b3;
@@ -62,7 +66,9 @@
 <body>
     <div class="container">
         <h1>Oktoberfest 2024</h1>
-        <img src="./logo.png" alt="Paulaner Festzelt Logo" class="logo">
+        <div class="logo-container">
+            <img src="./logo.png" alt="Paulaner Festzelt Logo" class="logo">
+        </div>
         <div class="button-container">
             <a href="kuechenrechner.html" class="button">Küchenrechner</a>
             <a href="rechnung.html" class="button">Rechnung</a>
