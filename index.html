@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oktoberfest 2024, Paulaner Festzelt</title>
+    <title>Oktoberfest 2024</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,13 +12,6 @@
             background: #1e1e1e;
             color: #333;
         }
-		footer {
-			text-align: center;
-			color: #888;
-			padding: 20px 0;
-			background: #1e1e1e; /* Gleiche Farbe wie der Hintergrund */
-			margin-top: 20px;
-		}
         .container {
             max-width: 600px;
             margin: 0 auto;
@@ -26,16 +19,29 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+            bottom: 20px;
+        }
+        .logo {
+            max-width: 80%;
+            height: auto;
         }
         h1 {
             color: #0066b3;
             text-align: center;
+            margin-bottom: 10px;
         }
         .button-container {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            margin-top: 20px;
+            margin-top: 10px;
         }
         .button {
             background: #0066b3;
@@ -51,22 +57,27 @@
         }
         footer {
             text-align: center;
+            color: #888;
+            padding: 20px 0;
+            background: #1e1e1e;
             margin-top: 20px;
-            color: #666;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Oktoberfest 2024, Paulaner Festzelt</h1>
+        <h1>Oktoberfest 2024</h1>
+        <div class="logo-container">
+            <img src="./logo.png" alt="Paulaner Festzelt Logo" class="logo">
+        </div>
         <div class="button-container">
             <a href="kuechenrechner.html" class="button">Küchenrechner</a>
             <a href="rechnung.html" class="button">Rechnung</a>
             <a href="abrechnung.html" class="button">Abrechnung</a>
         </div>
     </div>
-	<footer>
-            <p>Erstellt von Josef Dräxl</p>
+    <footer>
+        <p>Erstellt von Josef Dräxl</p>
     </footer>
 </body>
 </html>
