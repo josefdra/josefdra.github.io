@@ -419,31 +419,33 @@
             const returnFood = Math.max(0, usedVouchers115 - usedFoodVouchers);
 
             // Berechnung für andere Artikel
-            const usedOtherVouchers = Math.floor(otherTotal / 18);
-            const otherVoucherValue = usedOtherVouchers * 18;
-            const usedBierzeichenCount = Math.floor((otherTotal - otherVoucherValue) / 13.74);
+            const usedBierzeichenCount = Math.floor(otherTotal / 13.74);
             const bierzeichenValue = usedBierzeichenCount * 13.74;
-            const otherRemainder = otherTotal - otherVoucherValue - bierzeichenValue;
+            const remainingAfterBierzeichen = otherTotal - bierzeichenValue;
+            
+            const usedOtherVouchers = Math.floor(remainingAfterBierzeichen / 18);
+            const otherVoucherValue = usedOtherVouchers * 18;
+            
+            const otherRemainder = remainingAfterBierzeichen - otherVoucherValue;
+            
+            const returnBierzeichen = Math.max(0, usedBierzeichen - usedBierzeichenCount);
             const returnOther = Math.max(0, usedVouchers18 - usedOtherVouchers);
 
             // Gesamtbetrag zu zahlen
             const totalToPay = foodRemainder + otherRemainder;
-
-            // Rückgeld in bar (falls Überstand bei den Gutscheinen)
-            const returnCash = Math.max(0, (usedVouchers18 * 18 + usedBierzeichen * 13.74) - (otherVoucherValue + bierzeichenValue));
 
             document.getElementById('total').innerHTML = `
                 <div class="summary-item"><span>Gesamtumsatz Essen:</span> <span>${foodTotal.toFixed(2)} €</span></div>
                 <div class="summary-item"><span>Abzüglich Essenszeichen:</span> <span>${foodVoucherValue.toFixed(2)} €</span></div>
                 <div class="summary-item"><span>Zu zahlen für Essen:</span> <span>${foodRemainder.toFixed(2)} €</span></div>
                 <div class="summary-item"><span>Gesamtumsatz Sonstiges:</span> <span>${otherTotal.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Abzüglich Wertmarken:</span> <span>${otherVoucherValue.toFixed(2)} €</span></div>
                 <div class="summary-item"><span>Abzüglich Bierzeichen:</span> <span>${bierzeichenValue.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Abzüglich Wertmarken:</span> <span>${otherVoucherValue.toFixed(2)} €</span></div>
                 <div class="summary-item"><span>Zu zahlen für Sonstiges:</span> <span>${otherRemainder.toFixed(2)} €</span></div>
                 <div class="summary-item"><span>Gesamtbetrag zu zahlen:</span> <span>${totalToPay.toFixed(2)} €</span></div>
                 <div class="summary-item"><span>Zurückzugebende Essenszeichen:</span> <span>${returnFood}</span></div>
+                <div class="summary-item"><span>Zurückzugebende Bierzeichen:</span> <span>${returnBierzeichen}</span></div>
                 <div class="summary-item"><span>Zurückzugebende Wertmarken:</span> <span>${returnOther}</span></div>
-                <div class="summary-item"><span>Rückgeld in bar:</span> <span>${returnCash.toFixed(2)} €</span></div>
             `;
         }
 
