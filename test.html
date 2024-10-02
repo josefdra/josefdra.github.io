@@ -9,7 +9,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 10px;
-            background: #1e1e1e;
+            background: #f0f0f0;
             color: #333;
             overflow-x: hidden;
         }
@@ -21,14 +21,13 @@
             text-align: center;
             color: #888;
             padding: 20px 0;
-            background: #1e1e1e;
             margin-top: 20px;
         }
         .main-container {
-            padding-top: 8px;
+            padding-top: 50px;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 0 10px;
             box-sizing: border-box;
@@ -42,7 +41,7 @@
         }
         .menu-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 10px;
         }
         .menu-item {
@@ -52,6 +51,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            font-size: 0.9em;
         }
         .menu-item-name {
             font-weight: bold;
@@ -67,9 +67,9 @@
             margin-top: 10px;
         }
         .item-quantity button {
-            width: 30px;
-            height: 30px;
-            font-size: 18px;
+            width: 25px;
+            height: 25px;
+            font-size: 16px;
             border: none;
             background: #0066b3;
             color: white;
@@ -88,10 +88,10 @@
             transform: scale(0.95);
         }
         .item-quantity input {
-            width: 40px;
-            height: 30px;
+            width: 30px;
+            height: 25px;
             text-align: center;
-            font-size: 16px;
+            font-size: 14px;
             border: 1px solid #0066b3;
             margin: 0 5px;
             border-radius: 5px;
@@ -102,12 +102,7 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             padding: 15px;
             margin-top: 20px;
-            font-size: 1.2em;
-        }
-        @media (max-width: 480px) {
-            .menu-grid {
-                grid-template-columns: 1fr;
-            }
+            font-size: 1em;
         }
         #reset-button {
             position: fixed;
@@ -164,6 +159,7 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
+            font-size: 0.9em;
         }
         .payment-button.active {
             background-color: #0066b3;
@@ -216,24 +212,35 @@
         .action-button:hover {
             background-color: #004080;
         }
-        .voucher-summary {
+        .summary {
             background: #e6f2ff;
             border-radius: 8px;
             padding: 15px;
             margin-top: 20px;
         }
-        .voucher-summary h3 {
+        .summary h3 {
             margin-top: 0;
         }
-        .voucher-details {
+        .summary-item {
             display: flex;
             justify-content: space-between;
             margin-bottom: 10px;
         }
+        #back-button {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: #0066b3;
+            color: white;
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
-    <a href="index.html" style="position: fixed; top: 10px; left: 10px; background: #0066b3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px;">Zurück</a>
+    <a href="index.html" id="back-button">Zurück</a>
     <div class="container main-container">
         <h1>Rechnung</h1>
         <input type="text" id="name-input" placeholder="Name">
@@ -241,10 +248,9 @@
     <div class="container">
         <div id="menu"></div>
         
-        <div id="total"></div>
-
-        <div class="voucher-summary">
-            <h3>Gutschein-Zusammenfassung</h3>
+        <div class="summary">
+            <h3>Zusammenfassung</h3>
+            <div id="total"></div>
             <div id="voucher-details"></div>
         </div>
 
@@ -453,14 +459,6 @@
                     </div>
                 </div>
             `).join('');
-            
-            // Füge die Gesamt-Kategorie hinzu
-            document.getElementById('menu').innerHTML += `
-                <div class="gesamt-category">
-                    <h3>Gesamt</h3>
-                    <div id="gesamt-list"></div>
-                </div>
-            `;
         }
         
         function changeQuantity(itemName, change) {
@@ -474,7 +472,6 @@
             let total = 0;
             let gutscheinTotal = 0;
             let menuTotal = 0;
-            let gesamtList = [];
             let usedVouchers115 = 0;
             let usedVouchers18 = 0;
             let usedBierzeichenTotal = 0;
@@ -487,7 +484,6 @@
                     const quantity = parseInt(input.value || '0');
                     if (quantity > 0) {
                         const itemTotal = item.price * quantity;
-                        gesamtList.push({name: item.name, quantity: quantity, total: itemTotal});
                         
                         if (category.category === "Gutscheine") {
                             gutscheinTotal += itemTotal;
@@ -517,21 +513,13 @@
             const restbetrag = gesamtumsatz - gutscheinTotal;
         
             document.getElementById('total').innerHTML = `
-                <p>Gesamtumsatz: ${gesamtumsatz.toFixed(2)} €</p>
-                <p>Davon Essen: ${foodTotal.toFixed(2)} €</p>
-                <p>Davon Sonstiges: ${otherTotal.toFixed(2)} €</p>
-                <p>Gutscheine: ${gutscheinTotal.toFixed(2)} €</p>
-                <p>Restbetrag: ${restbetrag.toFixed(2)} €</p>
-                <p>Davon Menü-Umsatz: ${menuTotal.toFixed(2)} €</p>
+                <div class="summary-item"><span>Gesamtumsatz:</span> <span>${gesamtumsatz.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Davon Essen:</span> <span>${foodTotal.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Davon Sonstiges:</span> <span>${otherTotal.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Gutscheine:</span> <span>${gutscheinTotal.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Restbetrag:</span> <span>${restbetrag.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Davon Menü-Umsatz:</span> <span>${menuTotal.toFixed(2)} €</span></div>
             `;
-        
-            // Aktualisiere die Gesamt-Liste
-            document.getElementById('gesamt-list').innerHTML = gesamtList.map(item => `
-                <div class="gesamt-item">
-                    <span>${item.quantity}x ${item.name}</span>
-                    <span>${item.total.toFixed(2)} €</span>
-                </div>
-            `).join('');
 
             // Aktualisiere die Maximalwerte für Gutscheine, wenn sie nicht manuell gesetzt wurden
             if (!manualMax115) {
@@ -560,38 +548,14 @@
             let returnWertmarken = Math.max(0, usedVouchers18 - usedWertmarken);
             
             voucherDetails.innerHTML = `
-                <div class="voucher-details">
-                    <span>Eingesetzte 11,5€ Essensmarken:</span>
-                    <span>${usedVouchers115}</span>
-                </div>
-                <div class="voucher-details">
-                    <span>Verrechenbare 11,5€ Essensmarken:</span>
-                    <span>${foodVouchers}</span>
-                </div>
-                <div class="voucher-details">
-                    <span>Zurückzugebende 11,5€ Essensmarken:</span>
-                    <span>${returnFood}</span>
-                </div>
-                <div class="voucher-details">
-                    <span>Eingesetzte 18€ Gutscheine:</span>
-                    <span>${usedVouchers18}</span>
-                </div>
-                <div class="voucher-details">
-                    <span>Verrechenbare 18€ Gutscheine:</span>
-                    <span>${usedWertmarken}</span>
-                </div>
-                <div class="voucher-details">
-                    <span>Zurückzugebende 18€ Gutscheine:</span>
-                    <span>${returnWertmarken}</span>
-                </div>
-                <div class="voucher-details">
-                    <span>Verrechenbare Bierzeichen:</span>
-                    <span>${usedBierzeichen}</span>
-                </div>
-                <div class="voucher-details">
-                    <span>Restbetrag zu zahlen:</span>
-                    <span>${remainingTotal.toFixed(2)} €</span>
-                </div>
+                <div class="summary-item"><span>Eingesetzte 11,5€ Essensmarken:</span> <span>${usedVouchers115}</span></div>
+                <div class="summary-item"><span>Verrechenbare 11,5€ Essensmarken:</span> <span>${foodVouchers}</span></div>
+                <div class="summary-item"><span>Zurückzugebende 11,5€ Essensmarken:</span> <span>${returnFood}</span></div>
+                <div class="summary-item"><span>Eingesetzte 18€ Gutscheine:</span> <span>${usedVouchers18}</span></div>
+                <div class="summary-item"><span>Verrechenbare 18€ Gutscheine:</span> <span>${usedWertmarken}</span></div>
+                <div class="summary-item"><span>Zurückzugebende 18€ Gutscheine:</span> <span>${returnWertmarken}</span></div>
+                <div class="summary-item"><span>Verrechenbare Bierzeichen:</span> <span>${usedBierzeichen}</span></div>
+                <div class="summary-item"><span>Restbetrag zu zahlen:</span> <span>${remainingTotal.toFixed(2)} €</span></div>
             `;
         }
 
@@ -653,9 +617,9 @@
             }
 
             changeDetails.innerHTML = `
-                <p>${vouchers115} x 11,50 € Gutscheine</p>
-                <p>${vouchers18} x 18,00 € Gutscheine</p>
-                <p>Restbetrag in bar: ${remainingCash.toFixed(2)} €</p>
+                <div class="summary-item"><span>11,50 € Gutscheine:</span> <span>${vouchers115}</span></div>
+                <div class="summary-item"><span>18,00 € Gutscheine:</span> <span>${vouchers18}</span></div>
+                <div class="summary-item"><span>Restbetrag in bar:</span> <span>${remainingCash.toFixed(2)} €</span></div>
             `;
         }
 
