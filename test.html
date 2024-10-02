@@ -27,10 +27,8 @@
             padding-top: 8px;
         }
         .container {
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
-            padding: 0 10px;
-            box-sizing: border-box;
         }
         .menu-category {
             background: white;
@@ -137,17 +135,6 @@
             justify-content: space-between;
             margin-bottom: 10px;
         }
-        #back-button {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            background: #0066b3;
-            color: white;
-            padding: 5px 10px;
-            text-decoration: none;
-            border-radius: 5px;
-            z-index: 1000;
-        }
         #name-input {
             width: 100%;
             padding: 10px;
@@ -179,7 +166,7 @@
     </style>
 </head>
 <body>
-    <a href="index.html" id="back-button">Zurück</a>
+    <a href="index.html" style="position: fixed; top: 10px; left: 10px; background: #0066b3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px;">Zurück</a>
     <div class="container main-container">
         <h1>Rechnung</h1>
         <input type="text" id="name-input" placeholder="Name">
@@ -381,67 +368,85 @@
         }
         
         function updateTotal() {
-            let foodTotal = 0;
-            let otherTotal = 0;
-            let usedVouchers115 = 0;
-            let usedVouchers18 = 0;
-            let usedBierzeichen = 0;
-            
-            menu.forEach(category => {
-                category.items.forEach(item => {
-                    const input = document.getElementById(item.name.replace(/\s+/g, '-'));
-                    if (input) {
-                        const quantity = parseInt(input.value || '0');
-                        if (quantity > 0) {
-                            const itemTotal = item.price * quantity;
-                            if (category.category === "Gutscheine") {
-                                if (item.name === "Essenszeichen") {
-                                    usedVouchers115 += quantity;
-                                } else if (item.name === "Wertmarken") {
-                                    usedVouchers18 += quantity;
-                                } else if (item.name === "Bierzeichen") {
-                                    usedBierzeichen += quantity;
-                                }
-                            } else if (item.type === "food") {
-                                foodTotal += itemTotal;
-                            } else {
-                                otherTotal += itemTotal;
-                            }
-                        }
-                    }
-                });
-            });
+			let foodTotal = 0;
+			let otherTotal = 0;
+			let menuTotal = 0;
+			let usedVouchers115 = 0;
+			let usedVouchers18 = 0;
+			let usedBierzeichen = 0;
+			
+			menu.forEach(category => {
+				category.items.forEach(item => {
+					const input = document.getElementById(item.name.replace(/\s+/g, '-'));
+					if (input) {
+						const quantity = parseInt(input.value || '0');
+						if (quantity > 0) {
+							const itemTotal = item.price * quantity;
+							if (category.category === "Gutscheine") {
+								if (item.name === "Essenszeichen") {
+									usedVouchers115 += quantity;
+								} else if (item.name === "Wertmarken") {
+									usedVouchers18 += quantity;
+								} else if (item.name === "Bierzeichen") {
+									usedBierzeichen += quantity;
+								}
+							} else if (category.category === "Menü") {
+								menuTotal += itemTotal;
+							} else if (item.type === "food") {
+								foodTotal += itemTotal;
+							} else {
+								otherTotal += itemTotal;
+							}
+						}
+					}
+				});
+			});
 
-            // Berechnung für Essen
-            const usedFoodVouchers = Math.min(Math.floor(foodTotal / 11.5), usedVouchers115);
-            const foodVoucherValue = usedFoodVouchers * 11.5;
-            const foodRemainder = foodTotal - foodVoucherValue;
-            const returnFood = usedVouchers115 - usedFoodVouchers;
+			const totalRevenue = foodTotal + otherTotal + menuTotal;
 
-            // Berechnung für andere Artikel
-            const usedBierzeichenCount = Math.min(Math.floor(otherTotal / 13.74), usedBierzeichen);
-            const bierzeichenValue = usedBierzeichenCount * 13.74;
-            const remainingAfterBierzeichen = otherTotal - bierzeichenValue;
-            
-            const usedOtherVouchers = Math.min(Math.floor(remainingAfterBierzeichen / 18), usedVouchers18);
-            const otherVoucherValue = usedOtherVouchers * 18;
-            
-            const otherRemainder = remainingAfterBierzeichen - otherVoucherValue;
-            
-            const returnBierzeichen = usedBierzeichen - usedBierzeichenCount;
-            const returnOther = usedVouchers18 - usedOtherVouchers;
+			// Berechnung für Essen (ohne Menü)
+			const usedFoodVouchers = Math.min(Math.floor(foodTotal / 11.5), usedVouchers115);
+			const foodVoucherValue = usedFoodVouchers * 11.5;
+			let foodRemainder = foodTotal - foodVoucherValue;
 
-            // Gesamtbetrag zu zahlen
-            const totalToPay = foodRemainder + otherRemainder;
+			// Berechnung für andere Artikel
+			const usedBierzeichenCount = Math.min(Math.floor(otherTotal / 13.74), usedBierzeichen);
+			const bierzeichenValue = usedBierzeichenCount * 13.74;
+			let remainingAfterBierzeichen = otherTotal - bierzeichenValue;
+			
+			let usedOtherVouchers = Math.min(Math.floor(remainingAfterBierzeichen / 18), usedVouchers18);
+			let otherVoucherValue = usedOtherVouchers * 18;
+			
+			let otherRemainder = remainingAfterBierzeichen - otherVoucherValue;
+			
+			// Gesamtbetrag zu zahlen
+			let totalToPay = foodRemainder + otherRemainder;
 
-            document.getElementById('total').innerHTML = `
-                <div class="summary-item"><span>Gesamtumsatz Essen:</span> <span>${foodTotal.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Abzüglich Essenszeichen:</span> <span>${foodVoucherValue.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Zu zahlen für Essen:</span> <span>${foodRemainder.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Gesamtumsatz Sonstiges:</span> <span>${otherTotal.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Abzüglich Bierzeichen:</span> <span>${bierzeichenValue.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Abzüglich Wertmarken:</span> <span>${otherVoucherValue.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Zu zahlen für Sonstiges:</span> <span>${otherRemainder.toFixed(2)} €</span></div>
+			// Zusätzliche Wertmarke verrechnen, wenn der Gesamtbetrag über 18€ liegt
+			if (totalToPay > 18 && usedOtherVouchers < usedVouchers18) {
+				usedOtherVouchers++;
+				otherVoucherValue += 18;
+				if (otherRemainder >= 18) {
+					otherRemainder -= 18;
+				} else {
+					const remainingDeduction = 18 - otherRemainder;
+					otherRemainder = 0;
+					foodRemainder -= remainingDeduction;
+				}
+				totalToPay -= 18;
+			}
+
+			const returnFood = usedVouchers115 - usedFoodVouchers;
+			const returnBierzeichen = usedBierzeichen - usedBierzeichenCount;
+			const returnOther = usedVouchers18 - usedOtherVouchers;
+
+			document.getElementById('total').innerHTML = `
+                <div class="summary-item"><span>Gesamtumsatz:</span> <span>${totalRevenue.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Gesamtumsatz Essen (ohne Menü):</span> <span>${foodTotal.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Gesamtumsatz Getränke:</span> <span>${otherTotal.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Davon Menü bezahlt:</span> <span>${menuTotal.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Restsumme Essen:</span> <span>${foodRemainder.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Restsumme Getränke:</span> <span>${otherRemainder.toFixed(2)} €</span></div>
                 <div class="summary-item"><span>Gesamtbetrag zu zahlen:</span> <span>${totalToPay.toFixed(2)} €</span></div>
                 <div class="summary-item"><span>Zurückzugebende Essenszeichen:</span> <span>${returnFood}</span></div>
                 <div class="summary-item"><span>Zurückzugebende Bierzeichen:</span> <span>${returnBierzeichen}</span></div>
@@ -479,12 +484,19 @@
 
             const blob = new Blob([billContent], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Rechnung_${name}_${date.replace(/\./g, '-')}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            
+            // Neue Methode für den Download
+            if (navigator.msSaveBlob) {
+                // Für IE
+                navigator.msSaveBlob(blob, `Rechnung_${name}_${date.replace(/\./g, '-')}.txt`);
+            } else {
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Rechnung_${name}_${date.replace(/\./g, '-')}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
             URL.revokeObjectURL(url);
         }
 
