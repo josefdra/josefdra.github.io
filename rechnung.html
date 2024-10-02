@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Rechnung</title>
     <style>
         body {
@@ -39,7 +39,7 @@
         }
         .menu-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 10px;
         }
         .menu-item {
@@ -49,6 +49,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            font-size: 0.9em;
         }
         .menu-item-name {
             font-weight: bold;
@@ -64,9 +65,9 @@
             margin-top: 10px;
         }
         .item-quantity button {
-            width: 30px;
-            height: 30px;
-            font-size: 18px;
+            width: 25px;
+            height: 25px;
+            font-size: 16px;
             border: none;
             background: #0066b3;
             color: white;
@@ -85,10 +86,10 @@
             transform: scale(0.95);
         }
         .item-quantity input {
-            width: 40px;
-            height: 30px;
+            width: 30px;
+            height: 25px;
             text-align: center;
-            font-size: 16px;
+            font-size: 14px;
             border: 1px solid #0066b3;
             margin: 0 5px;
             border-radius: 5px;
@@ -99,12 +100,7 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             padding: 15px;
             margin-top: 20px;
-            font-size: 1.2em;
-        }
-        @media (max-width: 480px) {
-            .menu-grid {
-                grid-template-columns: 1fr;
-            }
+            font-size: 1em;
         }
         #reset-button {
             position: fixed;
@@ -125,97 +121,67 @@
         #reset-button span {
             margin-right: 5px;
         }
-        .gesamt-category {
-            background: #f0f8ff;
+        .summary {
+            background: #e6f2ff;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             padding: 15px;
             margin-top: 20px;
         }
-        .gesamt-item {
+        .summary h3 {
+            margin-top: 0;
+        }
+        .summary-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
-        .change-category {
-            background: #f0f8ff;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            padding: 15px;
-            margin-top: 20px;
-        }
-        .change-details {
-            margin-top: 10px;
-        }
-        .payment-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-        }
-        .payment-button {
-            flex: 1;
-            margin: 0 5px;
+        #name-input {
+            width: 100%;
             padding: 10px;
-            background-color: #e6f2ff;
+            margin-bottom: 20px;
             border: 1px solid #0066b3;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            background-color: #f0f8ff;
         }
-        .payment-button.active {
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .action-button {
+            padding: 10px 20px;
             background-color: #0066b3;
             color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
         }
-        .max-vouchers-input {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .max-vouchers-input label {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .max-vouchers-input input {
-            width: 60%;
-            padding: 8px;
-            border: 1px solid #0066b3;
-            border-radius: 4px;
-            text-align: center;
-            font-size: 14px;
+        .action-button:hover {
+            background-color: #004080;
         }
     </style>
 </head>
 <body>
     <a href="index.html" style="position: fixed; top: 10px; left: 10px; background: #0066b3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px;">Zurück</a>
     <div class="container main-container">
+        <h1>Rechnung</h1>
+        <input type="text" id="name-input" placeholder="Name">
     </div>
     <div class="container">
-        <h1>Rechnung</h1>
-        
         <div id="menu"></div>
         
-        <div id="total"></div>
+        <div class="summary">
+            <h3>Zusammenfassung</h3>
+            <div id="total"></div>
+        </div>
 
-        <div class="change-category">
-            <h3>Rückgeld</h3>
-            <div class="change-details" id="change-details"></div>
-            <div class="payment-buttons">
-                <button id="mixed" class="payment-button active" onclick="setChangeMode('mixed')">Gemischt</button>
-                <button id="only115" class="payment-button" onclick="setChangeMode('only115')">Nur 11,5€</button>
-                <button id="only18" class="payment-button" onclick="setChangeMode('only18')">Nur 18€</button>
-            </div>
-            <div class="max-vouchers-input">
-                <label>
-                    Max. 11,5€ Gutscheine:
-                    <input type="number" id="max115" min="0" value="0" onchange="handleMaxVoucherChange('max115')">
-                </label>
-                <label>
-                    Max. 18€ Gutscheine:
-                    <input type="number" id="max18" min="0" value="0" onchange="handleMaxVoucherChange('max18')">
-                </label>
-            </div>
+        <div class="action-buttons">
+            <button id="download-button" class="action-button" onclick="downloadBill()">Rechnung herunterladen</button>
+            <button id="load-button" class="action-button" onclick="loadBill()">Rechnung laden</button>
         </div>
     </div>
     <footer>
@@ -232,132 +198,125 @@
             {
                 category: "Gutscheine",
                 items: [
-                    {name: "Essenszeichen", price: 11.5},
-                    {name: "Wertmarken", price: 18},
-                    {name: "Bierzeichen", price: 13.74}
+                    {name: "Essenszeichen", price: 11.5, type: "food"},
+                    {name: "Wertmarken", price: 18, type: "other"},
+                    {name: "Bierzeichen", price: 13.74, type: "other"}
                 ]
             },
             {
                 category: "Getränke",
                 items: [
-                    {name: "Bier", price: 15.10},
-                    {name: "Wasser 0,5l", price: 5.95},
-                    {name: "Spezi 0,5l", price: 6.50},
-                    {name: "Apfelschorle 0,5l", price: 6.15},
-                    {name: "Wasser 0,75l", price: 11.20},
-                    {name: "Weinschorle 0,5l weiß", price: 16.00},
-                    {name: "Weißwein 0,5l", price: 27.50},
-                    {name: "Willi 4cl", price: 11.00},
-                    {name: "Jägermeister 2cl", price: 7.50},
-                    {name: "Feigling 2cl", price: 6.00}
+                    {name: "Bier", price: 15.10, type: "other"},
+                    {name: "Wasser 0,5l", price: 5.95, type: "other"},
+                    {name: "Spezi 0,5l", price: 6.50, type: "other"},
+                    {name: "Apfelschorle 0,5l", price: 6.15, type: "other"},
+                    {name: "Wasser 0,75l", price: 11.20, type: "other"},
+                    {name: "Weinschorle 0,5l weiß", price: 16.00, type: "other"},
+                    {name: "Weißwein 0,5l", price: 27.50, type: "other"},
+                    {name: "Willi 4cl", price: 11.00, type: "other"},
+                    {name: "Jägermeister 2cl", price: 7.50, type: "other"},
+                    {name: "Feigling 2cl", price: 6.00, type: "other"}
                 ]
             },
             {
                 category: "Brotzeiten",
                 items: [
-                    {name: "Bayerisches Carpaccio", price: 19.80},
-                    {name: "Obatzda / Wurstsalat", price: 16.80},
-                    {name: "Schweizer Wurstsalat", price: 18.00},
-                    {name: "Geflügelsalat", price: 17.80},
-                    {name: "Wiesnbrezn", price: 7.40},
-                    {name: "Kleine Breze", price: 4.90},
-                    {name: "Speckstange", price: 4.90}
+                    {name: "Bayerisches Carpaccio", price: 19.80, type: "food"},
+                    {name: "Obatzda / Wurstsalat", price: 16.80, type: "food"},
+                    {name: "Schweizer Wurstsalat", price: 18.00, type: "food"},
+                    {name: "Geflügelsalat", price: 17.80, type: "food"},
+                    {name: "Wiesnbrezn", price: 7.40, type: "food"},
+                    {name: "Kleine Breze", price: 4.90, type: "food"},
+                    {name: "Speckstange", price: 4.90, type: "food"}
                 ]
             },
             {
                 category: "Suppen",
                 items: [
-                    {name: "Pfannenkuchensuppe", price: 8.80},
-                    {name: "Tomaten-Orangen-Creme-Suppe", price: 10.80},
-                    {name: "Leberknödelsuppe", price: 10.80}
+                    {name: "Pfannenkuchensuppe", price: 8.80, type: "food"},
+                    {name: "Tomaten-Orangen-Creme-Suppe", price: 10.80, type: "food"},
+                    {name: "Leberknödelsuppe", price: 10.80, type: "food"}
                 ]
             },
             {
                 category: "Würstlküche",
                 items: [
-                    {name: "Würstl-Mix / Leberk.-Salat", price: 17.80},
-                    {name: "Weißwurst", price: 10.80},
-                    {name: "Nürnberger-Rostbratwürstl", price: 18.80}
+                    {name: "Würstl-Mix / Leberk.-Salat", price: 17.80, type: "food"},
+                    {name: "Weißwurst", price: 10.80, type: "food"},
+                    {name: "Nürnberger-Rostbratwürstl", price: 18.80, type: "food"}
                 ]
             },
             {
                 category: "Unsere Zeltklassiker",
                 items: [
-                    {name: "Hirschbraten", price: 30.80},
-                    {name: "Backhendl / Rindsgulasch", price: 25.80},
-                    {name: "Bio-Hendl", price: 23.00},
-                    {name: "Schweinhaxe 1/2", price: 26.80},
-                    {name: "1/4 Ente", price: 29.80},
-                    {name: "1/2 Ente", price: 39.80},
-                    {name: "Schweinebraten", price: 24.80},
-                    {name: "Ochsenbraten", price: 29.80},
-                    {name: "Kalbshaxn", price: 29.80}
+                    {name: "Hirschbraten", price: 30.80, type: "food"},
+                    {name: "Backhendl / Rindsgulasch", price: 25.80, type: "food"},
+                    {name: "Bio-Hendl", price: 23.00, type: "food"},
+                    {name: "Schweinhaxe 1/2", price: 26.80, type: "food"},
+                    {name: "1/4 Ente", price: 29.80, type: "food"},
+                    {name: "1/2 Ente", price: 39.80, type: "food"},
+                    {name: "Schweinebraten", price: 24.80, type: "food"},
+                    {name: "Ochsenbraten", price: 29.80, type: "food"},
+                    {name: "Kalbshaxn", price: 29.80, type: "food"}
                 ]
             },
             {
                 category: "Vegetarisch",
                 items: [
-                    {name: "Nudeltascherl", price: 19.80},
-                    {name: "Currywurst (vegan) / Käsespätzle", price: 18.80},
-                    {name: "Rahmschwammerl", price: 21.80}
+                    {name: "Nudeltascherl", price: 19.80, type: "food"},
+                    {name: "Currywurst (vegan) / Käsespätzle", price: 18.80, type: "food"},
+                    {name: "Rahmschwammerl", price: 21.80, type: "food"}
                 ]
             },
             {
                 category: "Beilagen",
                 items: [
-                    {name: "Kartoffel / Krautsalat/ Bayr. Kraut", price: 6.50},
-                    {name: "Blaukraut/ Sauerkraut", price: 6.50},
-                    {name: "Knödel m. Soße Semmel/Kartoffel", price: 6.50}
+                    {name: "Kartoffel / Krautsalat/ Bayr. Kraut", price: 6.50, type: "food"},
+                    {name: "Blaukraut/ Sauerkraut", price: 6.50, type: "food"},
+                    {name: "Knödel m. Soße Semmel/Kartoffel", price: 6.50, type: "food"}
                 ]
             },
             {
                 category: "Süßes",
                 items: [
-                    {name: "Kaiserschmarrn", price: 19.80},
-                    {name: "Dampfnudel/ Apfelstrudel /Mouse", price: 14.00},
-                    {name: "Kaffee", price: 9.90}
+                    {name: "Kaiserschmarrn", price: 19.80, type: "food"},
+                    {name: "Dampfnudel/ Apfelstrudel /Mouse", price: 14.00, type: "food"},
+                    {name: "Kaffee", price: 9.90, type: "other"}
                 ]
             },
             {
                 category: "Für die Kleinen",
                 items: [
-                    {name: "Käsespätzle", price: 15.00},
-                    {name: "Backhendl", price: 18.00}
+                    {name: "Käsespätzle", price: 15.00, type: "food"},
+                    {name: "Backhendl", price: 18.00, type: "food"}
                 ]
             },
             {
                 category: "Mittagsgericht",
                 items: [
-                    {name: "Wiener-Schnitzel", price: 29.80},
-                    {name: "Burschen-Reindl", price: 36.80},
-                    {name: "Spinatknödel", price: 22.80}
+                    {name: "Wiener-Schnitzel", price: 29.80, type: "food"},
+                    {name: "Burschen-Reindl", price: 36.80, type: "food"},
+                    {name: "Spinatknödel", price: 22.80, type: "food"}
                 ]
             },
             {
                 category: "Menü",
                 items: [
-                    {name: "Enten-Menü", price: PREIS_ENTEN_MENU},
-                    {name: "Braumeister-Menü", price: PREIS_BRAUMEISTER_MENU},
-                    {name: "Veggie-Menü", price: PREIS_VEGGIE_MENU}
+                    {name: "Enten-Menü", price: PREIS_ENTEN_MENU, type: "food"},
+                    {name: "Braumeister-Menü", price: PREIS_BRAUMEISTER_MENU, type: "food"},
+                    {name: "Veggie-Menü", price: PREIS_VEGGIE_MENU, type: "food"}
                 ]
             }
         ];
         
-        let changeMode = 'mixed';
-        let manualMax115 = false;
-        let manualMax18 = false;
-
         function resetAll() {
             menu.forEach(category => {
                 category.items.forEach(item => {
                     const input = document.getElementById(item.name.replace(/\s+/g, '-'));
-                    input.value = 0;
+                    if (input) input.value = 0;
                 });
             });
-            manualMax115 = false;
-            manualMax18 = false;
-            document.getElementById('max115').value = 0;
-            document.getElementById('max18').value = 0;
+            document.getElementById('name-input').value = '';
             updateTotal();
         }
 
@@ -397,150 +356,197 @@
                     </div>
                 </div>
             `).join('');
-            
-            // Füge die Gesamt-Kategorie hinzu
-            document.getElementById('menu').innerHTML += `
-                <div class="gesamt-category">
-                    <h3>Gesamt</h3>
-                    <div id="gesamt-list"></div>
-                </div>
-            `;
         }
         
         function changeQuantity(itemName, change) {
             const input = document.getElementById(itemName.replace(/\s+/g, '-'));
-            const newValue = Math.max(0, parseInt(input.value || '0') + change);
-            input.value = newValue;
-            updateTotal();
+            if (input) {
+                const newValue = Math.max(0, parseInt(input.value || '0') + change);
+                input.value = newValue;
+                updateTotal();
+            }
         }
         
         function updateTotal() {
-            let total = 0;
-            let gutscheinTotal = 0;
-            let menuTotal = 0;
-            let gesamtList = [];
-            let usedVouchers115 = 0;
-            let usedVouchers18 = 0;
-            
+			let foodTotal = 0;
+			let otherTotal = 0;
+			let menuTotal = 0;
+			let usedVouchers115 = 0;
+			let usedVouchers18 = 0;
+			let usedBierzeichen = 0;
+			
+			menu.forEach(category => {
+				category.items.forEach(item => {
+					const input = document.getElementById(item.name.replace(/\s+/g, '-'));
+					if (input) {
+						const quantity = parseInt(input.value || '0');
+						if (quantity > 0) {
+							const itemTotal = item.price * quantity;
+							if (category.category === "Gutscheine") {
+								if (item.name === "Essenszeichen") {
+									usedVouchers115 += quantity;
+								} else if (item.name === "Wertmarken") {
+									usedVouchers18 += quantity;
+								} else if (item.name === "Bierzeichen") {
+									usedBierzeichen += quantity;
+								}
+							} else if (category.category === "Menü") {
+								menuTotal += itemTotal;
+							} else if (item.type === "food") {
+								foodTotal += itemTotal;
+							} else {
+								otherTotal += itemTotal;
+							}
+						}
+					}
+				});
+			});
+
+			const totalRevenue = foodTotal + otherTotal + menuTotal;
+
+			// Berechnung für Essen (ohne Menü)
+			const usedFoodVouchers = Math.min(Math.floor(foodTotal / 11.5), usedVouchers115);
+			const foodVoucherValue = usedFoodVouchers * 11.5;
+			let foodRemainder = foodTotal - foodVoucherValue;
+
+			// Berechnung für andere Artikel
+			const usedBierzeichenCount = Math.min(Math.floor(otherTotal / 13.74), usedBierzeichen);
+			const bierzeichenValue = usedBierzeichenCount * 13.74;
+			let remainingAfterBierzeichen = otherTotal - bierzeichenValue;
+			
+			let usedOtherVouchers = Math.min(Math.floor(remainingAfterBierzeichen / 18), usedVouchers18);
+			let otherVoucherValue = usedOtherVouchers * 18;
+			
+			let otherRemainder = remainingAfterBierzeichen - otherVoucherValue;
+			
+			// Gesamtbetrag zu zahlen
+			let totalToPay = foodRemainder + otherRemainder;
+
+			// Zusätzliche Wertmarke verrechnen, wenn der Gesamtbetrag über 18€ liegt
+			if (totalToPay > 18 && usedOtherVouchers < usedVouchers18) {
+				usedOtherVouchers++;
+				otherVoucherValue += 18;
+				if (otherRemainder >= 18) {
+					otherRemainder -= 18;
+				} else {
+					const remainingDeduction = 18 - otherRemainder;
+					otherRemainder = 0;
+					foodRemainder -= remainingDeduction;
+				}
+				totalToPay -= 18;
+			}
+
+			const returnFood = usedVouchers115 - usedFoodVouchers;
+			const returnBierzeichen = usedBierzeichen - usedBierzeichenCount;
+			const returnOther = usedVouchers18 - usedOtherVouchers;
+
+			document.getElementById('total').innerHTML = `
+                <div class="summary-item"><span>Gesamtumsatz:</span> <span>${totalRevenue.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Gesamtumsatz Essen (ohne Menü):</span> <span>${foodTotal.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Gesamtumsatz Getränke:</span> <span>${otherTotal.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Davon Menü bezahlt:</span> <span>${menuTotal.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Restsumme Essen:</span> <span>${foodRemainder.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Restsumme Getränke:</span> <span>${otherRemainder.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Gesamtbetrag zu zahlen:</span> <span>${totalToPay.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Zurückzugebende Essenszeichen:</span> <span>${returnFood}</span></div>
+                <div class="summary-item"><span>Zurückzugebende Bierzeichen:</span> <span>${returnBierzeichen}</span></div>
+                <div class="summary-item"><span>Zurückzugebende Wertmarken:</span> <span>${returnOther}</span></div>
+            `;
+        }
+
+        function downloadBill() {
+            let name = document.getElementById('name-input').value.trim();
+            if (name === '') {
+                name = prompt("Bitte geben Sie einen Namen für die Rechnung ein:");
+                if (name === null || name.trim() === '') {
+                    alert('Ein Name ist erforderlich, um die Rechnung zu speichern.');
+                    return;
+                }
+                document.getElementById('name-input').value = name;
+            }
+
+            const date = new Date().toLocaleDateString('de-DE');
+            let billContent = `Rechnung für ${name}\nDatum: ${date}\n\n`;
+
             menu.forEach(category => {
                 category.items.forEach(item => {
                     const input = document.getElementById(item.name.replace(/\s+/g, '-'));
-                    const quantity = parseInt(input.value || '0');
-                    if (quantity > 0) {
-                        const itemTotal = item.price * quantity;
-                        gesamtList.push({name: item.name, quantity: quantity, total: itemTotal});
-                        
-                        if (category.category === "Gutscheine") {
-                            gutscheinTotal += itemTotal;
-                            if (item.price === 11.5) {
-                                usedVouchers115 += quantity;
-                            } else if (item.price === 18) {
-                                usedVouchers18 += quantity;
-                            }
-                        } else if (category.category === "Menü") {
-                            menuTotal += itemTotal;
-                        } else {
-                            total += itemTotal;
+                    if (input) {
+                        const quantity = parseInt(input.value || '0');
+                        if (quantity > 0) {
+                            billContent += `${item.name}: ${quantity} x ${item.price.toFixed(2)} € = ${(quantity * item.price).toFixed(2)} €\n`;
                         }
                     }
                 });
             });
-        
-            const gesamtumsatz = total + menuTotal;
-            const restbetrag = total - gutscheinTotal;
-        
-            document.getElementById('total').innerHTML = `
-                <p>Gesamtumsatz: ${gesamtumsatz.toFixed(2)} €</p>
-                <p>Gutscheine: ${gutscheinTotal.toFixed(2)} €</p>
-                <p>Restbetrag: ${restbetrag.toFixed(2)} €</p>
-                <p>Davon Menü-Umsatz: ${menuTotal.toFixed(2)} €</p>
-            `;
-        
-            // Aktualisiere die Gesamt-Liste
-            document.getElementById('gesamt-list').innerHTML = gesamtList.map(item => `
-                <div class="gesamt-item">
-                    <span>${item.quantity}x ${item.name}</span>
-                    <span>${item.total.toFixed(2)} €</span>
-                </div>
-            `).join('');
 
-            // Aktualisiere die Maximalwerte für Gutscheine, wenn sie nicht manuell gesetzt wurden
-            if (!manualMax115) {
-                document.getElementById('max115').value = usedVouchers115;
-            }
-            if (!manualMax18) {
-                document.getElementById('max18').value = usedVouchers18;
-            }
+            billContent += `\n${document.getElementById('total').innerText}\n`;
 
-            calculateChange(restbetrag);
+            const blob = new Blob([billContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            // Neue Methode für den Download
+            if (navigator.msSaveBlob) {
+                // Für IE
+                navigator.msSaveBlob(blob, `Rechnung_${name}_${date.replace(/\./g, '-')}.txt`);
+            } else {
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Rechnung_${name}_${date.replace(/\./g, '-')}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+            URL.revokeObjectURL(url);
         }
 
-        function setChangeMode(mode) {
-            changeMode = mode;
-            document.querySelectorAll('.payment-button').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(mode).classList.add('active');
-            updateTotal(); // Diese Zeile wurde geändert
+        function loadBill() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.txt';
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    parseBillContent(content);
+                };
+                reader.readAsText(file);
+            };
+            input.click();
         }
 
-        function handleMaxVoucherChange(inputId) {
-            if (inputId === 'max115') {
-                manualMax115 = true;
-            } else if (inputId === 'max18') {
-                manualMax18 = true;
+        function parseBillContent(content) {
+            resetAll();
+            const lines = content.split('\n');
+            const nameLine = lines[0];
+            const name = nameLine.split('für ')[1];
+            document.getElementById('name-input').value = name;
+
+            for (let i = 2; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line === '') continue;
+                if (line.startsWith('Gesamtumsatz') || line.startsWith('Zurückzugebende') || line.startsWith('Rückgeld') || line.startsWith('Zu zahlender')) break;
+
+                const [itemName, rest] = line.split(':');
+                const quantity = parseInt(rest.split('x')[0]);
+                const itemInput = document.getElementById(itemName.trim().replace(/\s+/g, '-'));
+                if (itemInput) {
+                    itemInput.value = quantity;
+                }
             }
+
             updateTotal();
         }
 
-        function calculateChange(amount) {
-            const changeDetails = document.getElementById('change-details');
-            if (amount >= 0) {
-                changeDetails.innerHTML = '<p>Kein Rückgeld erforderlich.</p>';
-                return;
-            }
+        document.getElementById('name-input').addEventListener('input', function() {
+            updateTotal();
+        });
 
-            const changeAmount = Math.abs(amount);
-            let vouchers115 = 0;
-            let vouchers18 = 0;
-            let remainingCash = 0;
-
-            const max115 = parseInt(document.getElementById('max115').value) || 0;
-            const max18 = parseInt(document.getElementById('max18').value) || 0;
-
-            switch (changeMode) {
-                case 'only115':
-                    vouchers115 = Math.min(Math.floor(changeAmount / 11.5), max115);
-                    remainingCash = changeAmount - (vouchers115 * 11.5);
-                    break;
-                case 'only18':
-                    vouchers18 = Math.min(Math.floor(changeAmount / 18), max18);
-                    remainingCash = changeAmount - (vouchers18 * 18);
-                    break;
-                case 'mixed':
-                default:
-                    let bestRemainingCash = changeAmount;
-                    for (let v115 = 0; v115 <= Math.min(Math.floor(changeAmount / 11.5), max115); v115++) {
-                        for (let v18 = 0; v18 <= Math.min(Math.floor((changeAmount - v115 * 11.5) / 18), max18); v18++) {
-                            const currentRemaining = changeAmount - (v115 * 11.5) - (v18 * 18);
-                            if (currentRemaining >= 0 && currentRemaining < bestRemainingCash) {
-                                vouchers115 = v115;
-                                vouchers18 = v18;
-                                bestRemainingCash = currentRemaining;
-                            }
-                        }
-                    }
-                    remainingCash = bestRemainingCash;
-                    break;
-            }
-
-            changeDetails.innerHTML = `
-                <p>${vouchers115} x 11,50 € Gutscheine</p>
-                <p>${vouchers18} x 18,00 € Gutscheine</p>
-                <p>Restbetrag in bar: ${remainingCash.toFixed(2)} €</p>
-            `;
-        }
-
-        renderMenu();
-        updateTotal();
+        document.addEventListener('DOMContentLoaded', function() {
+            renderMenu();
+            updateTotal();
+        });
     </script>
 </body>
 </html>
