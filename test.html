@@ -292,7 +292,110 @@
                     {name: "Bierzeichen", price: 13.74, type: "other"}
                 ]
             },
-            // ... (rest of the menu items remain unchanged)
+            {
+                category: "Getränke",
+                items: [
+                    {name: "Bier", price: 15.10, type: "other"},
+                    {name: "Wasser 0,5l", price: 5.95, type: "other"},
+                    {name: "Spezi 0,5l", price: 6.50, type: "other"},
+                    {name: "Apfelschorle 0,5l", price: 6.15, type: "other"},
+                    {name: "Wasser 0,75l", price: 11.20, type: "other"},
+                    {name: "Weinschorle 0,5l weiß", price: 16.00, type: "other"},
+                    {name: "Weißwein 0,5l", price: 27.50, type: "other"},
+                    {name: "Willi 4cl", price: 11.00, type: "other"},
+                    {name: "Jägermeister 2cl", price: 7.50, type: "other"},
+                    {name: "Feigling 2cl", price: 6.00, type: "other"}
+                ]
+            },
+            {
+                category: "Brotzeiten",
+                items: [
+                    {name: "Bayerisches Carpaccio", price: 19.80, type: "food"},
+                    {name: "Obatzda / Wurstsalat", price: 16.80, type: "food"},
+                    {name: "Schweizer Wurstsalat", price: 18.00, type: "food"},
+                    {name: "Geflügelsalat", price: 17.80, type: "food"},
+                    {name: "Wiesnbrezn", price: 7.40, type: "food"},
+                    {name: "Kleine Breze", price: 4.90, type: "food"},
+                    {name: "Speckstange", price: 4.90, type: "food"}
+                ]
+            },
+            {
+                category: "Suppen",
+                items: [
+                    {name: "Pfannenkuchensuppe", price: 8.80, type: "food"},
+                    {name: "Tomaten-Orangen-Creme-Suppe", price: 10.80, type: "food"},
+                    {name: "Leberknödelsuppe", price: 10.80, type: "food"}
+                ]
+            },
+            {
+                category: "Würstlküche",
+                items: [
+                    {name: "Würstl-Mix / Leberk.-Salat", price: 17.80, type: "food"},
+                    {name: "Weißwurst", price: 10.80, type: "food"},
+                    {name: "Nürnberger-Rostbratwürstl", price: 18.80, type: "food"}
+                ]
+            },
+            {
+                category: "Unsere Zeltklassiker",
+                items: [
+                    {name: "Hirschbraten", price: 30.80, type: "food"},
+                    {name: "Backhendl / Rindsgulasch", price: 25.80, type: "food"},
+                    {name: "Bio-Hendl", price: 23.00, type: "food"},
+                    {name: "Schweinhaxe 1/2", price: 26.80, type: "food"},
+                    {name: "1/4 Ente", price: 29.80, type: "food"},
+                    {name: "1/2 Ente", price: 39.80, type: "food"},
+                    {name: "Schweinebraten", price: 24.80, type: "food"},
+                    {name: "Ochsenbraten", price: 29.80, type: "food"},
+                    {name: "Kalbshaxn", price: 29.80, type: "food"}
+                ]
+            },
+            {
+                category: "Vegetarisch",
+                items: [
+                    {name: "Nudeltascherl", price: 19.80, type: "food"},
+                    {name: "Currywurst (vegan) / Käsespätzle", price: 18.80, type: "food"},
+                    {name: "Rahmschwammerl", price: 21.80, type: "food"}
+                ]
+            },
+            {
+                category: "Beilagen",
+                items: [
+                    {name: "Kartoffel / Krautsalat/ Bayr. Kraut", price: 6.50, type: "food"},
+                    {name: "Blaukraut/ Sauerkraut", price: 6.50, type: "food"},
+                    {name: "Knödel m. Soße Semmel/Kartoffel", price: 6.50, type: "food"}
+                ]
+            },
+            {
+                category: "Süßes",
+                items: [
+                    {name: "Kaiserschmarrn", price: 19.80, type: "food"},
+                    {name: "Dampfnudel/ Apfelstrudel /Mouse", price: 14.00, type: "food"},
+                    {name: "Kaffee", price: 9.90, type: "other"}
+                ]
+            },
+            {
+                category: "Für die Kleinen",
+                items: [
+                    {name: "Käsespätzle", price: 15.00, type: "food"},
+                    {name: "Backhendl", price: 18.00, type: "food"}
+                ]
+            },
+            {
+                category: "Mittagsgericht",
+                items: [
+                    {name: "Wiener-Schnitzel", price: 29.80, type: "food"},
+                    {name: "Burschen-Reindl", price: 36.80, type: "food"},
+                    {name: "Spinatknödel", price: 22.80, type: "food"}
+                ]
+            },
+            {
+                category: "Menü",
+                items: [
+                    {name: "Enten-Menü", price: PREIS_ENTEN_MENU, type: "food"},
+                    {name: "Braumeister-Menü", price: PREIS_BRAUMEISTER_MENU, type: "food"},
+                    {name: "Veggie-Menü", price: PREIS_VEGGIE_MENU, type: "food"}
+                ]
+            }
         ];
         
         let changeMode = 'mixed';
@@ -327,7 +430,37 @@
         }
         
         function renderMenu() {
-            // ... (renderMenu function remains unchanged)
+            document.getElementById('menu').innerHTML = menu.map(category => `
+                <div class="menu-category">
+                    <h3>${category.category}</h3>
+                    <div class="menu-grid">
+                        ${category.items.map(item => `
+                            <div class="menu-item">
+                                <div>
+                                    <div class="menu-item-name">${item.name}</div>
+                                    <div class="menu-item-price">${item.price.toFixed(2)} €</div>
+                                </div>
+                                <div class="item-quantity">
+                                    <button onclick="changeQuantity('${item.name}', -1)">-</button>
+                                    <input type="number" id="${item.name.replace(/\s+/g, '-')}" value="0" min="0" 
+                                        onchange="updateTotal()" 
+                                        onfocus="handleFocus(this)" 
+                                        onblur="handleBlur(this)">
+                                    <button onclick="changeQuantity('${item.name}', 1)">+</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+            
+            // Füge die Gesamt-Kategorie hinzu
+            document.getElementById('menu').innerHTML += `
+                <div class="gesamt-category">
+                    <h3>Gesamt</h3>
+                    <div id="gesamt-list"></div>
+                </div>
+            `;
         }
         
         function changeQuantity(itemName, change) {
@@ -562,7 +695,7 @@
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            URL.revokeObjectURL(URL.revokeObjectURL(url);
         }
 
         function loadBill() {
