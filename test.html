@@ -209,11 +209,11 @@
             <div class="max-vouchers-input">
                 <label>
                     Max. 11,5€ Gutscheine:
-                    <input type="number" id="max115" min="0" value="0" onchange="updateTotal()">
+                    <input type="number" id="max115" min="0" value="0" onchange="handleMaxVoucherChange('max115')">
                 </label>
                 <label>
                     Max. 18€ Gutscheine:
-                    <input type="number" id="max18" min="0" value="0" onchange="updateTotal()">
+                    <input type="number" id="max18" min="0" value="0" onchange="handleMaxVoucherChange('max18')">
                 </label>
             </div>
         </div>
@@ -344,6 +344,8 @@
         ];
         
         let changeMode = 'mixed';
+        let manualMax115 = false;
+        let manualMax18 = false;
 
         function resetAll() {
             menu.forEach(category => {
@@ -352,6 +354,10 @@
                     input.value = 0;
                 });
             });
+            manualMax115 = false;
+            manualMax18 = false;
+            document.getElementById('max115').value = 0;
+            document.getElementById('max18').value = 0;
             updateTotal();
         }
 
@@ -370,7 +376,7 @@
         function renderMenu() {
             document.getElementById('menu').innerHTML = menu.map(category => `
                 <div class="menu-category">
-                    <h3>${category.category}</h3>
+                    <h3>${category.category}</h3></h3>
                     <div class="menu-grid">
                         ${category.items.map(item => `
                             <div class="menu-item">
@@ -458,11 +464,31 @@
                 </div>
             `).join('');
 
-            // Aktualisiere die Maximalwerte für Gutscheine
-            document.getElementById('max115').value = usedVouchers115;
-            document.getElementById('max18').value = usedVouchers18;
+            // Aktualisiere die Maximalwerte für Gutscheine, wenn sie nicht manuell gesetzt wurden
+            if (!manualMax115) {
+                document.getElementById('max115').value = usedVouchers115;
+            }
+            if (!manualMax18) {
+                document.getElementById('max18').value = usedVouchers18;
+            }
 
             calculateChange(restbetrag);
+        }
+
+        function setChangeMode(mode) {
+            changeMode = mode;
+            document.querySelectorAll('.payment-button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(mode).classList.add('active');
+            calculateChange(parseFloat(document.getElementById('total').textContent.match(/-?\d+\.\d+/)[0]));
+        }
+
+        function handleMaxVoucherChange(inputId) {
+            if (inputId === 'max115') {
+                manualMax115 = true;
+            } else if (inputId === 'max18') {
+                manualMax18 = true;
+            }
+            calculateChange(parseFloat(document.getElementById('total').textContent.match(/-?\d+\.\d+/)[0]));
         }
 
         function calculateChange(amount) {
@@ -510,13 +536,6 @@
                 <p>${vouchers18} x 18,00 € Gutscheine</p>
                 <p>Restbetrag in bar: ${remainingCash.toFixed(2)} €</p>
             `;
-        }
-        
-        function setChangeMode(mode) {
-            changeMode = mode;
-            document.querySelectorAll('.payment-button').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(mode).classList.add('active');
-            updateTotal();
         }
 
         renderMenu();
