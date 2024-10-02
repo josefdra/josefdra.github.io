@@ -11,6 +11,7 @@
             padding: 10px;
             background: #1e1e1e;
             color: #333;
+            overflow-x: hidden;
         }
         h1, h2, h3 {
             color: #0066b3;
@@ -29,6 +30,8 @@
         .container {
             max-width: 600px;
             margin: 0 auto;
+            padding: 0 10px;
+            box-sizing: border-box;
         }
         .menu-category {
             background: white;
@@ -192,6 +195,7 @@
             border: 1px solid #0066b3;
             border-radius: 4px;
             font-size: 16px;
+            box-sizing: border-box;
         }
         .action-buttons {
             display: flex;
@@ -211,6 +215,20 @@
             background-color: #cccccc;
             cursor: not-allowed;
         }
+        .voucher-summary {
+            background: #e6f2ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .voucher-summary h3 {
+            margin-top: 0;
+        }
+        .voucher-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -223,6 +241,11 @@
         <div id="menu"></div>
         
         <div id="total"></div>
+
+        <div class="voucher-summary">
+            <h3>Gutschein-Zusammenfassung</h3>
+            <div id="voucher-details"></div>
+        </div>
 
         <div class="change-category">
             <h3>Rückgeld</h3>
@@ -515,10 +538,46 @@
             }
 
             calculateChange(restbetrag);
+            updateVoucherSummary(foodTotal, otherTotal, usedVouchers115, usedVouchers18);
 
             // Aktiviere oder deaktiviere den Download-Button basierend auf dem Namensfeld
             const downloadButton = document.getElementById('download-button');
             downloadButton.disabled = document.getElementById('name-input').value.trim() === '';
+        }
+
+        function updateVoucherSummary(foodTotal, otherTotal, usedVouchers115, usedVouchers18) {
+            const voucherDetails = document.getElementById('voucher-details');
+            const foodVouchers = Math.floor(foodTotal / 11.5);
+            const otherVouchers = Math.floor(otherTotal / 18);
+            const returnFood = Math.max(0, usedVouchers115 - foodVouchers);
+            const returnOther = Math.max(0, usedVouchers18 - otherVouchers);
+
+            voucherDetails.innerHTML = `
+                <div class="voucher-details">
+                    <span>Eingesetzte 11,5€ Essensmarken:</span>
+                    <span>${usedVouchers115}</span>
+                </div>
+                <div class="voucher-details">
+                    <span>Verrechenbare 11,5€ Essensmarken:</span>
+                    <span>${foodVouchers}</span>
+                </div>
+                <div class="voucher-details">
+                    <span>Zurückzugebende 11,5€ Essensmarken:</span>
+                    <span>${returnFood}</span>
+                </div>
+                <div class="voucher-details">
+                    <span>Eingesetzte 18€ Gutscheine:</span>
+                    <span>${usedVouchers18}</span>
+                </div>
+                <div class="voucher-details">
+                    <span>Verrechenbare 18€ Gutscheine:</span>
+                    <span>${otherVouchers}</span>
+                </div>
+                <div class="voucher-details">
+                    <span>Zurückzugebende 18€ Gutscheine:</span>
+                    <span>${returnOther}</span>
+                </div>
+            `;
         }
 
         function setChangeMode(mode) {
@@ -606,6 +665,7 @@
             });
 
             billContent += `\n${document.getElementById('total').innerText}\n`;
+            billContent += `\n${document.getElementById('voucher-details').innerText}\n`;
             billContent += `\n${document.getElementById('change-details').innerText}`;
 
             const blob = new Blob([billContent], { type: 'text/plain' });
