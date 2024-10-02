@@ -137,6 +137,54 @@
             justify-content: space-between;
             margin-bottom: 5px;
         }
+        .change-category {
+            background: #f0f8ff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .change-details {
+            margin-top: 10px;
+        }
+        .payment-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .payment-button {
+            flex: 1;
+            margin: 0 5px;
+            padding: 10px;
+            background-color: #e6f2ff;
+            border: 1px solid #0066b3;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .payment-button.active {
+            background-color: #0066b3;
+            color: white;
+        }
+        .max-vouchers-input {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .max-vouchers-input label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .max-vouchers-input input {
+            width: 60%;
+            padding: 8px;
+            border: 1px solid #0066b3;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -149,6 +197,26 @@
         <div id="menu"></div>
         
         <div id="total"></div>
+
+        <div class="change-category">
+            <h3>Rückgeld</h3>
+            <div class="change-details" id="change-details"></div>
+            <div class="payment-buttons">
+                <button id="mixed" class="payment-button active" onclick="setChangeMode('mixed')">Gemischt</button>
+                <button id="only115" class="payment-button" onclick="setChangeMode('only115')">Nur 11,5€</button>
+                <button id="only18" class="payment-button" onclick="setChangeMode('only18')">Nur 18€</button>
+            </div>
+            <div class="max-vouchers-input">
+                <label>
+                    Max. 11,5€ Gutscheine:
+                    <input type="number" id="max115" min="0" value="0" onchange="handleMaxVoucherChange('max115')">
+                </label>
+                <label>
+                    Max. 18€ Gutscheine:
+                    <input type="number" id="max18" min="0" value="0" onchange="handleMaxVoucherChange('max18')">
+                </label>
+            </div>
+        </div>
     </div>
     <footer>
         <p>Erstellt von Josef Dräxl</p>
@@ -275,6 +343,10 @@
             }
         ];
         
+        let changeMode = 'mixed';
+        let manualMax115 = false;
+        let manualMax18 = false;
+
         function resetAll() {
             menu.forEach(category => {
                 category.items.forEach(item => {
@@ -282,10 +354,13 @@
                     input.value = 0;
                 });
             });
+            manualMax115 = false;
+            manualMax18 = false;
+            document.getElementById('max115').value = 0;
+            document.getElementById('max18').value = 0;
             updateTotal();
         }
 
-        // Fügen Sie diese neue Funktion hinzu
         function handleFocus(input) {
             if (input.value === '0') {
                 input.value = '';
@@ -335,7 +410,7 @@
         function changeQuantity(itemName, change) {
             const input = document.getElementById(itemName.replace(/\s+/g, '-'));
             const newValue = Math.max(0, parseInt(input.value || '0') + change);
-            input.value = newValue;  // Hier wurde die Änderung vorgenommen
+            input.value = newValue;
             updateTotal();
         }
         
@@ -344,6 +419,8 @@
             let gutscheinTotal = 0;
             let menuTotal = 0;
             let gesamtList = [];
+            let usedVouchers115 = 0;
+            let usedVouchers18 = 0;
             
             menu.forEach(category => {
                 category.items.forEach(item => {
@@ -355,6 +432,11 @@
                         
                         if (category.category === "Gutscheine") {
                             gutscheinTotal += itemTotal;
+                            if (item.price === 11.5) {
+                                usedVouchers115 += quantity;
+                            } else if (item.price === 18) {
+                                usedVouchers18 += quantity;
+                            }
                         } else if (category.category === "Menü") {
                             menuTotal += itemTotal;
                         } else {
@@ -381,6 +463,80 @@
                     <span>${item.total.toFixed(2)} €</span>
                 </div>
             `).join('');
+
+            // Aktualisiere die Maximalwerte für Gutscheine, wenn sie nicht manuell gesetzt wurden
+            if (!manualMax115) {
+                document.getElementById('max115').value = usedVouchers115;
+            }
+            if (!manualMax18) {
+                document.getElementById('max18').value = usedVouchers18;
+            }
+
+            calculateChange(restbetrag);
+        }
+
+        function setChangeMode(mode) {
+            changeMode = mode;
+            document.querySelectorAll('.payment-button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(mode).classList.add('active');
+            updateTotal(); // Diese Zeile wurde geändert
+        }
+
+        function handleMaxVoucherChange(inputId) {
+            if (inputId === 'max115') {
+                manualMax115 = true;
+            } else if (inputId === 'max18') {
+                manualMax18 = true;
+            }
+            updateTotal();
+        }
+
+        function calculateChange(amount) {
+            const changeDetails = document.getElementById('change-details');
+            if (amount >= 0) {
+                changeDetails.innerHTML = '<p>Kein Rückgeld erforderlich.</p>';
+                return;
+            }
+
+            const changeAmount = Math.abs(amount);
+            let vouchers115 = 0;
+            let vouchers18 = 0;
+            let remainingCash = 0;
+
+            const max115 = parseInt(document.getElementById('max115').value) || 0;
+            const max18 = parseInt(document.getElementById('max18').value) || 0;
+
+            switch (changeMode) {
+                case 'only115':
+                    vouchers115 = Math.min(Math.floor(changeAmount / 11.5), max115);
+                    remainingCash = changeAmount - (vouchers115 * 11.5);
+                    break;
+                case 'only18':
+                    vouchers18 = Math.min(Math.floor(changeAmount / 18), max18);
+                    remainingCash = changeAmount - (vouchers18 * 18);
+                    break;
+                case 'mixed':
+                default:
+                    let bestRemainingCash = changeAmount;
+                    for (let v115 = 0; v115 <= Math.min(Math.floor(changeAmount / 11.5), max115); v115++) {
+                        for (let v18 = 0; v18 <= Math.min(Math.floor((changeAmount - v115 * 11.5) / 18), max18); v18++) {
+                            const currentRemaining = changeAmount - (v115 * 11.5) - (v18 * 18);
+                            if (currentRemaining >= 0 && currentRemaining < bestRemainingCash) {
+                                vouchers115 = v115;
+                                vouchers18 = v18;
+                                bestRemainingCash = currentRemaining;
+                            }
+                        }
+                    }
+                    remainingCash = bestRemainingCash;
+                    break;
+            }
+
+            changeDetails.innerHTML = `
+                <p>${vouchers115} x 11,50 € Gutscheine</p>
+                <p>${vouchers18} x 18,00 € Gutscheine</p>
+                <p>Restbetrag in bar: ${remainingCash.toFixed(2)} €</p>
+            `;
         }
 
         renderMenu();
