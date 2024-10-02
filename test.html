@@ -413,23 +413,23 @@
             });
 
             // Berechnung für Essen
-            const usedFoodVouchers = Math.floor(foodTotal / 11.5);
+            const usedFoodVouchers = Math.min(Math.floor(foodTotal / 11.5), usedVouchers115);
             const foodVoucherValue = usedFoodVouchers * 11.5;
             const foodRemainder = foodTotal - foodVoucherValue;
-            const returnFood = Math.max(0, usedVouchers115 - usedFoodVouchers);
+            const returnFood = usedVouchers115 - usedFoodVouchers;
 
             // Berechnung für andere Artikel
-            const usedBierzeichenCount = Math.floor(otherTotal / 13.74);
+            const usedBierzeichenCount = Math.min(Math.floor(otherTotal / 13.74), usedBierzeichen);
             const bierzeichenValue = usedBierzeichenCount * 13.74;
             const remainingAfterBierzeichen = otherTotal - bierzeichenValue;
             
-            const usedOtherVouchers = Math.floor(remainingAfterBierzeichen / 18);
+            const usedOtherVouchers = Math.min(Math.floor(remainingAfterBierzeichen / 18), usedVouchers18);
             const otherVoucherValue = usedOtherVouchers * 18;
             
             const otherRemainder = remainingAfterBierzeichen - otherVoucherValue;
             
-            const returnBierzeichen = Math.max(0, usedBierzeichen - usedBierzeichenCount);
-            const returnOther = Math.max(0, usedVouchers18 - usedOtherVouchers);
+            const returnBierzeichen = usedBierzeichen - usedBierzeichenCount;
+            const returnOther = usedVouchers18 - usedOtherVouchers;
 
             // Gesamtbetrag zu zahlen
             const totalToPay = foodRemainder + otherRemainder;
