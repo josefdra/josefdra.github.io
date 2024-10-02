@@ -209,11 +209,11 @@
             <div class="max-vouchers-input">
                 <label>
                     Max. 11,5€ Gutscheine:
-                    <input type="number" id="max115" min="0" value="10" onchange="updateTotal()">
+                    <input type="number" id="max115" min="0" value="0" onchange="updateTotal()">
                 </label>
                 <label>
                     Max. 18€ Gutscheine:
-                    <input type="number" id="max18" min="0" value="10" onchange="updateTotal()">
+                    <input type="number" id="max18" min="0" value="0" onchange="updateTotal()">
                 </label>
             </div>
         </div>
@@ -413,6 +413,8 @@
             let gutscheinTotal = 0;
             let menuTotal = 0;
             let gesamtList = [];
+            let usedVouchers115 = 0;
+            let usedVouchers18 = 0;
             
             menu.forEach(category => {
                 category.items.forEach(item => {
@@ -424,6 +426,11 @@
                         
                         if (category.category === "Gutscheine") {
                             gutscheinTotal += itemTotal;
+                            if (item.price === 11.5) {
+                                usedVouchers115 += quantity;
+                            } else if (item.price === 18) {
+                                usedVouchers18 += quantity;
+                            }
                         } else if (category.category === "Menü") {
                             menuTotal += itemTotal;
                         } else {
@@ -451,14 +458,11 @@
                 </div>
             `).join('');
 
-            calculateChange(restbetrag);
-        }
+            // Aktualisiere die Maximalwerte für Gutscheine
+            document.getElementById('max115').value = usedVouchers115;
+            document.getElementById('max18').value = usedVouchers18;
 
-        function setChangeMode(mode) {
-            changeMode = mode;
-            document.querySelectorAll('.payment-button').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(mode).classList.add('active');
-            updateTotal();
+            calculateChange(restbetrag);
         }
 
         function calculateChange(amount) {
@@ -472,8 +476,8 @@
             let vouchers18 = 0;
             let remainingCash = 0;
 
-            const max115 = parseInt(document.getElementById('max115').value) || Infinity;
-            const max18 = parseInt(document.getElementById('max18').value) || Infinity;
+            const max115 = parseInt(document.getElementById('max115').value) || 0;
+            const max18 = parseInt(document.getElementById('max18').value) || 0;
 
             switch (changeMode) {
                 case 'only115':
@@ -506,6 +510,13 @@
                 <p>${vouchers18} x 18,00 € Gutscheine</p>
                 <p>Restbetrag in bar: ${remainingCash.toFixed(2)} €</p>
             `;
+        }
+        
+        function setChangeMode(mode) {
+            changeMode = mode;
+            document.querySelectorAll('.payment-button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(mode).classList.add('active');
+            updateTotal();
         }
 
         renderMenu();
