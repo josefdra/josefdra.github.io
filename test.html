@@ -9,8 +9,9 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 10px;
-            background: #1e1e1e;
+            background: #f0f0f0;
             color: #333;
+            overflow-x: hidden;
         }
         h1, h2, h3 {
             color: #0066b3;
@@ -20,11 +21,10 @@
             text-align: center;
             color: #888;
             padding: 20px 0;
-            background: #1e1e1e;
             margin-top: 20px;
         }
         .main-container {
-            padding-top: 8px;
+            padding-top: 50px;
         }
         .container {
             max-width: 800px;
@@ -145,45 +145,6 @@
         .change-details {
             margin-top: 10px;
         }
-        .payment-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-        }
-        .payment-button {
-            flex: 1;
-            margin: 0 5px;
-            padding: 10px;
-            background-color: #e6f2ff;
-            border: 1px solid #0066b3;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            font-size: 0.9em;
-        }
-        .payment-button.active {
-            background-color: #0066b3;
-            color: white;
-        }
-        .max-vouchers-input {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .max-vouchers-input label {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .max-vouchers-input input {
-            width: 60%;
-            padding: 8px;
-            border: 1px solid #0066b3;
-            border-radius: 4px;
-            text-align: center;
-            font-size: 14px;
-        }
         #name-input {
             width: 100%;
             padding: 10px;
@@ -257,21 +218,6 @@
         <div class="change-category">
             <h3>Rückgeld</h3>
             <div class="change-details" id="change-details"></div>
-            <div class="payment-buttons">
-                <button id="mixed" class="payment-button active" onclick="setChangeMode('mixed')">Gemischt</button>
-                <button id="only115" class="payment-button" onclick="setChangeMode('only115')">Nur 11,5€</button>
-                <button id="only18" class="payment-button" onclick="setChangeMode('only18')">Nur 18€</button>
-            </div>
-            <div class="max-vouchers-input">
-                <label>
-                    Max. 11,5€ Gutscheine:
-                    <input type="number" id="max115" min="0" value="0" onchange="handleMaxVoucherChange('max115')">
-                </label>
-                <label>
-                    Max. 18€ Gutscheine:
-                    <input type="number" id="max18" min="0" value="0" onchange="handleMaxVoucherChange('max18')">
-                </label>
-            </div>
         </div>
 
         <div class="action-buttons">
@@ -404,21 +350,12 @@
             }
         ];
         
-        let changeMode = 'mixed';
-        let manualMax115 = false;
-        let manualMax18 = false;
-
         function resetAll() {
             menu.forEach(category => {
                 category.items.forEach(item => {
                     const input = document.getElementById(item.name.replace(/\s+/g, '-'));
                     input.value = 0;
                 });
-            });
-            manualMax115 = false;
-            manualMax18 = false;
-            document.getElementById('max115').value = 0;
-            document.getElementById('max18').value = 0;
             document.getElementById('name-input').value = '';
             updateTotal();
         }
@@ -521,15 +458,6 @@
                 <div class="summary-item"><span>Davon Menü-Umsatz:</span> <span>${menuTotal.toFixed(2)} €</span></div>
             `;
 
-            // Aktualisiere die Maximalwerte für Gutscheine, wenn sie nicht manuell gesetzt wurden
-            if (!manualMax115) {
-                document.getElementById('max115').value = usedVouchers115;
-            }
-            if (!manualMax18) {
-                document.getElementById('max18').value = usedVouchers18;
-            }
-
-            calculateChange(restbetrag);
             updateVoucherSummary(foodTotal, otherTotal, usedVouchers115, usedVouchers18, usedBierzeichenTotal);
         }
 
@@ -547,6 +475,10 @@
             
             let returnWertmarken = Math.max(0, usedVouchers18 - usedWertmarken);
             
+            // Korrigierte Berechnung des Restbetrags
+            let restbetrag = remainingTotal;
+            if (restbetrag < 0) restbetrag = 0;
+            
             voucherDetails.innerHTML = `
                 <div class="summary-item"><span>Eingesetzte 11,5€ Essensmarken:</span> <span>${usedVouchers115}</span></div>
                 <div class="summary-item"><span>Verrechenbare 11,5€ Essensmarken:</span> <span>${foodVouchers}</span></div>
@@ -555,71 +487,18 @@
                 <div class="summary-item"><span>Verrechenbare 18€ Gutscheine:</span> <span>${usedWertmarken}</span></div>
                 <div class="summary-item"><span>Zurückzugebende 18€ Gutscheine:</span> <span>${returnWertmarken}</span></div>
                 <div class="summary-item"><span>Verrechenbare Bierzeichen:</span> <span>${usedBierzeichen}</span></div>
-                <div class="summary-item"><span>Restbetrag zu zahlen:</span> <span>${remainingTotal.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Restbetrag zu zahlen:</span> <span>${restbetrag.toFixed(2)} €</span></div>
             `;
+
+            updateChangeDetails(returnFood, returnWertmarken, restbetrag);
         }
 
-        function setChangeMode(mode) {
-            changeMode = mode;
-            document.querySelectorAll('.payment-button').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(mode).classList.add('active');
-            updateTotal();
-        }
-
-        function handleMaxVoucherChange(inputId) {
-            if (inputId === 'max115') {
-                manualMax115 = true;
-            } else if (inputId === 'max18') {
-                manualMax18 = true;
-            }
-            updateTotal();
-        }
-
-        function calculateChange(amount) {
+        function updateChangeDetails(returnFood, returnWertmarken, restbetrag) {
             const changeDetails = document.getElementById('change-details');
-            if (amount >= 0) {
-                changeDetails.innerHTML = '<p>Kein Rückgeld erforderlich.</p>';
-                return;
-            }
-
-            const changeAmount = Math.abs(amount);
-            let vouchers115 = 0;
-            let vouchers18 = 0;
-            let remainingCash = 0;
-
-            const max115 = parseInt(document.getElementById('max115').value) || 0;
-            const max18 = parseInt(document.getElementById('max18').value) || 0;
-
-            switch (changeMode) {
-                case 'only115':
-                    vouchers115 = Math.min(Math.floor(changeAmount / 11.5), max115);
-                    remainingCash = changeAmount - (vouchers115 * 11.5);
-                    break;
-                case 'only18':
-                    vouchers18 = Math.min(Math.floor(changeAmount / 18), max18);
-                    remainingCash = changeAmount - (vouchers18 * 18);
-                    break;
-                case 'mixed':
-                default:
-                    let bestRemainingCash = changeAmount;
-                    for (let v115 = 0; v115 <= Math.min(Math.floor(changeAmount / 11.5), max115); v115++) {
-                        for (let v18 = 0; v18 <= Math.min(Math.floor((changeAmount - v115 * 11.5) / 18), max18); v18++) {
-                            const currentRemaining = changeAmount - (v115 * 11.5) - (v18 * 18);
-                            if (currentRemaining >= 0 && currentRemaining < bestRemainingCash) {
-                                vouchers115 = v115;
-                                vouchers18 = v18;
-                                bestRemainingCash = currentRemaining;
-                            }
-                        }
-                    }
-                    remainingCash = bestRemainingCash;
-                    break;
-            }
-
             changeDetails.innerHTML = `
-                <div class="summary-item"><span>11,50 € Gutscheine:</span> <span>${vouchers115}</span></div>
-                <div class="summary-item"><span>18,00 € Gutscheine:</span> <span>${vouchers18}</span></div>
-                <div class="summary-item"><span>Restbetrag in bar:</span> <span>${remainingCash.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Zurückzugebende 11,5€ Essensmarken:</span> <span>${returnFood}</span></div>
+                <div class="summary-item"><span>Zurückzugebende 18€ Gutscheine:</span> <span>${returnWertmarken}</span></div>
+                <div class="summary-item"><span>Zu zahlender Betrag:</span> <span>${restbetrag.toFixed(2)} €</span></div>
             `;
         }
 
