@@ -413,23 +413,22 @@
             });
 
             // Berechnung für Essen
-            const foodVoucherValue = usedVouchers115 * 11.5;
-            let foodRemainder = foodTotal - foodVoucherValue;
-            const returnFood = foodRemainder < 0 ? Math.floor(Math.abs(foodRemainder) / 11.5) : 0;
-            foodRemainder = Math.max(0, foodRemainder);
+            const usedFoodVouchers = Math.floor(foodTotal / 11.5);
+            const foodVoucherValue = usedFoodVouchers * 11.5;
+            const foodRemainder = foodTotal - foodVoucherValue;
+            const returnFood = Math.max(0, usedVouchers115 - usedFoodVouchers);
 
             // Berechnung für andere Artikel
             const otherVoucherValue = usedVouchers18 * 18 + usedBierzeichen * 13.74;
             let otherRemainder = otherTotal - otherVoucherValue;
             const returnOther = otherRemainder < 0 ? Math.floor(Math.abs(otherRemainder) / 18) : 0;
-            const returnBierzeichen = otherRemainder < 0 ? Math.floor((Math.abs(otherRemainder) % 18) / 13.74) : 0;
             otherRemainder = Math.max(0, otherRemainder);
 
             // Gesamtbetrag zu zahlen
             const totalToPay = foodRemainder + otherRemainder;
 
             // Rückgeld in bar (falls Überstand bei den Gutscheinen)
-            const returnCash = Math.max(0, otherVoucherValue - otherTotal - (returnOther * 18) - (returnBierzeichen * 13.74));
+            const returnCash = Math.max(0, otherVoucherValue - otherTotal - (returnOther * 18));
 
             document.getElementById('total').innerHTML = `
                 <div class="summary-item"><span>Gesamtumsatz Essen:</span> <span>${foodTotal.toFixed(2)} €</span></div>
@@ -441,7 +440,6 @@
                 <div class="summary-item"><span>Gesamtbetrag zu zahlen:</span> <span>${totalToPay.toFixed(2)} €</span></div>
                 <div class="summary-item"><span>Zurückzugebende Essenszeichen:</span> <span>${returnFood}</span></div>
                 <div class="summary-item"><span>Zurückzugebende Wertmarken:</span> <span>${returnOther}</span></div>
-                <div class="summary-item"><span>Zurückzugebende Bierzeichen:</span> <span>${returnBierzeichen}</span></div>
                 <div class="summary-item"><span>Rückgeld in bar:</span> <span>${returnCash.toFixed(2)} €</span></div>
             `;
         }
