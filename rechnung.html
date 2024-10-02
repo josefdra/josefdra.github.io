@@ -193,6 +193,8 @@
         const PREIS_ENTEN_MENU = 645;
         const PREIS_BRAUMEISTER_MENU = 655;
         const PREIS_VEGGIE_MENU = 535;
+		
+		document.addEventListener('DOMContentLoaded', initializeApp);
 
         const menu = [
             {
@@ -308,6 +310,12 @@
                 ]
             }
         ];
+		
+		function initializeApp() {
+			loadState();
+			renderMenu();
+			updateTotal();
+		}
         
         function resetAll() {
             menu.forEach(category => {
@@ -523,7 +531,6 @@
 					if (input) input.value = item.quantity;
 				});
 				document.getElementById('name-input').value = state.name;
-				updateTotal();
 			}
 		}
 
