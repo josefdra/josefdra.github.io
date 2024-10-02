@@ -318,7 +318,6 @@
             });
             document.getElementById('name-input').value = '';
             updateTotal();
-			saveState();
         }
 
         function handleFocus(input) {
@@ -364,8 +363,7 @@
 			if (input) {
 				const newValue = Math.max(0, parseInt(input.value || '0') + change);
 				input.value = newValue;
-				updateTotal();
-				saveState();
+				updateTotal(); // Diese Funktion ruft bereits saveState() auf
 			}
 		}
         
@@ -568,10 +566,7 @@
             updateTotal();
         }
 
-        document.getElementById('name-input').addEventListener('input', function() {
-			updateTotal();
-			saveState();
-		});
+        document.getElementById('name-input').addEventListener('input', updateTotal);
 
         document.addEventListener('DOMContentLoaded', function() {
             renderMenu();

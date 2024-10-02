@@ -262,7 +262,6 @@
             document.getElementById('teamSize').value = '1';
             document.getElementById('startAmount').value = '0';
             updateTotal();
-			saveState();
         }
         
         function renderMenu() {
@@ -295,8 +294,7 @@
 			const input = document.getElementById(itemName.replace(/\s+/g, '-'));
 			const newValue = Math.max(0, parseInt(input.value || '0') + change);
 			input.value = newValue;
-			updateTotal();
-			saveState();
+			updateTotal(); // Diese Funktion ruft bereits saveState() auf
 		}
         
         function updateTotal() {
@@ -332,8 +330,8 @@
         document.getElementById('teamSize').addEventListener('blur', function() { handleBlur(this); });
         document.getElementById('startAmount').addEventListener('focus', function() { handleFocus(this); });
         document.getElementById('startAmount').addEventListener('blur', function() { handleBlur(this); });
-		document.getElementById('teamSize').addEventListener('change', function() { updateTotal(); saveState(); });
-		document.getElementById('startAmount').addEventListener('change', function() { updateTotal(); saveState(); });
+		document.getElementById('teamSize').addEventListener('change', updateTotal);
+		document.getElementById('startAmount').addEventListener('change', updateTotal);
 		document.addEventListener('DOMContentLoaded', function() {
 			loadState();
 			renderMenu();

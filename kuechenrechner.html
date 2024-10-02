@@ -344,6 +344,7 @@ function createSafeId(str) {
     return str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 }
 
+// Aktualisierte saveState Funktion
 function saveState() {
     const state = {
         warenkorb: warenkorb,
@@ -371,8 +372,10 @@ function loadState() {
         updateCounters();
         setPaymentMode(paymentMode);
         document.getElementById('price-mode-button').textContent = priceMode;
-        toggleRemoveMode();
-        if (!removeMode) toggleRemoveMode(); // Um den Zustand korrekt zu setzen
+        
+        // Korrigierte Logik für den Remove-Modus
+        document.body.classList.toggle('remove-mode', removeMode);
+        document.getElementById('remove-button').textContent = removeMode ? '+' : '-';
     }
 }
 
@@ -464,6 +467,10 @@ document.addEventListener('DOMContentLoaded', function() {
     renderMenu();
     updateTotal();
     calculatePayment(0);
+
+    // Event Listener für max115 und max18 Inputs
+    document.getElementById('max115').addEventListener('change', saveState);
+    document.getElementById('max18').addEventListener('change', saveState);
 });
 
 function getCalculationPrice(item) {
@@ -555,7 +562,7 @@ function toggleRemoveMode(){
     removeMode = !removeMode;
     document.body.classList.toggle('remove-mode', removeMode);
     document.getElementById('remove-button').textContent = removeMode ? '+' : '-';
-	saveState();
+    saveState();
 }
 
 function togglePriceMode() {
