@@ -318,6 +318,7 @@
             });
             document.getElementById('name-input').value = '';
             updateTotal();
+			saveState();
         }
 
         function handleFocus(input) {
@@ -359,13 +360,14 @@
         }
         
         function changeQuantity(itemName, change) {
-            const input = document.getElementById(itemName.replace(/\s+/g, '-'));
-            if (input) {
-                const newValue = Math.max(0, parseInt(input.value || '0') + change);
-                input.value = newValue;
-                updateTotal();
-            }
-        }
+			const input = document.getElementById(itemName.replace(/\s+/g, '-'));
+			if (input) {
+				const newValue = Math.max(0, parseInt(input.value || '0') + change);
+				input.value = newValue;
+				updateTotal();
+				saveState();
+			}
+		}
         
         function updateTotal() {
 			let foodTotal = 0;
@@ -452,6 +454,7 @@
                 <div class="summary-item"><span>Zurückzugebende Bierzeichen:</span> <span>${returnBierzeichen}</span></div>
                 <div class="summary-item"><span>Zurückzugebende Wertmarken:</span> <span>${returnOther}</span></div>
             `;
+			saveState();
         }
 
         function downloadBill() {
@@ -499,6 +502,32 @@
             }
             URL.revokeObjectURL(url);
         }
+		
+		function saveState() {
+			const state = {
+				menuItems: menu.flatMap(category => 
+					category.items.map(item => ({
+						name: item.name,
+						quantity: document.getElementById(item.name.replace(/\s+/g, '-')).value
+					}))
+				),
+				name: document.getElementById('name-input').value
+			};
+			localStorage.setItem('rechnungState', JSON.stringify(state));
+		}
+
+		function loadState() {
+			const savedState = localStorage.getItem('rechnungState');
+			if (savedState) {
+				const state = JSON.parse(savedState);
+				state.menuItems.forEach(item => {
+					const input = document.getElementById(item.name.replace(/\s+/g, '-'));
+					if (input) input.value = item.quantity;
+				});
+				document.getElementById('name-input').value = state.name;
+				updateTotal();
+			}
+		}
 
         function loadBill() {
             const input = document.createElement('input');
@@ -540,13 +569,20 @@
         }
 
         document.getElementById('name-input').addEventListener('input', function() {
-            updateTotal();
-        });
+			updateTotal();
+			saveState();
+		});
 
         document.addEventListener('DOMContentLoaded', function() {
             renderMenu();
             updateTotal();
         });
+		
+		document.addEventListener('DOMContentLoaded', function() {
+			loadState();
+			renderMenu();
+			updateTotal();
+		});
     </script>
 </body>
 </html>

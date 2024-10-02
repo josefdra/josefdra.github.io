@@ -344,6 +344,38 @@ function createSafeId(str) {
     return str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 }
 
+function saveState() {
+    const state = {
+        warenkorb: warenkorb,
+        removeMode: removeMode,
+        paymentMode: paymentMode,
+        priceMode: priceMode,
+        max115: document.getElementById('max115').value,
+        max18: document.getElementById('max18').value
+    };
+    localStorage.setItem('kitchenCalculatorState', JSON.stringify(state));
+}
+
+function loadState() {
+    const savedState = localStorage.getItem('kitchenCalculatorState');
+    if (savedState) {
+        const state = JSON.parse(savedState);
+        warenkorb = state.warenkorb;
+        removeMode = state.removeMode;
+        paymentMode = state.paymentMode;
+        priceMode = state.priceMode;
+        document.getElementById('max115').value = state.max115;
+        document.getElementById('max18').value = state.max18;
+
+        updateCart();
+        updateCounters();
+        setPaymentMode(paymentMode);
+        document.getElementById('price-mode-button').textContent = priceMode;
+        toggleRemoveMode();
+        if (!removeMode) toggleRemoveMode(); // Um den Zustand korrekt zu setzen
+    }
+}
+
 function renderMenu(){
     document.getElementById('menu').innerHTML = menu.map(c => `
         <div class="menu-category" id="category-${createSafeId(c.category)}">
@@ -381,6 +413,7 @@ function addToCart(n){
     }
     updateCart();
     updateCounters();
+	saveState();
 }
 
 function removeFromCart(n, a=false){
@@ -394,6 +427,7 @@ function removeFromCart(n, a=false){
     }
     updateCart();
     updateCounters();
+	saveState();
 }
 
 function updateCounters(){
@@ -425,6 +459,13 @@ function getDisplayPrice(item) {
     return priceMode === 'VK' && vkPrices[item.name] !== undefined ? vkPrices[item.name] : item.price;
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    loadState();
+    renderMenu();
+    updateTotal();
+    calculatePayment(0);
+});
+
 function getCalculationPrice(item) {
     return item.price; // Immer EK-Preis für Berechnungen
 }
@@ -440,6 +481,7 @@ function setPaymentMode(mode) {
     document.querySelectorAll('.payment-button').forEach(btn => btn.classList.remove('active'));
     document.getElementById(mode).classList.add('active');
     updateTotal();
+	saveState();
 }
 
 function calculatePayment(p){
@@ -506,12 +548,14 @@ function resetAll(){
     updateCart();
     updateCounters();
     renderMenu();
+	saveState();
 }
 
 function toggleRemoveMode(){
     removeMode = !removeMode;
     document.body.classList.toggle('remove-mode', removeMode);
     document.getElementById('remove-button').textContent = removeMode ? '+' : '-';
+	saveState();
 }
 
 function togglePriceMode() {
@@ -519,6 +563,7 @@ function togglePriceMode() {
     document.getElementById('price-mode-button').textContent = priceMode;
     renderMenu();
     updateCart();
+	saveState();
 }
 
 renderMenu();
