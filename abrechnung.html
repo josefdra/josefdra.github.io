@@ -173,7 +173,6 @@
 </footer>
 <button id="reset-button" onclick="resetAll()"><span>Reset</span>↺</button>
     <script>
-		document.addEventListener('DOMContentLoaded', initializeApp);
         const menu = [
             {
                 category: "Bargeld",
@@ -212,12 +211,6 @@
                 ]
             }
         ];
-		
-		function initializeApp() {
-			loadState();
-			renderMenu();
-			updateTotal();
-		}
 		
 		function handleFocus(input) {
             if (input.value === '0') {
