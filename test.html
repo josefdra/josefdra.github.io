@@ -24,7 +24,7 @@
             margin-top: 20px;
         }
         .main-container {
-            padding-top: 50px;
+            padding-top: 60px; /* Erhöht, um Abstand zwischen Zurück-Taste und Titel zu vergrößern */
         }
         .container {
             max-width: 800px;
@@ -123,27 +123,30 @@
         #reset-button span {
             margin-right: 5px;
         }
-        .gesamt-category {
-            background: #f0f8ff;
+        .summary {
+            background: #e6f2ff;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             padding: 15px;
             margin-top: 20px;
         }
-        .gesamt-item {
+        .summary h3 {
+            margin-top: 0;
+        }
+        .summary-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
-        .change-category {
-            background: #f0f8ff;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            padding: 15px;
-            margin-top: 20px;
-        }
-        .change-details {
-            margin-top: 10px;
+        #back-button {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: #0066b3;
+            color: white;
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            z-index: 1000;
         }
         #name-input {
             width: 100%;
@@ -173,31 +176,6 @@
         .action-button:hover {
             background-color: #004080;
         }
-        .summary {
-            background: #e6f2ff;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 20px;
-        }
-        .summary h3 {
-            margin-top: 0;
-        }
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        #back-button {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            background: #0066b3;
-            color: white;
-            padding: 5px 10px;
-            text-decoration: none;
-            border-radius: 5px;
-            z-index: 1000;
-        }
     </style>
 </head>
 <body>
@@ -212,12 +190,6 @@
         <div class="summary">
             <h3>Zusammenfassung</h3>
             <div id="total"></div>
-            <div id="voucher-details"></div>
-        </div>
-
-        <div class="change-category">
-            <h3>Rückgeld</h3>
-            <div class="change-details" id="change-details"></div>
         </div>
 
         <div class="action-buttons">
@@ -354,7 +326,7 @@
             menu.forEach(category => {
                 category.items.forEach(item => {
                     const input = document.getElementById(item.name.replace(/\s+/g, '-'));
-                    input.value = 0;
+                    if (input) input.value = 0;
                 });
             });
             document.getElementById('name-input').value = '';
@@ -401,43 +373,36 @@
         
         function changeQuantity(itemName, change) {
             const input = document.getElementById(itemName.replace(/\s+/g, '-'));
-            const newValue = Math.max(0, parseInt(input.value || '0') + change);
-            input.value = newValue;
-            updateTotal();
+            if (input) {
+                const newValue = Math.max(0, parseInt(input.value || '0') + change);
+                input.value = newValue;
+                updateTotal();
+            }
         }
         
         function updateTotal() {
-            let total = 0;
-            let gutscheinTotal = 0;
-            let menuTotal = 0;
-            let usedVouchers115 = 0;
-            let usedVouchers18 = 0;
-            let usedBierzeichenTotal = 0;
             let foodTotal = 0;
             let otherTotal = 0;
+            let usedVouchers115 = 0;
+            let usedVouchers18 = 0;
+            let usedBierzeichen = 0;
             
             menu.forEach(category => {
                 category.items.forEach(item => {
                     const input = document.getElementById(item.name.replace(/\s+/g, '-'));
-                    const quantity = parseInt(input.value || '0');
-                    if (quantity > 0) {
-                        const itemTotal = item.price * quantity;
-                        
-                        if (category.category === "Gutscheine") {
-                            gutscheinTotal += itemTotal;
-                            if (item.price === 11.5) {
-                                usedVouchers115 += quantity;
-                            } else if (item.price === 18) {
-                                usedVouchers18 += quantity;
-                            } else if (item.price === 13.74) {
-                                usedBierzeichenTotal += itemTotal;
-                            }
-                        } else if (category.category === "Menü") {
-                            menuTotal += itemTotal;
-                            foodTotal += itemTotal;
-                        } else {
-                            total += itemTotal;
-                            if (item.type === "food") {
+                    if (input) {
+                        const quantity = parseInt(input.value || '0');
+                        if (quantity > 0) {
+                            const itemTotal = item.price * quantity;
+                            if (category.category === "Gutscheine") {
+                                if (item.name === "Essenszeichen") {
+                                    usedVouchers115 += quantity;
+                                } else if (item.name === "Wertmarken") {
+                                    usedVouchers18 += quantity;
+                                } else if (item.name === "Bierzeichen") {
+                                    usedBierzeichen += quantity;
+                                }
+                            } else if (item.type === "food") {
                                 foodTotal += itemTotal;
                             } else {
                                 otherTotal += itemTotal;
@@ -446,60 +411,38 @@
                     }
                 });
             });
-        
-            const gesamtumsatz = total + menuTotal;
-            const restbetrag = gesamtumsatz - gutscheinTotal;
-        
-            document.getElementById('total').innerHTML = `
-                <div class="summary-item"><span>Gesamtumsatz:</span> <span>${gesamtumsatz.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Davon Essen:</span> <span>${foodTotal.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Davon Sonstiges:</span> <span>${otherTotal.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Gutscheine:</span> <span>${gutscheinTotal.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Restbetrag:</span> <span>${restbetrag.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Davon Menü-Umsatz:</span> <span>${menuTotal.toFixed(2)} €</span></div>
-            `;
 
-            updateVoucherSummary(foodTotal, otherTotal, usedVouchers115, usedVouchers18, usedBierzeichenTotal);
-        }
-
-        function updateVoucherSummary(foodTotal, otherTotal, usedVouchers115, usedVouchers18, usedBierzeichenTotal) {
-            const voucherDetails = document.getElementById('voucher-details');
             const foodVouchers = Math.floor(foodTotal / 11.5);
+            let foodRemainder = foodTotal - (foodVouchers * 11.5);
             const returnFood = Math.max(0, usedVouchers115 - foodVouchers);
             
-            let remainingTotal = otherTotal;
-            let usedBierzeichen = Math.floor(usedBierzeichenTotal / 13.74);
-            remainingTotal -= usedBierzeichen * 13.74;
-            
-            let usedWertmarken = Math.min(usedVouchers18, Math.ceil(remainingTotal / 18));
-            remainingTotal -= usedWertmarken * 18;
-            
-            let returnWertmarken = Math.max(0, usedVouchers18 - usedWertmarken);
-            
-            // Korrigierte Berechnung des Restbetrags
-            let restbetrag = remainingTotal;
-            if (restbetrag < 0) restbetrag = 0;
-            
-            voucherDetails.innerHTML = `
-                <div class="summary-item"><span>Eingesetzte 11,5€ Essensmarken:</span> <span>${usedVouchers115}</span></div>
-                <div class="summary-item"><span>Verrechenbare 11,5€ Essensmarken:</span> <span>${foodVouchers}</span></div>
-                <div class="summary-item"><span>Zurückzugebende 11,5€ Essensmarken:</span> <span>${returnFood}</span></div>
-                <div class="summary-item"><span>Eingesetzte 18€ Gutscheine:</span> <span>${usedVouchers18}</span></div>
-                <div class="summary-item"><span>Verrechenbare 18€ Gutscheine:</span> <span>${usedWertmarken}</span></div>
-                <div class="summary-item"><span>Zurückzugebende 18€ Gutscheine:</span> <span>${returnWertmarken}</span></div>
-                <div class="summary-item"><span>Verrechenbare Bierzeichen:</span> <span>${usedBierzeichen}</span></div>
-                <div class="summary-item"><span>Restbetrag zu zahlen:</span> <span>${restbetrag.toFixed(2)} €</span></div>
-            `;
+            let otherVouchers = Math.floor(otherTotal / 18);
+            let otherRemainder = otherTotal - (otherVouchers * 18);
+            const returnOther = Math.max(0, usedVouchers18 - otherVouchers);
 
-            updateChangeDetails(returnFood, returnWertmarken, restbetrag);
-        }
+            let bierzeichenUsed = Math.floor(otherRemainder / 13.74);
+            otherRemainder -= bierzeichenUsed * 13.74;
+            const returnBierzeichen = Math.max(0, usedBierzeichen - bierzeichenUsed);
 
-        function updateChangeDetails(returnFood, returnWertmarken, restbetrag) {
-            const changeDetails = document.getElementById('change-details');
-            changeDetails.innerHTML = `
-                <div class="summary-item"><span>Zurückzugebende 11,5€ Essensmarken:</span> <span>${returnFood}</span></div>
-                <div class="summary-item"><span>Zurückzugebende 18€ Gutscheine:</span> <span>${returnWertmarken}</span></div>
-                <div class="summary-item"><span>Zu zahlender Betrag:</span> <span>${restbetrag.toFixed(2)} €</span></div>
+            let totalToPay = foodRemainder + otherRemainder;
+            let totalToReturn = 0;
+
+            if (totalToPay < 0) {
+                totalToReturn = Math.abs(totalToPay);
+                totalToPay = 0;
+            }
+
+            const returnWertmarken = Math.floor(totalToReturn / 18);
+            const returnCash = totalToReturn - (returnWertmarken * 18);
+
+            document.getElementById('total').innerHTML = `
+                <div class="summary-item"><span>Gesamtumsatz Essen:</span> <span>${foodTotal.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Gesamtumsatz Sonstiges:</span> <span>${otherTotal.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Zurückzugebende Essenszeichen:</span> <span>${returnFood}</span></div>
+                <div class="summary-item"><span>Zurückzugebende Wertmarken:</span> <span>${returnOther + returnWertmarken}</span></div>
+                <div class="summary-item"><span>Zurückzugebende Bierzeichen:</span> <span>${returnBierzeichen}</span></div>
+                <div class="summary-item"><span>Rückgeld in bar:</span> <span>${returnCash.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Zu zahlender Betrag:</span> <span>${totalToPay.toFixed(2)} €</span></div>
             `;
         }
 
@@ -520,16 +463,16 @@
             menu.forEach(category => {
                 category.items.forEach(item => {
                     const input = document.getElementById(item.name.replace(/\s+/g, '-'));
-                    const quantity = parseInt(input.value || '0');
-                    if (quantity > 0) {
-                        billContent += `${item.name}: ${quantity} x ${item.price.toFixed(2)} € = ${(quantity * item.price).toFixed(2)} €\n`;
+                    if (input) {
+                        const quantity = parseInt(input.value || '0');
+                        if (quantity > 0) {
+                            billContent += `${item.name}: ${quantity} x ${item.price.toFixed(2)} € = ${(quantity * item.price).toFixed(2)} €\n`;
+                        }
                     }
                 });
             });
 
             billContent += `\n${document.getElementById('total').innerText}\n`;
-            billContent += `\n${document.getElementById('voucher-details').innerText}\n`;
-            billContent += `\n${document.getElementById('change-details').innerText}`;
 
             const blob = new Blob([billContent], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
@@ -568,7 +511,7 @@
             for (let i = 2; i < lines.length; i++) {
                 const line = lines[i].trim();
                 if (line === '') continue;
-                if (line.startsWith('Gesamtumsatz') || line.startsWith('Gutscheine') || line.startsWith('Restbetrag')) break;
+                if (line.startsWith('Gesamtumsatz') || line.startsWith('Zurückzugebende') || line.startsWith('Rückgeld') || line.startsWith('Zu zahlender')) break;
 
                 const [itemName, rest] = line.split(':');
                 const quantity = parseInt(rest.split('x')[0]);
@@ -585,8 +528,10 @@
             updateTotal();
         });
 
-        renderMenu();
-        updateTotal();
+        document.addEventListener('DOMContentLoaded', function() {
+            renderMenu();
+            updateTotal();
+        });
     </script>
 </body>
 </html>
