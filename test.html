@@ -376,7 +376,7 @@
         function renderMenu() {
             document.getElementById('menu').innerHTML = menu.map(category => `
                 <div class="menu-category">
-                    <h3>${category.category}</h3></h3>
+                    <h3>${category.category}</h3>
                     <div class="menu-grid">
                         ${category.items.map(item => `
                             <div class="menu-item">
@@ -479,7 +479,7 @@
             changeMode = mode;
             document.querySelectorAll('.payment-button').forEach(btn => btn.classList.remove('active'));
             document.getElementById(mode).classList.add('active');
-            calculateChange(parseFloat(document.getElementById('total').textContent.match(/-?\d+\.\d+/)[0]));
+            updateTotal(); // Diese Zeile wurde geändert
         }
 
         function handleMaxVoucherChange(inputId) {
@@ -488,12 +488,13 @@
             } else if (inputId === 'max18') {
                 manualMax18 = true;
             }
-            calculateChange(parseFloat(document.getElementById('total').textContent.match(/-?\d+\.\d+/)[0]));
+            updateTotal();
         }
 
         function calculateChange(amount) {
+            const changeDetails = document.getElementById('change-details');
             if (amount >= 0) {
-                document.getElementById('change-details').innerHTML = '<p>Kein Rückgeld erforderlich.</p>';
+                changeDetails.innerHTML = '<p>Kein Rückgeld erforderlich.</p>';
                 return;
             }
 
@@ -531,7 +532,7 @@
                     break;
             }
 
-            document.getElementById('change-details').innerHTML = `
+            changeDetails.innerHTML = `
                 <p>${vouchers115} x 11,50 € Gutscheine</p>
                 <p>${vouchers18} x 18,00 € Gutscheine</p>
                 <p>Restbetrag in bar: ${remainingCash.toFixed(2)} €</p>
