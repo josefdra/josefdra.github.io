@@ -412,37 +412,37 @@
                 });
             });
 
-            const foodVouchers = Math.floor(foodTotal / 11.5);
-            let foodRemainder = foodTotal - (foodVouchers * 11.5);
-            const returnFood = Math.max(0, usedVouchers115 - foodVouchers);
-            
-            let otherVouchers = Math.floor(otherTotal / 18);
-            let otherRemainder = otherTotal - (otherVouchers * 18);
-            const returnOther = Math.max(0, usedVouchers18 - otherVouchers);
+            // Berechnung für Essen
+            const foodVoucherValue = usedVouchers115 * 11.5;
+            let foodRemainder = foodTotal - foodVoucherValue;
+            const returnFood = foodRemainder < 0 ? Math.floor(Math.abs(foodRemainder) / 11.5) : 0;
+            foodRemainder = Math.max(0, foodRemainder);
 
-            let bierzeichenUsed = Math.floor(otherRemainder / 13.74);
-            otherRemainder -= bierzeichenUsed * 13.74;
-            const returnBierzeichen = Math.max(0, usedBierzeichen - bierzeichenUsed);
+            // Berechnung für andere Artikel
+            const otherVoucherValue = usedVouchers18 * 18 + usedBierzeichen * 13.74;
+            let otherRemainder = otherTotal - otherVoucherValue;
+            const returnOther = otherRemainder < 0 ? Math.floor(Math.abs(otherRemainder) / 18) : 0;
+            const returnBierzeichen = otherRemainder < 0 ? Math.floor((Math.abs(otherRemainder) % 18) / 13.74) : 0;
+            otherRemainder = Math.max(0, otherRemainder);
 
-            let totalToPay = foodRemainder + otherRemainder;
-            let totalToReturn = 0;
+            // Gesamtbetrag zu zahlen
+            const totalToPay = foodRemainder + otherRemainder;
 
-            if (totalToPay < 0) {
-                totalToReturn = Math.abs(totalToPay);
-                totalToPay = 0;
-            }
-
-            const returnWertmarken = Math.floor(totalToReturn / 18);
-            const returnCash = totalToReturn - (returnWertmarken * 18);
+            // Rückgeld in bar (falls Überstand bei den Gutscheinen)
+            const returnCash = Math.max(0, otherVoucherValue - otherTotal - (returnOther * 18) - (returnBierzeichen * 13.74));
 
             document.getElementById('total').innerHTML = `
                 <div class="summary-item"><span>Gesamtumsatz Essen:</span> <span>${foodTotal.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Abzüglich Essenszeichen:</span> <span>${foodVoucherValue.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Zu zahlen für Essen:</span> <span>${foodRemainder.toFixed(2)} €</span></div>
                 <div class="summary-item"><span>Gesamtumsatz Sonstiges:</span> <span>${otherTotal.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Abzüglich Wertmarken und Bierzeichen:</span> <span>${otherVoucherValue.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Zu zahlen für Sonstiges:</span> <span>${otherRemainder.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Gesamtbetrag zu zahlen:</span> <span>${totalToPay.toFixed(2)} €</span></div>
                 <div class="summary-item"><span>Zurückzugebende Essenszeichen:</span> <span>${returnFood}</span></div>
-                <div class="summary-item"><span>Zurückzugebende Wertmarken:</span> <span>${returnOther + returnWertmarken}</span></div>
+                <div class="summary-item"><span>Zurückzugebende Wertmarken:</span> <span>${returnOther}</span></div>
                 <div class="summary-item"><span>Zurückzugebende Bierzeichen:</span> <span>${returnBierzeichen}</span></div>
                 <div class="summary-item"><span>Rückgeld in bar:</span> <span>${returnCash.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Zu zahlender Betrag:</span> <span>${totalToPay.toFixed(2)} €</span></div>
             `;
         }
 
