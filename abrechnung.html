@@ -374,12 +374,8 @@
             renderMenu();
             loadState();
             updateTotal();
+            trackEvent('Page', 'Load', 'Abrechnung');
         });
-    </script>
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        trackEvent('Page', 'Load', 'Abrechnung');
-      });
     </script>
 </body>
 </html>
