@@ -329,7 +329,7 @@ const vkPrices = {
     "Nudeltascherl": 19.80,
     "Käsespätzle": 18.80,
     "Rahm-Schwammerl": 21.80,
-	"Currywurst (vegan)": 18.80,
+    "Currywurst (vegan)": 18.80,
     "Kartoffelsalat": 6.50,
     "Krautsalat": 6.50,
     "Blaukraut": 6.50,
@@ -354,16 +354,28 @@ function safeDecodeURIComponent(str) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-	renderMenu();
-	updateTotal();
-	calculatePayment(0);
+    loadState();
+    renderMenu();
+    updateTotal();
+    calculatePayment(0);
+
+    // Event Listener für max115 und max18 Inputs
+    document.getElementById('max115').addEventListener('change', function() {
+        updateTotal();
+        saveState();
+        trackEvent('Voucher', 'Set Max 11.5', this.value);
+    });
+    document.getElementById('max18').addEventListener('change', function() {
+        updateTotal();
+        saveState();
+        trackEvent('Voucher', 'Set Max 18', this.value);
+    });
 });
 
 function createSafeId(str) {
     return str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 }
 
-// Aktualisierte saveState Funktion
 function saveState() {
     const state = {
         warenkorb: warenkorb,
@@ -371,10 +383,7 @@ function saveState() {
         paymentMode: paymentMode,
         priceMode: priceMode,
         max115: document.getElementById('max115').value,
-        max18: document.getElementById('max18').value,
-        total: document.getElementById('total').innerText,
-        paymentDetails: document.getElementById('payment-details').innerHTML,
-        summaryBar: document.getElementById('summary-bar').innerHTML
+        max18: document.getElementById('max18').value
     };
     localStorage.setItem('kitchenCalculatorState', JSON.stringify(state));
 }
@@ -397,11 +406,6 @@ function loadState() {
         
         document.body.classList.toggle('remove-mode', removeMode);
         document.getElementById('remove-button').textContent = removeMode ? '+' : '-';
-
-        // Wiederherstellung der gespeicherten Werte
-        document.getElementById('total').innerHTML = state.total;
-        document.getElementById('payment-details').innerHTML = state.paymentDetails;
-        document.getElementById('summary-bar').innerHTML = state.summaryBar;
     }
 }
 
@@ -444,7 +448,7 @@ function addToCart(n){
     }
     updateCart();
     updateCounters();
-	saveState();
+    saveState();
 }
 
 function removeFromCart(n, a=false){
@@ -458,7 +462,7 @@ function removeFromCart(n, a=false){
     }
     updateCart();
     updateCounters();
-	saveState();
+    saveState();
 }
 
 function updateCounters(){
@@ -472,44 +476,23 @@ function updateCounters(){
             c.style.display = 'none';
         }
     });
-    saveState();
 }
 
 function updateCart(){
     document.getElementById('bestellung-liste').innerHTML = warenkorb.map(i => `
         <li>
-            <div class="cart-item-details" onclick="removeFromCart('${safeEncodeURIComponent(i.name)}')">
+            <div class="cart-item-details">
                 ${i.name} - ${getDisplayPrice(i).toFixed(2)} €
             </div>
             <span class="cart-item-quantity">x${i.quantity}</span>
         </li>
     `).join('');
     updateTotal();
-    saveState();
 }
 
 function getDisplayPrice(item) {
     return priceMode === 'VK' && vkPrices[item.name] !== undefined ? vkPrices[item.name] : item.price;
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    loadState();
-    renderMenu();
-    updateTotal();
-    calculatePayment(0);
-
-    // Event Listener für max115 und max18 Inputs
-    document.getElementById('max115').addEventListener('change', function() {
-        updateTotal();
-        saveState();
-        trackEvent('Voucher', 'Set Max 11.5', this.value);
-    });
-    document.getElementById('max18').addEventListener('change', function() {
-        updateTotal();
-        saveState();
-        trackEvent('Voucher', 'Set Max 18', this.value);
-    });
-});
 
 function getCalculationPrice(item) {
     return item.price; // Immer EK-Preis für Berechnungen
@@ -587,7 +570,6 @@ function updateSummaryBar(total,b11,b18,rest){
         <span>18€: ${b18}</span>
         <span>Rest: ${rest.toFixed(2)} €</span>
     `;
-    saveState();
 }
 
 function resetAll(){
@@ -616,6 +598,7 @@ function togglePriceMode() {
     trackEvent('UI', 'Toggle Price Mode', priceMode);
 }
 
+// Initial render
 renderMenu();
 updateTotal();
 calculatePayment(0);
