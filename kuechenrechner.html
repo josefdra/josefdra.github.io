@@ -520,10 +520,10 @@ function setPaymentMode(mode) {
     trackEvent('Payment', 'Set Mode', mode);
 }
 
-function calculatePayment(p){
-    if(p === 0) {
+function calculatePayment(p) {
+    if (p === 0) {
         document.getElementById('payment-details').innerHTML = '<p>Kein Betrag zu zahlen.</p>';
-        updateSummaryBar(0,0,0,0);
+        updateSummaryBar(0, 0, 0, 0);
         return;
     }
     let b11 = 0, b18 = 0, br = 0;
@@ -541,21 +541,19 @@ function calculatePayment(p){
             break;
         case 'mixed':
         default:
-            let minRest = 9999;
-            const m = Math.floor(p / 11.5);
-            for(let i = 0; i <= m && i <= max115; i++) {
-                let v = i * 11.5, n = 0;
-                while(v < p && n < max18) {
-                    n++;
-                    v += 18;
-                }
-                n--;
-                v -= 18;
-                let r = p - v;
-                if(r < minRest && r >= 0) {
-                    b11 = i;
-                    b18 = n;
-                    minRest = r;
+            let minRest = p;
+            const maxB11 = Math.min(Math.floor(p / 11.5), max115);
+            const maxB18 = Math.min(Math.floor(p / 18), max18);
+            
+            for (let i = 0; i <= maxB11; i++) {
+                for (let j = 0; j <= maxB18; j++) {
+                    let paid = i * 11.5 + j * 18;
+                    let rest = p - paid;
+                    if (rest >= 0 && rest < minRest) {
+                        b11 = i;
+                        b18 = j;
+                        minRest = rest;
+                    }
                 }
             }
             br = minRest;
@@ -567,7 +565,7 @@ function calculatePayment(p){
         <p>${b18} x 18,00 € Marken</p>
         <p>Restbetrag in bar: ${br.toFixed(2)} €</p>
     `;
-    updateSummaryBar(p,b11,b18,br);
+    updateSummaryBar(p, b11, b18, br);
 }
 
 function updateSummaryBar(total,b11,b18,rest){
