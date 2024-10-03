@@ -171,11 +171,32 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
     
-      gtag('config', 'G-7F6TEXZ1YL');
+      gtag('config', 'G-7F6TEXZ1YL', {
+        'page_path': window.location.pathname
+      });
+    
+      // Funktion zum Tracken von Ereignissen
+      function trackEvent(category, action, label, value) {
+        gtag('event', action, {
+          'event_category': category,
+          'event_label': label,
+          'value': value
+        });
+      }
+    
+      // Funktion zum Tracken von Seitenaufrufen
+      function trackPageView(pagePath) {
+        gtag('config', 'G-7F6TEXZ1YL', {
+          'page_path': pagePath
+        });
+      }
+    
+      // Tracke den initialen Seitenaufruf
+      trackPageView(window.location.pathname);
     </script>
 </head>
 <body>
-    <a href="index.html" style="position: fixed; top: 10px; left: 10px; background: #0066b3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px;">Zurück</a>
+    <a href="index.html" style="position: fixed; top: 10px; left: 10px; background: #0066b3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px;" onclick="trackEvent('Navigation', 'Click', 'Back to Home')">Zurück</a>
     <div class="container main-container">
         <h1>Rechnung</h1>
         <input type="text" id="name-input" placeholder="Name">
@@ -328,6 +349,7 @@
             document.getElementById('name-input').value = '';
             updateTotal();
             saveState();
+            trackEvent('UI', 'Reset All', '');
         }
 
         function handleFocus(input) {
@@ -375,6 +397,7 @@
                 const newValue = Math.max(0, parseInt(input.value || '0') + change);
                 input.value = newValue;
                 updateTotal();
+                trackEvent('Item', 'Change Quantity', itemName, newValue);
             }
         }
         
@@ -464,6 +487,8 @@
                 <div class="summary-item"><span>Zurückzugebende Wertmarken:</span> <span>${returnOther}</span></div>
             `;
             saveState();
+            trackEvent('Calculation', 'Update Total', 'Total Revenue', totalRevenue);
+            trackEvent('Calculation', 'Update Total', 'Total to Pay', totalToPay);
         }
 
         function downloadBill() {
@@ -508,6 +533,7 @@
                 document.body.removeChild(a);
             }
             URL.revokeObjectURL(url);
+            trackEvent('Bill', 'Download', name);
         }
         
         function saveState() {
@@ -546,6 +572,7 @@
                 reader.onload = function(e) {
                     const content = e.target.result;
                     parseBillContent(content);
+                    trackEvent('Bill', 'Load', file.name);
                 };
                 reader.readAsText(file);
             };
@@ -575,12 +602,16 @@
             updateTotal();
         }
 
-        document.getElementById('name-input').addEventListener('input', saveState);
-        
+        document.getElementById('name-input').addEventListener('input', function() {
+            saveState();
+            trackEvent('Input', 'Name Change', this.value);
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
             renderMenu();
             loadState();
             updateTotal();
+            trackEvent('Page', 'Load', 'Rechnung');
         });
     </script>
 </body>
