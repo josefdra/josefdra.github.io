@@ -357,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadState();
     renderMenu();
     updateTotal();
-    calculatePayment(0);
+    calculatePayment(getTotalPrice());
 
     // Event Listener für max115 und max18 Inputs
     document.getElementById('max115').addEventListener('change', function() {
@@ -395,14 +395,14 @@ function loadState() {
         warenkorb = state.warenkorb;
         removeMode = state.removeMode;
         paymentMode = state.paymentMode;
-        priceMode = state.priceMode;
+        priceMode = state.priceMode || 'VK'; // Fallback to 'VK' if not set
         document.getElementById('max115').value = state.max115;
         document.getElementById('max18').value = state.max18;
 
         updateCart();
         updateCounters();
         setPaymentMode(paymentMode);
-        document.getElementById('price-mode-button').textContent = priceMode;
+        setPriceMode(priceMode);
         
         document.body.classList.toggle('remove-mode', removeMode);
         document.getElementById('remove-button').textContent = removeMode ? '+' : '-';
@@ -498,8 +498,12 @@ function getCalculationPrice(item) {
     return item.price; // Immer EK-Preis für Berechnungen
 }
 
+function getTotalPrice() {
+    return warenkorb.reduce((s, i) => s + getCalculationPrice(i) * i.quantity, 0);
+}
+
 function updateTotal(){
-    const t = warenkorb.reduce((s, i) => s + getCalculationPrice(i) * i.quantity, 0);
+    const t = getTotalPrice();
     document.getElementById('total').innerHTML = `<h2>Gesamtpreis: ${t.toFixed(2)} €</h2>`;
     calculatePayment(t);
     saveState();
@@ -589,19 +593,23 @@ function toggleRemoveMode(){
     trackEvent('UI', 'Toggle Remove Mode', removeMode ? 'On' : 'Off');
 }
 
-function togglePriceMode() {
-    priceMode = priceMode === 'EK' ? 'VK' : 'EK';
+function setPriceMode(mode) {
+    priceMode = mode;
     document.getElementById('price-mode-button').textContent = priceMode;
     renderMenu();
     updateCart();
     saveState();
-    trackEvent('UI', 'Toggle Price Mode', priceMode);
+    trackEvent('UI', 'Set Price Mode', priceMode);
+}
+
+function togglePriceMode() {
+    setPriceMode(priceMode === 'EK' ? 'VK' : 'EK');
 }
 
 // Initial render
 renderMenu();
 updateTotal();
-calculatePayment(0);
+calculatePayment(getTotalPrice());
 </script>
 </body>
 </html>
