@@ -62,30 +62,55 @@
             margin-top: 20px;
         }
     </style>
-        <!-- Google tag (gtag.js) -->
+    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-7F6TEXZ1YL"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
     
-      gtag('config', 'G-7F6TEXZ1YL');
+      gtag('config', 'G-7F6TEXZ1YL', {
+        'page_path': window.location.pathname
+      });
+    
+      // Funktion zum Tracken von Ereignissen
+      function trackEvent(category, action, label) {
+        gtag('event', action, {
+          'event_category': category,
+          'event_label': label
+        });
+      }
+    
+      // Funktion zum Tracken von Seitenaufrufen
+      function trackPageView(pagePath) {
+        gtag('config', 'G-7F6TEXZ1YL', {
+          'page_path': pagePath
+        });
+      }
+    
+      // Tracke den initialen Seitenaufruf
+      trackPageView(window.location.pathname);
     </script>
 </head>
 <body>
     <div class="container">
         <h1>Oktoberfest 2024</h1>
         <div class="logo-container">
-            <img src="./logo.png" alt="Paulaner Festzelt Logo" class="logo">
+            <img src="./logo.png" alt="Paulaner Festzelt Logo" class="logo" onclick="trackEvent('Engagement', 'Click', 'Logo')">
         </div>
         <div class="button-container">
-            <a href="kuechenrechner.html" class="button">Küchenrechner</a>
-            <a href="rechnung.html" class="button">Rechnung</a>
-            <a href="abrechnung.html" class="button">Abrechnung</a>
+            <a href="kuechenrechner.html" class="button" onclick="trackEvent('Navigation', 'Click', 'Küchenrechner')">Küchenrechner</a>
+            <a href="rechnung.html" class="button" onclick="trackEvent('Navigation', 'Click', 'Rechnung')">Rechnung</a>
+            <a href="abrechnung.html" class="button" onclick="trackEvent('Navigation', 'Click', 'Abrechnung')">Abrechnung</a>
         </div>
     </div>
     <footer>
         <p>Erstellt von Josef Dräxl</p>
     </footer>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        trackEvent('Page', 'Load', 'Startseite');
+      });
+    </script>
 </body>
 </html>
