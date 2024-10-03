@@ -270,9 +270,9 @@ footer {
         <h2>Optimale Bezahlung:</h2>
         <div id="payment-details"></div>
         <div class="payment-buttons">
-            <button id="mixed" class="payment-button active" onclick="setPaymentMode('mixed')">Gemischt</button>
-            <button id="only115" class="payment-button" onclick="setPaymentMode('only115')">Nur 11,5€</button>
-            <button id="only18" class="payment-button" onclick="setPaymentMode('only18')">Nur 18€</button>
+            <button id="mixed" class="payment-button" onclick="setPaymentMode('mixed', true)">Gemischt</button>
+            <button id="only115" class="payment-button" onclick="setPaymentMode('only115', true)">Nur 11,5€</button>
+            <button id="only18" class="payment-button" onclick="setPaymentMode('only18', true)">Nur 18€</button>
         </div>
         <div class="voucher-input">
             <label>
@@ -383,6 +383,9 @@ function loadState() {
 
         document.body.classList.toggle('remove-mode', removeMode);
         document.getElementById('remove-button').textContent = removeMode ? '+' : '-';
+        
+        // Setze den korrekten Zahlungsmodus-Knopf
+        setPaymentMode(paymentMode, false);
     }
 }
 
@@ -555,13 +558,15 @@ function calculatePayment(p) {
     updateSummaryBar(p, b11, b18, br);
 }
 
-function setPaymentMode(mode) {
+function setPaymentMode(mode, saveState = true) {
     paymentMode = mode;
     document.querySelectorAll('.payment-button').forEach(btn => btn.classList.remove('active'));
     document.getElementById(mode).classList.add('active');
     updateTotal();
-    trackEvent('Payment', 'Set Mode', mode);
-    saveState();
+    if (saveState) {
+        trackEvent('Payment', 'Set Mode', mode);
+        saveState();
+    }
 }
 
 function updateSummaryBar(total,b11,b18,rest){
