@@ -241,7 +241,17 @@ footer {
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
     
-      gtag('config', 'G-7F6TEXZ1YL');
+      gtag('config', 'G-7F6TEXZ1YL', {
+        'page_path': window.location.pathname
+      });
+    
+      // Funktion zum Tracken von Ereignissen
+      function trackEvent(category, action, label) {
+        gtag('event', action, {
+          'event_category': category,
+          'event_label': label
+        });
+      }
     </script>
 </head>
 <body>
@@ -410,8 +420,10 @@ function handleItemClick(n){
     const decodedName = safeDecodeURIComponent(n);
     if(removeMode) {
         removeFromCart(decodedName);
+        trackEvent('Cart', 'Remove Item', decodedName);
     } else {
         addToCart(decodedName);
+        trackEvent('Cart', 'Add Item', decodedName);
     }
 }
 
@@ -478,8 +490,14 @@ document.addEventListener('DOMContentLoaded', function() {
     calculatePayment(0);
 
     // Event Listener für max115 und max18 Inputs
-    document.getElementById('max115').addEventListener('change', saveState);
-    document.getElementById('max18').addEventListener('change', saveState);
+    document.getElementById('max115').addEventListener('change', function() {
+        saveState();
+        trackEvent('Voucher', 'Set Max 11.5', this.value);
+    });
+    document.getElementById('max18').addEventListener('change', function() {
+        saveState();
+        trackEvent('Voucher', 'Set Max 18', this.value);
+    });
 });
 
 function getCalculationPrice(item) {
@@ -490,6 +508,7 @@ function updateTotal(){
     const t = warenkorb.reduce((s, i) => s + getCalculationPrice(i) * i.quantity, 0);
     document.getElementById('total').innerHTML = `<h2>Gesamtpreis: ${t.toFixed(2)} €</h2>`;
     calculatePayment(t);
+    trackEvent('Order', 'Update Total', '', t); // Tracking des Gesamtbetrags
 }
 
 function setPaymentMode(mode) {
@@ -497,7 +516,8 @@ function setPaymentMode(mode) {
     document.querySelectorAll('.payment-button').forEach(btn => btn.classList.remove('active'));
     document.getElementById(mode).classList.add('active');
     updateTotal();
-	saveState();
+    saveState();
+    trackEvent('Payment', 'Set Mode', mode);
 }
 
 function calculatePayment(p){
@@ -564,7 +584,8 @@ function resetAll(){
     updateCart();
     updateCounters();
     renderMenu();
-	saveState();
+    saveState();
+    trackEvent('Cart', 'Reset', '');
 }
 
 function toggleRemoveMode(){
@@ -572,6 +593,7 @@ function toggleRemoveMode(){
     document.body.classList.toggle('remove-mode', removeMode);
     document.getElementById('remove-button').textContent = removeMode ? '+' : '-';
     saveState();
+    trackEvent('UI', 'Toggle Remove Mode', removeMode ? 'On' : 'Off');
 }
 
 function togglePriceMode() {
@@ -579,7 +601,8 @@ function togglePriceMode() {
     document.getElementById('price-mode-button').textContent = priceMode;
     renderMenu();
     updateCart();
-	saveState();
+    saveState();
+    trackEvent('UI', 'Toggle Price Mode', priceMode);
 }
 
 renderMenu();
