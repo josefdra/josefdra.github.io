@@ -376,6 +376,25 @@ function createSafeId(str) {
     return str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    loadState();
+    renderMenu();
+    updateTotal();
+    calculatePayment(getTotalPrice());
+
+    // Event Listener für max115 und max18 Inputs
+    document.getElementById('max115').addEventListener('change', function() {
+        updateTotal();
+        saveState();
+        trackEvent('Voucher', 'Set Max 11.5', this.value);
+    });
+    document.getElementById('max18').addEventListener('change', function() {
+        updateTotal();
+        saveState();
+        trackEvent('Voucher', 'Set Max 18', this.value);
+    });
+});
+
 function saveState() {
     const state = {
         warenkorb: warenkorb,
@@ -392,13 +411,15 @@ function loadState() {
     const savedState = localStorage.getItem('kitchenCalculatorState');
     if (savedState) {
         const state = JSON.parse(savedState);
-        warenkorb = state.warenkorb;
-        removeMode = state.removeMode;
-        paymentMode = state.paymentMode;
-        priceMode = state.priceMode || 'VK'; // Fallback to 'VK' if not set
-        document.getElementById('max115').value = state.max115;
-        document.getElementById('max18').value = state.max18;
+        warenkorb = state.warenkorb || [];
+        removeMode = state.removeMode || false;
+        paymentMode = state.paymentMode || 'mixed';
+        priceMode = state.priceMode || 'VK';
+        
+        document.getElementById('max115').value = state.max115 || '';
+        document.getElementById('max18').value = state.max18 || '';
 
+        // Aktualisiere UI basierend auf geladenem Zustand
         updateCart();
         updateCounters();
         setPaymentMode(paymentMode);
