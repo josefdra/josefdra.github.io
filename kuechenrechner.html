@@ -381,11 +381,6 @@ function loadState() {
         document.getElementById('max115').value = state.max115 || '';
         document.getElementById('max18').value = state.max18 || '';
 
-        updateCart();
-        updateCounters();
-        setPaymentMode(paymentMode);
-        setPriceMode(priceMode);
-        
         document.body.classList.toggle('remove-mode', removeMode);
         document.getElementById('remove-button').textContent = removeMode ? '+' : '-';
     }
@@ -395,6 +390,8 @@ function loadState() {
 document.addEventListener('DOMContentLoaded', function() {
     loadState();
     renderMenu();
+    updateCart();
+    updateCounters();
     updateTotal();
     calculatePayment(getTotalPrice());
     
@@ -607,11 +604,6 @@ function setPriceMode(mode) {
 function togglePriceMode() {
     setPriceMode(priceMode === 'EK' ? 'VK' : 'EK');
 }
-
-// Initial render
-renderMenu();
-updateTotal();
-calculatePayment(getTotalPrice());
 </script>
 </body>
 </html>
