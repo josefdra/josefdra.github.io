@@ -357,22 +357,6 @@ function createSafeId(str) {
     return str.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    loadState();
-    renderMenu();
-    updateTotal();
-    calculatePayment(getTotalPrice());
-    
-    document.getElementById('max115').addEventListener('change', handleVoucherChange);
-    document.getElementById('max18').addEventListener('change', handleVoucherChange);
-});
-
-function handleVoucherChange() {
-    updateTotal();
-    saveState();
-    trackEvent('Voucher', 'Set Max', this.id, this.value);
-}
-
 function saveState() {
     const state = {
         warenkorb: warenkorb,
@@ -405,6 +389,23 @@ function loadState() {
         document.body.classList.toggle('remove-mode', removeMode);
         document.getElementById('remove-button').textContent = removeMode ? '+' : '-';
     }
+}
+
+// Fügen Sie diese Zeile am Ende des DOMContentLoaded Event Listeners hinzu
+document.addEventListener('DOMContentLoaded', function() {
+    loadState();
+    renderMenu();
+    updateTotal();
+    calculatePayment(getTotalPrice());
+    
+    document.getElementById('max115').addEventListener('change', handleVoucherChange);
+    document.getElementById('max18').addEventListener('change', handleVoucherChange);
+});
+
+function handleVoucherChange() {
+    updateTotal();
+    saveState();
+    trackEvent('Voucher', 'Set Max', this.id, this.value);
 }
 
 function renderMenu(){
