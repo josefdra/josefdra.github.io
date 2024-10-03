@@ -508,16 +508,7 @@ function updateTotal(){
     const t = warenkorb.reduce((s, i) => s + getCalculationPrice(i) * i.quantity, 0);
     document.getElementById('total').innerHTML = `<h2>Gesamtpreis: ${t.toFixed(2)} €</h2>`;
     calculatePayment(t);
-    trackEvent('Order', 'Update Total', '', t); // Tracking des Gesamtbetrags
-}
-
-function setPaymentMode(mode) {
-    paymentMode = mode;
-    document.querySelectorAll('.payment-button').forEach(btn => btn.classList.remove('active'));
-    document.getElementById(mode).classList.add('active');
-    updateTotal();
-    saveState();
-    trackEvent('Payment', 'Set Mode', mode);
+    trackEvent('Order', 'Update Total', '', t);
 }
 
 function calculatePayment(p) {
@@ -566,6 +557,15 @@ function calculatePayment(p) {
         <p>Restbetrag in bar: ${br.toFixed(2)} €</p>
     `;
     updateSummaryBar(p, b11, b18, br);
+}
+
+function setPaymentMode(mode) {
+    paymentMode = mode;
+    document.querySelectorAll('.payment-button').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(mode).classList.add('active');
+    updateTotal();
+    saveState();
+    trackEvent('Payment', 'Set Mode', mode);
 }
 
 function updateSummaryBar(total,b11,b18,rest){
