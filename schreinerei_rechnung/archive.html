@@ -3,30 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schreinerei Dräxl - Rechnungssystem</title>
+    <title>Schreinerei Dräxl - Archiv</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
-        <h1>Schreinerei Dräxl</h1>
+        <h1>Archiv</h1>
         <input type="text" id="searchBar" placeholder="Rechnungsname suchen...">
     </header>
+    <button id="backButton" onclick="window.location.href='index.html'">&larr;</button>
     <main id="projectGrid"></main>
-    <button id="archiveButton">Zum Archiv</button>
-    <button id="newInvoiceButton" onclick="createNewInvoice()">+</button>
     <script src="api.js"></script>
     <script src="app.js"></script>
-    <div id="newInvoiceModal" class="modal">
-        <div class="modal-content">
-            <h2>Neue Rechnung erstellen</h2>
-            <input type="text" id="newInvoiceName" placeholder="Rechnungsname">
-            <div class="modal-buttons">
-                <button onclick="createNewInvoice()">Erstellen</button>
-                <button onclick="closeModal()">Abbrechen</button>
-            </div>
-        </div>
-    </div>
+    <script src="archive.js"></script>
     <div id="deleteConfirmationModal" class="modal">
         <div class="modal-content">
             <h2>Rechnung löschen</h2>

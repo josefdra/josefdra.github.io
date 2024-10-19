@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schreinerei Dräxl - Projekt</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="offlineNotification" style="display: none;">
+        Ungespeicherte Änderungen
+        <button onclick="syncWithServer()">Jetzt speichern</button>
+    </div>
+    <button id="backButton" onclick="window.history.back()">&larr;</button>
+    <div id="projectContainer">
+        <h1 id="projectName"></h1>
+        <table id="itemsTable">
+            <thead>
+                <tr>
+                    <th>Menge</th>
+                    <th>Einheit</th>
+                    <th>Preis/Einheit (€)</th>
+                    <th>Gesamtpreis (€)</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <p id="totalPrice">Gesamtpreis: 0.00 €</p>
+        <div id="imageContainer"></div>
+        <input type="file" id="imageUpload" accept="image/*" multiple>
+        <label for="imageUpload" id="uploadImageLabel">Fotos hinzufügen</label>
+        <button id="generatePdfButton" onclick="generatePDF()">PDF generieren</button>
+        <button id="archiveButton" onclick="archiveProject()">Als abgeschlossen markieren</button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="api.js"></script>
+    <script src="app.js"></script>
+    <script src="project.js"></script>
+</body>
+</html>
