@@ -1,6 +1,5 @@
 let currentProject;
 
-
 document.addEventListener('DOMContentLoaded', () => {
     loadProject();
     setupBackButton();
@@ -8,7 +7,92 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('generatePdfButton').addEventListener('click', generatePDF);
     document.getElementById('toggleArchiveButton').addEventListener('click', toggleArchiveStatus);
     document.getElementById('projectDate').addEventListener('change', updateProjectDate);
+    document.getElementById('generatePdfButton').addEventListener('click', generatePDF);
 });
+
+function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Farben definieren
+    const primaryColor = '#3498db';
+    const secondaryColor = '#2c3e50';
+    
+    // Logo hinzufügen
+    const logoImg = new Image();
+    logoImg.src = 'logo_schreiner.webp';
+    logoImg.onload = function() {
+        const imgWidth = 40;
+        const imgHeight = (logoImg.height * imgWidth) / logoImg.width;
+        doc.addImage(logoImg, 'WEBP', 170, 10, imgWidth, imgHeight);
+        
+        // Rechnungskopf
+        doc.setFontSize(24);
+        doc.setTextColor(primaryColor);
+        doc.text("Rechnung", 20, 30);
+        
+        doc.setFontSize(10);
+        doc.setTextColor(secondaryColor);
+        doc.text("Schreinerei Dräxl", 20, 40);
+        doc.text("Musterstraße 123", 20, 45);
+        doc.text("12345 Musterstadt", 20, 50);
+        
+        // Trennlinie
+        doc.setDrawColor(primaryColor);
+        doc.line(20, 55, 190, 55);
+        
+        // Rechnungsdetails
+        doc.setFontSize(12);
+        doc.text(`Datum: ${currentProject.date || new Date().toLocaleDateString()}`, 20, 65);
+        doc.text(`Projektname: ${currentProject.name}`, 20, 72);
+        
+        // Tabellenkopf
+        const headers = ["Menge", "Einheit", "Beschreibung", "Preis/Einheit (€)", "Gesamtpreis (€)"];
+        let yPosition = 85;
+        
+        doc.setFillColor(primaryColor);
+        doc.rect(20, yPosition - 5, 170, 8, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFont(undefined, 'bold');
+        headers.forEach((header, index) => {
+            doc.text(header, 22 + index * 34, yPosition);
+        });
+        
+        // Tabelleninhalt
+        doc.setTextColor(secondaryColor);
+        doc.setFont(undefined, 'normal');
+        yPosition += 10;
+        currentProject.items.forEach((item, index) => {
+            if (yPosition > 250) {
+                doc.addPage();
+                yPosition = 20;
+            }
+            doc.text(item.quantity.toString(), 22, yPosition);
+            doc.text(item.unit, 56, yPosition);
+            doc.text(item.description, 90, yPosition, { maxWidth: 40 });
+            doc.text(item.pricePerUnit.toFixed(2), 124, yPosition);
+            doc.text((item.quantity * item.pricePerUnit).toFixed(2), 158, yPosition);
+            yPosition += 10;
+        });
+        
+        // Gesamtsumme
+        const total = currentProject.items.reduce((sum, item) => sum + (item.quantity * item.pricePerUnit), 0);
+        yPosition += 10;
+        doc.setFont(undefined, 'bold');
+        doc.setFillColor(primaryColor);
+        doc.rect(130, yPosition - 5, 60, 8, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.text(`Gesamtsumme: ${total.toFixed(2)} €`, 132, yPosition);
+        
+        // Fußzeile
+        doc.setFontSize(10);
+        doc.setTextColor(secondaryColor);
+        doc.text("Vielen Dank für Ihr Vertrauen!", 105, 280, null, null, "center");
+        
+        // PDF speichern
+        doc.save(`Rechnung_${currentProject.name}.pdf`);
+    };
+}
 
 function loadProject() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -225,12 +309,6 @@ function showFullSizeImage(src) {
     modal.appendChild(img);
     modal.onclick = () => document.body.removeChild(modal);
     document.body.appendChild(modal);
-}
-
-function generatePDF() {
-    // Hier würde die PDF-Generierungslogik implementiert werden
-    // Da dies jedoch serverseitige Funktionalität erfordert, lassen wir es für die statische Version aus
-    alert('PDF-Generierung ist in der statischen Version nicht verfügbar.');
 }
 
 function updateArchiveButton() {
