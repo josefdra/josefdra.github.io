@@ -179,7 +179,6 @@ h1 {
 
 .modal-content input {
     width: calc(100% - 24px);
-    /* Reduzierte Breite */
     padding: 12px;
     margin: 10px 0 20px;
     border: 2px solid #e0e0e0;
@@ -218,13 +217,11 @@ h1 {
 
 .modal-buttons button:first-child {
     background-color: var(--secondary-color);
-    /* Accent color for "Abbrechen" */
     color: white;
 }
 
 .modal-buttons button:last-child {
     background-color: var(--primary-color);
-    /* Primary color for "Erstellen" */
     color: white;
 }
 
@@ -252,15 +249,6 @@ h1 {
     margin-bottom: 20px;
 }
 
-#itemsTable th,
-#itemsTable td {
-    border: none;
-    padding: 15px;
-    text-align: left;
-    vertical-align: middle;
-    /* Vertikale Zentrierung */
-}
-
 #itemsTable {
     width: 100%;
     border-collapse: separate;
@@ -280,7 +268,7 @@ h1 {
 #itemsTable th,
 #itemsTable td {
     border: none;
-    padding: 10px;
+    padding: 15px;
     text-align: left;
     vertical-align: middle;
 }
@@ -299,11 +287,10 @@ h1 {
 
 #itemsTable td {
     height: 50px;
-    /* Feste Höhe für Tabellenzellen */
 }
 
 #itemsTable td:nth-child(2),
-#itemsTable th:nth-child(3) {
+#itemsTable th:nth-child(2) {
     width: 10%;
 }
 
@@ -313,12 +300,9 @@ h1 {
 }
 
 #itemsTable td:nth-child(4),
-#itemsTable th:nth-child(1) {
-    width: 20%;
-}
-
+#itemsTable th:nth-child(4),
 #itemsTable td:nth-child(5),
-#itemsTable th:nth-child(1) {
+#itemsTable th:nth-child(5) {
     width: 20%;
 }
 
@@ -328,15 +312,6 @@ h1 {
 
 #itemsTable tbody tr:last-child {
     background-color: #e8e8e8;
-}
-
-#itemsTable input,
-#itemsTable select {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
 }
 
 #totalPrice {
@@ -532,9 +507,7 @@ body[data-page="archive"] .back-button {
 }
 
 @media (max-width: 768px) {
-    /* Kopfzeile */
     .project-header {
-        display: flex;
         flex-direction: column;
         align-items: center;
         padding: 10px 0;
@@ -558,17 +531,13 @@ body[data-page="archive"] .back-button {
         font-size: 0.9em;
     }
 
-    /* Tabelle */
     #itemsTable {
         font-size: 0.9em;
     }
 
-    #itemsTable th {
-        padding: 8px 4px;
-    }
-
+    #itemsTable th,
     #itemsTable td {
-        padding: 6px 4px;
+        padding: 8px 4px;
     }
 
     #itemsTable input,
@@ -577,17 +546,11 @@ body[data-page="archive"] .back-button {
         height: 36px;
     }
 
-    /* Gesamtpreis */
     #totalPrice {
-        background-color: #f0f0f0;
         padding: 10px;
         margin-top: 15px;
-        border-radius: 5px;
-        text-align: right;
-        font-weight: bold;
     }
 
-    /* Fotos-Bereich */
     #imageContainer {
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         gap: 10px;
@@ -599,7 +562,6 @@ body[data-page="archive"] .back-button {
         height: 100px;
     }
 
-    /* Aktions-Buttons */
     .action-buttons {
         position: fixed;
         bottom: 20px;
@@ -620,12 +582,12 @@ body[data-page="archive"] .back-button {
 
 @media (max-width: 480px) {
     #projectContainer {
-        padding: 5px;
-        margin: 5px;
+        padding: 10px;
+        margin: 10px;
     }
 
     #itemsTable {
-        font-size: 11px;
+        font-size: 12px;
     }
 
     #itemsTable th,
@@ -635,9 +597,9 @@ body[data-page="archive"] .back-button {
 
     #itemsTable input,
     #itemsTable select {
-        padding: 2px;
-        font-size: 11px;
-        height: 26px;
+        padding: 4px;
+        font-size: 12px;
+        height: 30px;
     }
 
     .image-container,
@@ -651,19 +613,18 @@ body[data-page="archive"] .back-button {
     }
 
     .button {
-        padding: 8px 16px;
-        font-size: 13px;
+        padding: 10px;
+        font-size: 14px;
     }
 
     .floating-button {
-        width: 45px;
-        height: 45px;
-        font-size: 1.3rem;
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
     }
 }
 
 @media (max-width: 768px) {
-
     input[type="number"],
     input[type="text"],
     select {

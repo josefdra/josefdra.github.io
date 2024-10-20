@@ -10,7 +10,6 @@ function generatePDF() {
     const doc = new jsPDF();
     
     const primaryColor = '#2C5E1A';
-    const accentColor = '#8d693a';
     const textColor = '#000000';
     const backgroundColor = '#FFFFFF';
     const lightGrayColor = '#F5F5F5';
@@ -47,7 +46,7 @@ function generatePDF() {
     const colStarts = colWidths.reduce((acc, width, index) => [...acc, (acc[index - 1] || tableStart) + width], []);
     let yPosition = 95;
     
-    const rowHeight = 12; // Erhöhte Zeilenhöhe für bessere Zentrierung
+    const rowHeight = 12;
     
     // Tabellenkopf Hintergrund
     doc.setFillColor(primaryColor);
@@ -72,16 +71,10 @@ function generatePDF() {
             yPosition = 20;
         }
         
-        // Hintergrund für gerade Zeilen
-        if (index % 2 === 0) {
-            doc.setFillColor(lightGrayColor);
-        } else {
-            doc.setFillColor(backgroundColor);
-        }
+        doc.setFillColor(index % 2 === 0 ? lightGrayColor : backgroundColor);
         doc.rect(tableStart, yPosition - rowHeight/2, tableWidth, rowHeight, 'F');
         
-        // Vertikal zentrierte Ausrichtung für alle Werte
-        const verticalCenter = yPosition + 1; // Leichte Anpassung nach oben
+        const verticalCenter = yPosition + 1;
         
         doc.text(item.quantity.toString(), colStarts[0] - 2, verticalCenter, { align: 'right', maxWidth: colWidths[0] - 4 });
         doc.text(item.unit, colStarts[1] - 2, verticalCenter, { align: 'right', maxWidth: colWidths[1] - 4 });
@@ -100,7 +93,6 @@ function generatePDF() {
     doc.rect(tableStart, yPosition - rowHeight/2, tableWidth, rowHeight, 'F');
     doc.setTextColor(textColor);
     
-    // Gesamtsumme mit Doppelpunkt in einer Zeile
     const gesamtsummeText = "Gesamtsumme:";
     const verticalCenter = yPosition + 1;
     doc.text(gesamtsummeText, colStarts[3] - 2, verticalCenter, { align: 'right' });
@@ -187,29 +179,20 @@ function updateProjectView() {
     const toggleButton = document.getElementById('toggleArchiveButton');
     toggleButton.textContent = isArchived ? 'Weiter bearbeiten' : 'Projekt abschließen';
 
-    // Deaktivieren der Bearbeitung, wenn das Projekt archiviert ist
     const inputs = document.querySelectorAll('#itemsTable input, #itemsTable select, #projectDate');
     inputs.forEach(input => {
         input.disabled = isArchived;
     });
 
-    // Verstecken des "Bild hinzufügen" Buttons, wenn das Projekt archiviert ist
     const addImageButton = document.querySelector('.add-image');
     if (addImageButton) {
         addImageButton.style.display = isArchived ? 'none' : 'block';
     }
 
-    // Entfernen der Lösch-Buttons für Zeilen, wenn das Projekt archiviert ist
     const deleteButtons = document.querySelectorAll('.delete-row');
     deleteButtons.forEach(button => {
         button.style.display = isArchived ? 'none' : 'inline';
     });
-}
-
-function setupBackButton() {
-    document.getElementById('backButton').onclick = () => {
-        history.back();
-    };
 }
 
 function renderProject() {
@@ -217,7 +200,6 @@ function renderProject() {
     document.getElementById('projectDate').value = currentProject.date || new Date().toISOString().split('T')[0];
     renderItems();
     renderImages();
-    updateArchiveButton();
 }
 
 function renderItems() {
@@ -362,16 +344,6 @@ function showFullSizeImage(src) {
     modal.appendChild(img);
     modal.onclick = () => document.body.removeChild(modal);
     document.body.appendChild(modal);
-}
-
-function updateArchiveButton() {
-    const button = document.getElementById('toggleArchiveButton');
-    const projects = JSON.parse(localStorage.getItem('projects') || '[]');
-    if (projects.find(p => p.id === currentProject.id)) {
-        button.textContent = 'Projekt abschließen';
-    } else {
-        button.textContent = 'Bearbeitung aufnehmen';
-    }
 }
 
 function saveProject() {

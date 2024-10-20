@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/webp" href="logo_schreiner.webp">
-    <title>Projekt Details</title>
+    <title>Projekt Details - Schreinerei Dräxl</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <button id="backButton" class="back-button">←</button>
+
     <div id="projectContainer">
         <div class="project-header">
             <h1 id="projectName"></h1>
             <input type="date" id="projectDate" class="project-date">
         </div>
+
         <table id="itemsTable">
             <thead>
                 <tr>
@@ -26,16 +28,19 @@
             </thead>
             <tbody></tbody>
         </table>
+
         <div id="totalPrice"></div>
 
-    <h2>Fotos</h2>
-    <div id="imageContainer"></div>
+        <h2>Fotos</h2>
+        <div id="imageContainer"></div>
+        <input type="file" id="imageUpload" accept="image/*" multiple>
 
-    <div class="action-buttons">
-        <button id="generatePdfButton" class="button">PDF generieren</button>
-        <button id="toggleArchiveButton" class="button">Projekt abschließen</button>
+        <div class="action-buttons">
+            <button id="generatePdfButton" class="button">PDF generieren</button>
+            <button id="toggleArchiveButton" class="button">Projekt abschließen</button>
+        </div>
     </div>
+
     <script src="project.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>

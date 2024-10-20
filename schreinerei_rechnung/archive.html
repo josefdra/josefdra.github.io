@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/webp" href="logo_schreiner.webp">
-    <title>Archiv</title>
+    <title>Archiv - Schreinerei Dräxl</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body data-page="archive">
-    <button id="backButton" class="back-button">←</button>
-    
     <header>
         <h1>Archiv</h1>
-        <input type="text" id="searchBar" placeholder="Projekte suchen...">
+        <input type="text" id="searchBar" placeholder="Suche nach archivierten Projekten...">
     </header>
+
+    <button id="backButton" class="back-button">←</button>
 
     <main id="projectGrid" role="main"></main>
 
@@ -23,11 +22,11 @@
 
     <div id="deleteConfirmationModal" class="modal">
         <div class="modal-content">
-            <h2>Rechnungen löschen</h2>
+            <h2>Archivierte Rechnungen löschen</h2>
             <p>Möchten Sie die ausgewählten archivierten Rechnungen wirklich löschen?</p>
             <div class="modal-buttons">
-                <button id="confirmDelete">Löschen</button>
                 <button id="cancelDelete">Abbrechen</button>
+                <button id="confirmDelete">Löschen</button>
             </div>
         </div>
     </div>

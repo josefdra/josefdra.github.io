@@ -6,12 +6,8 @@ let selectedForDeletion = new Set();
 
 // Projekte laden und rendern
 function loadProjects() {
-    const storedProjects = localStorage.getItem('projects');
-    const storedArchivedProjects = localStorage.getItem('archivedProjects');
-    
-    projects = storedProjects ? JSON.parse(storedProjects) : [];
-    archivedProjects = storedArchivedProjects ? JSON.parse(storedArchivedProjects) : [];
-    
+    projects = JSON.parse(localStorage.getItem('projects') || '[]');
+    archivedProjects = JSON.parse(localStorage.getItem('archivedProjects') || '[]');
     renderProjects();
 }
 
@@ -55,41 +51,20 @@ function updateDeleteModeUI() {
     const cancelDeleteButton = document.getElementById('cancelDeleteButton');
     const newInvoiceButton = document.getElementById('newInvoiceButton');
     
+    [deleteButton, confirmDeleteButton, cancelDeleteButton, newInvoiceButton].forEach(button => {
+        if (button) button.style.display = 'none';
+    });
+    
     if (isDeleteMode) {
-        deleteButton.style.display = 'none';
-        confirmDeleteButton.style.display = 'block';
-        cancelDeleteButton.style.display = 'block';
-        if (newInvoiceButton) newInvoiceButton.style.display = 'none';
+        if (confirmDeleteButton) confirmDeleteButton.style.display = 'block';
+        if (cancelDeleteButton) cancelDeleteButton.style.display = 'block';
     } else {
-        deleteButton.style.display = 'block';
-        confirmDeleteButton.style.display = 'none';
-        cancelDeleteButton.style.display = 'none';
+        if (deleteButton) deleteButton.style.display = 'block';
         if (newInvoiceButton) newInvoiceButton.style.display = 'block';
     }
     
-    // Ausgewählte Elemente zurücksetzen
     selectedForDeletion.clear();
     renderProjects();
-}
-
-// Löschen-Buttons aktualisieren
-function updateDeleteButtons() {
-    const deleteButton = document.getElementById('deleteButton');
-    const confirmDeleteButton = document.getElementById('confirmDeleteButton');
-    const cancelDeleteButton = document.getElementById('cancelDeleteButton');
-    const newInvoiceButton = document.getElementById('newInvoiceButton');
-    
-    if (isDeleteMode) {
-        deleteButton.style.display = 'none';
-        confirmDeleteButton.style.display = 'block';
-        cancelDeleteButton.style.display = 'block';
-        if (newInvoiceButton) newInvoiceButton.style.display = 'none';
-    } else {
-        deleteButton.style.display = 'block';
-        confirmDeleteButton.style.display = 'none';
-        cancelDeleteButton.style.display = 'none';
-        if (newInvoiceButton) newInvoiceButton.style.display = 'block';
-    }
 }
 
 // Für Löschung auswählen
@@ -168,9 +143,8 @@ function showNewInvoiceModal() {
 }
 
 // Modal schließen
-function closeModal() {
-    document.getElementById('newInvoiceModal').style.display = 'none';
-    document.getElementById('deleteConfirmationModal').style.display = 'none';
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
 }
 
 // Projekt öffnen
@@ -196,19 +170,23 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('confirmDeleteButton').addEventListener('click', deleteSelectedProjects);
     document.getElementById('cancelDeleteButton').addEventListener('click', exitDeleteMode);
     
-    if (document.getElementById('newInvoiceButton')) {
-        document.getElementById('newInvoiceButton').addEventListener('click', showNewInvoiceModal);
+    const newInvoiceButton = document.getElementById('newInvoiceButton');
+    if (newInvoiceButton) {
+        newInvoiceButton.addEventListener('click', showNewInvoiceModal);
     }
-    if (document.getElementById('createNewInvoice')) {
-        document.getElementById('createNewInvoice').addEventListener('click', createNewInvoice);
+    const createNewInvoice = document.getElementById('createNewInvoice');
+    if (createNewInvoice) {
+        createNewInvoice.addEventListener('click', createNewInvoice);
     }
-    if (document.getElementById('archiveButton')) {
-        document.getElementById('archiveButton').addEventListener('click', () => {
+    const archiveButton = document.getElementById('archiveButton');
+    if (archiveButton) {
+        archiveButton.addEventListener('click', () => {
             window.location.href = 'archive.html';
         });
     }
-    if (document.getElementById('backButton')) {
-        document.getElementById('backButton').addEventListener('click', () => {
+    const backButton = document.getElementById('backButton');
+    if (backButton) {
+        backButton.addEventListener('click', () => {
             window.location.href = 'index.html';
         });
     }
@@ -231,7 +209,6 @@ function toggleProjectArchiveStatus(projectId) {
         targetArray.push(project);
         saveProjects();
         
-        // Wenn wir uns in der Projektansicht befinden, aktualisieren wir die Ansicht
         if (window.location.pathname.includes('project.html')) {
             updateProjectView();
         } else {
@@ -250,19 +227,15 @@ function updateProjectView() {
         document.getElementById('projectName').textContent = project.name;
         
         const toggleButton = document.getElementById('toggleArchiveButton');
-        if (projects.includes(project)) {
-            toggleButton.textContent = 'Projekt abschließen';
-        } else {
-            toggleButton.textContent = 'Weiter bearbeiten';
+        if (toggleButton) {
+            toggleButton.textContent = projects.includes(project) ? 'Projekt abschließen' : 'Weiter bearbeiten';
         }
 
-        // Deaktivieren der Bearbeitung, wenn das Projekt archiviert ist
         const inputs = document.querySelectorAll('#itemsTable input, #itemsTable select');
         inputs.forEach(input => {
             input.disabled = archivedProjects.includes(project);
         });
 
-        // Verstecken des "Bild hinzufügen" Buttons, wenn das Projekt archiviert ist
         const addImageButton = document.querySelector('.add-image');
         if (addImageButton) {
             addImageButton.style.display = archivedProjects.includes(project) ? 'none' : 'block';
