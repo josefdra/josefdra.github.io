@@ -43,5 +43,9 @@
     </div>
 
     <script src="app.js"></script>
+    <script>
+        document.getElementById('createNewInvoice').addEventListener('click', createNewInvoice);
+        document.getElementById('cancelNewInvoice').addEventListener('click', () => closeModal('newInvoiceModal'));
+    </script>
 </body>
 </html>

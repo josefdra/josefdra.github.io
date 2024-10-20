@@ -80,7 +80,7 @@ function generatePDF() {
         doc.text(item.unit, colStarts[1] - 2, verticalCenter, { align: 'right', maxWidth: colWidths[1] - 4 });
         doc.text(item.description, colStarts[2] - 2, verticalCenter, { align: 'right', maxWidth: colWidths[2] - 4 });
         doc.text(`${item.pricePerUnit.toFixed(2)} €/${item.unit}`, colStarts[3] - 2, verticalCenter, { align: 'right', maxWidth: colWidths[3] - 4 });
-        doc.text(`${(item.quantity * item.pricePerUnit).toFixed(2)} €`, colStarts[4] - 2, verticalCenter, { align: 'right', maxWidth: colWidths[4] - 4 });
+        doc.text(`${(parseFloat(item.quantity) * parseFloat(item.pricePerUnit)).toFixed(2)} €`, colStarts[4] - 2, verticalCenter, { align: 'right', maxWidth: colWidths[4] - 4 });
         
         yPosition += rowHeight;
     });
@@ -231,7 +231,7 @@ function createItemRow(item, index) {
             </select>
         </td>
         <td><input type="text" value="${item.description || ''}" data-field="description" data-index="${index}" ${isArchived ? 'disabled' : ''}></td>
-        <td><input type="number" step="0.01" value="${item.pricePerUnit || ''}" data-field="pricePerUnit" data-index="${index}" ${isArchived ? 'disabled' : ''}></td>
+        <td><input type="number" step="0.01" value="${item.pricePerUnit || ''}" data-field="pricePerUnit" data-index="${index}" ${isArchived ? 'disabled' : ''}> €/${item.unit || 'Einheit'}</td>
         <td>${((item.quantity || 0) * (item.pricePerUnit || 0)).toFixed(2)} €</td>
     `;
     
