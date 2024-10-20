@@ -3,28 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schreinerei Dräxl - Rechnungen</title>
+    <title>Schreinerei Dräxl</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
         <h1>Schreinerei Dräxl</h1>
-        <input type="text" id="searchBar" placeholder="Rechnungen suchen...">
+        <input type="text" id="searchBar" placeholder="Projekte suchen...">
     </header>
 
     <main id="projectGrid" role="main"></main>
 
-    <button id="archiveButton">Zum Archiv</button>
-
-    <button id="deleteButton" class="floating-button">-</button>
-    <button id="confirmDeleteButton" class="floating-button confirm">✓</button>
-    <button id="cancelDeleteButton" class="floating-button cancel">✗</button>
+    <button id="archiveButton" class="button">Zum Archiv</button>
     <button id="newInvoiceButton" class="floating-button">+</button>
+    <button id="deleteButton" class="floating-button">-</button>
+    <button id="confirmDeleteButton" class="floating-button">✓</button>
+    <button id="cancelDeleteButton" class="floating-button">✗</button>
 
     <div id="newInvoiceModal" class="modal">
         <div class="modal-content">
             <h2>Neue Rechnung erstellen</h2>
-            <input type="text" id="newInvoiceName" placeholder="Rechnungsname">
+            <input type="text" id="newInvoiceName" placeholder="Name der neuen Rechnung">
             <div class="modal-buttons">
                 <button id="createNewInvoice">Erstellen</button>
                 <button onclick="closeModal()">Abbrechen</button>
@@ -44,6 +43,5 @@
     </div>
 
     <script src="app.js"></script>
-    <script src="api.js"></script>
 </body>
 </html>

@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schreinerei Dräxl - Archiv</title>
+    <title>Archiv - Schreinerei Dräxl</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body data-page="archive">
+    <button id="backButton" class="back-button">←</button>
+    
     <header>
         <h1>Archiv</h1>
-        <input type="text" id="searchBar" placeholder="Archivierte Rechnungen suchen...">
+        <input type="text" id="searchBar" placeholder="Projekte suchen...">
     </header>
-
-    <a href="index.html" id="backButton" class="floating-button">←</a>
 
     <main id="projectGrid" role="main"></main>
 
     <button id="deleteButton" class="floating-button">-</button>
-    <button id="confirmDeleteButton" class="floating-button confirm">✓</button>
-    <button id="cancelDeleteButton" class="floating-button cancel">✗</button>
+    <button id="confirmDeleteButton" class="floating-button">✓</button>
+    <button id="cancelDeleteButton" class="floating-button">✗</button>
 
     <div id="deleteConfirmationModal" class="modal">
         <div class="modal-content">
@@ -32,6 +32,5 @@
     </div>
 
     <script src="app.js"></script>
-    <script src="api.js"></script>
 </body>
 </html>

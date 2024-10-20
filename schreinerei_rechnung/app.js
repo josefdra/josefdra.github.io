@@ -13,7 +13,6 @@ function loadProjects() {
     archivedProjects = storedArchivedProjects ? JSON.parse(storedArchivedProjects) : [];
     
     renderProjects();
-    syncWithServer();
 }
 
 // Projekte rendern
@@ -189,4 +188,65 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'archive.html';
         });
     }
+    if (document.getElementById('backButton')) {
+        document.getElementById('backButton').addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+    }
 });
+
+// Projekt archivieren oder wiederherstellen
+function toggleProjectArchiveStatus(projectId) {
+    let sourceArray, targetArray;
+    if (projects.some(p => p.id === projectId)) {
+        sourceArray = projects;
+        targetArray = archivedProjects;
+    } else {
+        sourceArray = archivedProjects;
+        targetArray = projects;
+    }
+
+    const projectIndex = sourceArray.findIndex(p => p.id === projectId);
+    if (projectIndex !== -1) {
+        const project = sourceArray.splice(projectIndex, 1)[0];
+        targetArray.push(project);
+        saveProjects();
+        
+        // Wenn wir uns in der Projektansicht befinden, aktualisieren wir die Ansicht
+        if (window.location.pathname.includes('project.html')) {
+            updateProjectView();
+        } else {
+            renderProjects();
+        }
+    }
+}
+
+// Aktualisieren der Projektansicht
+function updateProjectView() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectId = urlParams.get('id');
+    const project = projects.find(p => p.id === projectId) || archivedProjects.find(p => p.id === projectId);
+
+    if (project) {
+        document.getElementById('projectName').textContent = project.name;
+        
+        const toggleButton = document.getElementById('toggleArchiveButton');
+        if (projects.includes(project)) {
+            toggleButton.textContent = 'Projekt abschließen';
+        } else {
+            toggleButton.textContent = 'Weiter bearbeiten';
+        }
+
+        // Deaktivieren der Bearbeitung, wenn das Projekt archiviert ist
+        const inputs = document.querySelectorAll('#itemsTable input, #itemsTable select');
+        inputs.forEach(input => {
+            input.disabled = archivedProjects.includes(project);
+        });
+
+        // Verstecken des "Bild hinzufügen" Buttons, wenn das Projekt archiviert ist
+        const addImageButton = document.querySelector('.add-image');
+        if (addImageButton) {
+            addImageButton.style.display = archivedProjects.includes(project) ? 'none' : 'block';
+        }
+    }
+}
