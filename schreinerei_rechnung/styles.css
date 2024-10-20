@@ -1,11 +1,11 @@
 :root {
-    --primary-color: #3498db;
-    --secondary-color: #2ecc71;
-    --accent-color: #e74c3c;
-    --background-color: #ecf0f1;
-    --text-color: #34495e;
-    --card-background: #ffffff;
-    --delete-mode-color: rgba(231, 76, 60, 0.1);
+    --primary-color: #2C5E1A;
+    --secondary-color: #8d693a;
+    --accent-color: #8d693a;
+    --background-color: #FFFFFF;
+    --text-color: #000000;
+    --card-background: #FFFFFF;
+    --delete-mode-color: rgba(222, 184, 135, 0.1);
 }
 
 body {
@@ -174,15 +174,8 @@ h1 {
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
-.modal-content h2 {
-    margin-top: 0;
-    color: var(--primary-color);
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
 .modal-content input {
-    width: 100%;
+    width: calc(100% - 24px); /* Reduzierte Breite */
     padding: 12px;
     margin: 10px 0 20px;
     border: 2px solid #e0e0e0;
@@ -194,6 +187,13 @@ h1 {
 .modal-content input:focus {
     border-color: var(--primary-color);
     outline: none;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: var(--primary-color);
+    font-size: 24px;
+    margin-bottom: 20px;
 }
 
 .modal-buttons {
@@ -213,13 +213,13 @@ h1 {
 }
 
 .modal-buttons button:first-child {
-    background-color: var(--primary-color);
+    background-color: var(--secondary-color); /* Accent color for "Abbrechen" */
     color: white;
 }
 
 .modal-buttons button:last-child {
-    background-color: #f0f0f0;
-    color: var(--text-color);
+    background-color: var(--primary-color); /* Primary color for "Erstellen" */
+    color: white;
 }
 
 .modal-buttons button:hover {
@@ -246,6 +246,13 @@ h1 {
     margin-bottom: 20px;
 }
 
+#itemsTable th, #itemsTable td {
+    border: none;
+    padding: 15px;
+    text-align: left;
+    vertical-align: middle; /* Vertikale Zentrierung */
+}
+
 #itemsTable {
     width: 100%;
     border-collapse: separate;
@@ -255,16 +262,41 @@ h1 {
     overflow: hidden;
 }
 
-#itemsTable th, #itemsTable td {
-    border: none;
-    padding: 15px;
-    text-align: left;
-}
-
 #itemsTable th {
     background-color: var(--primary-color);
     color: white;
     font-weight: bold;
+}
+
+#itemsTable input, #itemsTable select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box; /* Stellt sicher, dass Padding nicht zur Gesamtbreite/-höhe hinzugefügt wird */
+    height: 34px; /* Feste Höhe für alle Eingabefelder */
+    line-height: normal; /* Verhindert unerwünschte Zeilenabstände */
+}
+
+#itemsTable td {
+    height: 50px; /* Feste Höhe für Tabellenzellen */
+}
+
+#itemsTable td:nth-child(2), #itemsTable th:nth-child(3) { 
+    width: 10%; 
+}
+
+#itemsTable td:nth-child(3), #itemsTable th:nth-child(3) { 
+    width: 30%; 
+}
+
+#itemsTable td:nth-child(4), #itemsTable th:nth-child(1) { 
+    width: 20%;
+}
+
+#itemsTable td:nth-child(5), #itemsTable th:nth-child(1) { 
+    width: 20%;
 }
 
 #itemsTable tbody tr:nth-child(even) {
@@ -336,7 +368,6 @@ h1 {
 }
 
 .button:hover {
-    background-color: #27ae60;
     transform: translateY(-2px);
 }
 

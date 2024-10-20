@@ -45,8 +45,29 @@ function renderProjects(projectsToRender = null) {
 // Löschmodus umschalten
 function toggleDeleteMode() {
     isDeleteMode = !isDeleteMode;
+    updateDeleteModeUI();
+}
+
+function updateDeleteModeUI() {
     document.body.classList.toggle('delete-mode', isDeleteMode);
-    updateDeleteButtons();
+    const deleteButton = document.getElementById('deleteButton');
+    const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+    const cancelDeleteButton = document.getElementById('cancelDeleteButton');
+    const newInvoiceButton = document.getElementById('newInvoiceButton');
+    
+    if (isDeleteMode) {
+        deleteButton.style.display = 'none';
+        confirmDeleteButton.style.display = 'block';
+        cancelDeleteButton.style.display = 'block';
+        if (newInvoiceButton) newInvoiceButton.style.display = 'none';
+    } else {
+        deleteButton.style.display = 'block';
+        confirmDeleteButton.style.display = 'none';
+        cancelDeleteButton.style.display = 'none';
+        if (newInvoiceButton) newInvoiceButton.style.display = 'block';
+    }
+    
+    // Ausgewählte Elemente zurücksetzen
     selectedForDeletion.clear();
     renderProjects();
 }
@@ -113,9 +134,7 @@ function deleteSelectedProjects() {
 // Löschmodus verlassen
 function exitDeleteMode() {
     isDeleteMode = false;
-    selectedForDeletion.clear();
-    document.body.classList.remove('delete-mode');
-    updateDeleteButtons();
+    updateDeleteModeUI();
 }
 
 // Neue Rechnung erstellen
