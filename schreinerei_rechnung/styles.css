@@ -532,29 +532,65 @@ body[data-page="archive"] .back-button {
 }
 
 @media (max-width: 768px) {
-    body {
-        font-size: 14px;
+    /* Kopfzeile */
+    .project-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px 0;
     }
 
-    #projectContainer {
-        padding: 10px;
-        margin: 10px;
+    #backButton {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        font-size: 24px;
     }
 
+    #projectName {
+        font-size: 1.5em;
+        margin: 0 40px;
+        text-align: center;
+    }
+
+    #projectDate {
+        margin-top: 5px;
+        font-size: 0.9em;
+    }
+
+    /* Tabelle */
     #itemsTable {
-        font-size: 12px;
+        font-size: 0.9em;
     }
 
-    #itemsTable th,
-    #itemsTable td {
+    #itemsTable th {
         padding: 8px 4px;
+    }
+
+    #itemsTable td {
+        padding: 6px 4px;
     }
 
     #itemsTable input,
     #itemsTable select {
-        padding: 4px;
-        font-size: 12px;
-        height: 28px;
+        padding: 8px 4px;
+        height: 36px;
+    }
+
+    /* Gesamtpreis */
+    #totalPrice {
+        background-color: #f0f0f0;
+        padding: 10px;
+        margin-top: 15px;
+        border-radius: 5px;
+        text-align: right;
+        font-weight: bold;
+    }
+
+    /* Fotos-Bereich */
+    #imageContainer {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
     }
 
     .image-container,
@@ -563,20 +599,22 @@ body[data-page="archive"] .back-button {
         height: 100px;
     }
 
-    #imageContainer {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    /* Aktions-Buttons */
+    .action-buttons {
+        position: fixed;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-around;
+        padding: 0 20px;
     }
 
     .button {
-        padding: 10px 20px;
-        font-size: 14px;
-        margin-top: 15px;
-    }
-
-    .floating-button {
-        width: 50px;
-        height: 50px;
-        font-size: 1.5rem;
+        flex: 1;
+        margin: 0 5px;
+        padding: 12px;
+        font-size: 1em;
     }
 }
 
