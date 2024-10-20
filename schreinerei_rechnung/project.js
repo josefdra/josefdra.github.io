@@ -1,21 +1,8 @@
 let currentProject;
-let isUpdating = false;
 
 document.addEventListener('DOMContentLoaded', () => {
     loadProject();
-    setupBackButton();
-    document.getElementById('imageUpload').addEventListener('change', handleImageUpload);
-    document.getElementById('generatePdfButton').addEventListener('click', generatePDF);
-    document.getElementById('toggleArchiveButton').addEventListener('click', toggleArchiveStatus);
-    document.getElementById('projectDate').addEventListener('change', updateProjectDate);
-    document.getElementById('generatePdfButton').addEventListener('click', generatePDF);
-    document.body.addEventListener('focusin', function(e) {
-        if (e.target.tagName === 'INPUT') {
-            e.target.setSelectionRange(0, e.target.value.length);
-        } else if (e.target.tagName === 'SELECT') {
-            e.target.focus();
-        }
-    });
+    setupEventListeners();
 });
 
 function generatePDF() {
@@ -131,12 +118,12 @@ function generatePDF() {
 function loadProject() {
     const urlParams = new URLSearchParams(window.location.search);
     const projectId = urlParams.get('id');
-
+    
     const projects = JSON.parse(localStorage.getItem('projects') || '[]');
     const archivedProjects = JSON.parse(localStorage.getItem('archivedProjects') || '[]');
-
+    
     currentProject = projects.find(p => p.id === projectId) || archivedProjects.find(p => p.id === projectId);
-
+    
     if (currentProject) {
         renderProject();
         updateProjectView();
@@ -145,9 +132,17 @@ function loadProject() {
     }
 }
 
+function setupEventListeners() {
+    document.getElementById('backButton').addEventListener('click', () => history.back());
+    document.getElementById('imageUpload').addEventListener('change', handleImageUpload);
+    document.getElementById('generatePdfButton').addEventListener('click', generatePDF);
+    document.getElementById('toggleArchiveButton').addEventListener('click', toggleArchiveStatus);
+    document.getElementById('projectDate').addEventListener('change', updateProjectDate);
+}
+
 function updateProjectDate(event) {
     if (isProjectArchived()) return;
-
+    
     currentProject.date = event.target.value;
     saveProject();
 }
@@ -155,7 +150,7 @@ function updateProjectDate(event) {
 function toggleArchiveStatus() {
     const projectId = currentProject.id;
     toggleProjectArchiveStatus(projectId);
-    loadProject();
+    loadProject(); 
 }
 
 function toggleProjectArchiveStatus(projectId) {
@@ -175,7 +170,7 @@ function toggleProjectArchiveStatus(projectId) {
     if (projectIndex !== -1) {
         const project = sourceArray.splice(projectIndex, 1)[0];
         targetArray.push(project);
-
+        
         localStorage.setItem('projects', JSON.stringify(projects));
         localStorage.setItem('archivedProjects', JSON.stringify(archivedProjects));
     }
@@ -188,7 +183,7 @@ function isProjectArchived() {
 
 function updateProjectView() {
     const isArchived = isProjectArchived();
-
+    
     const toggleButton = document.getElementById('toggleArchiveButton');
     toggleButton.textContent = isArchived ? 'Weiter bearbeiten' : 'Projekt abschließen';
 
@@ -226,13 +221,11 @@ function renderProject() {
 }
 
 function renderItems() {
-    if (isUpdating) return;
     const tbody = document.querySelector('#itemsTable tbody');
     tbody.innerHTML = '';
     currentProject.items.forEach((item, index) => {
         tbody.appendChild(createItemRow(item, index));
     });
-    // Fügen Sie immer eine leere Zeile am Ende hinzu, außer bei archivierten Projekten
     if (!isProjectArchived()) {
         tbody.appendChild(createItemRow({quantity: '', unit: '', description: '', pricePerUnit: ''}, currentProject.items.length));
     }
@@ -244,64 +237,72 @@ function createItemRow(item, index) {
     const isArchived = isProjectArchived();
     row.innerHTML = `
         <td>
-            ${!isArchived ? `<button onclick="deleteRow(${index})" class="delete-row" ${isArchived ? 'disabled' : ''}>×</button>` : ''}
-            <input type="number" value="${item.quantity || ''}" onchange="updateItem(${index}, 'quantity', this.value)" inputmode="numeric" pattern="[0-9]*" ${isArchived ? 'disabled' : ''} tabindex="${index * 4 + 1}">
+            ${!isArchived ? `<button class="delete-row" data-index="${index}">×</button>` : ''}
+            <input type="number" value="${item.quantity || ''}" data-field="quantity" data-index="${index}" ${isArchived ? 'disabled' : ''} step="0.01">
         </td>
         <td>
-            <select onchange="updateItem(${index}, 'unit', this.value)" onkeydown="handleSelectKeydown(event, ${index})" ${isArchived ? 'disabled' : ''} tabindex="${index * 4 + 2}">
+            <select data-field="unit" data-index="${index}" ${isArchived ? 'disabled' : ''}>
                 <option value="" ${item.unit === '' ? 'selected' : ''}></option>
                 <option value="Stk" ${item.unit === 'Stk' ? 'selected' : ''}>Stk</option>
                 <option value="m³" ${item.unit === 'm³' ? 'selected' : ''}>m³</option>
                 <option value="Std" ${item.unit === 'Std' ? 'selected' : ''}>Std</option>
             </select>
         </td>
-        <td><input type="text" value="${item.description || ''}" onchange="updateItem(${index}, 'description', this.value)" ${isArchived ? 'disabled' : ''} tabindex="${index * 4 + 3}"></td>
-        <td><input type="number" step="0.01" value="${item.pricePerUnit || ''}" onchange="updateItem(${index}, 'pricePerUnit', this.value)" inputmode="numeric" pattern="[0-9]*([.,][0-9]+)?" ${isArchived ? 'disabled' : ''} tabindex="${index * 4 + 4}"></td>
+        <td><input type="text" value="${item.description || ''}" data-field="description" data-index="${index}" ${isArchived ? 'disabled' : ''}></td>
+        <td><input type="number" step="0.01" value="${item.pricePerUnit || ''}" data-field="pricePerUnit" data-index="${index}" ${isArchived ? 'disabled' : ''}></td>
         <td>${((item.quantity || 0) * (item.pricePerUnit || 0)).toFixed(2)} €</td>
     `;
+    
+    row.querySelectorAll('input, select').forEach(el => {
+        el.addEventListener('change', handleItemChange);
+    });
+    
+    if (!isArchived) {
+        row.querySelector('.delete-row')?.addEventListener('click', handleDeleteRow);
+    }
+    
     return row;
+}
+
+function handleItemChange(event) {
+    const { field, index } = event.target.dataset;
+    let value = event.target.value;
+    
+    if (field === 'quantity' || field === 'pricePerUnit') {
+        value = value.replace(',', '.');
+        value = parseFloat(value);
+    }
+    
+    updateItem(parseInt(index), field, value);
+}
+
+function handleDeleteRow(event) {
+    const index = parseInt(event.target.dataset.index);
+    deleteRow(index);
 }
 
 function updateItem(index, field, value) {
     if (isProjectArchived()) return;
     
-    isUpdating = true;
-    
     if (index === currentProject.items.length) {
-        // Wenn es sich um die letzte (leere) Zeile handelt, fügen Sie ein neues Item hinzu
         currentProject.items.push({quantity: '', unit: '', description: '', pricePerUnit: ''});
     }
-    currentProject.items[index][field] = value !== '' ? (field === 'description' || field === 'unit' ? value : parseFloat(value)) : '';
+    currentProject.items[index][field] = value;
     currentProject.lastEdited = new Date().toISOString();
-    
-    // Verzögern Sie das Rendern und Speichern, um schnelle aufeinanderfolgende Änderungen zu vermeiden
-    setTimeout(() => {
-        renderItems();
-        saveProject();
-        isUpdating = false;
-    }, 300);
-}
-
-function handleSelectKeydown(event, index) {
-    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-        event.preventDefault();
-        const select = event.target;
-        const newIndex = (select.selectedIndex + (event.key === 'ArrowDown' ? 1 : -1) + select.options.length) % select.options.length;
-        select.selectedIndex = newIndex;
-        updateItem(index, 'unit', select.value);
-    }
+    renderItems();
+    saveProject();
 }
 
 function deleteRow(index) {
     if (isProjectArchived()) return;
-
+    
     currentProject.items.splice(index, 1);
     renderItems();
     saveProject();
 }
 
 function updateTotalPrice() {
-    const total = currentProject.items.reduce((sum, item) => sum + (item.quantity * item.pricePerUnit || 0), 0);
+    const total = currentProject.items.reduce((sum, item) => sum + ((item.quantity || 0) * (item.pricePerUnit || 0)), 0);
     document.getElementById('totalPrice').textContent = `Gesamtpreis: ${total.toFixed(2)} €`;
 }
 
@@ -379,10 +380,10 @@ function saveProject() {
 
     const projectList = projects.find(p => p.id === currentProject.id) ? projects : archivedProjects;
     const index = projectList.findIndex(p => p.id === currentProject.id);
-
+    
     if (index !== -1) {
         projectList[index] = currentProject;
-
+        
         localStorage.setItem('projects', JSON.stringify(projects));
         localStorage.setItem('archivedProjects', JSON.stringify(archivedProjects));
     }
