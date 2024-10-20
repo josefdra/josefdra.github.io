@@ -1,22 +1,22 @@
+// Globale Variablen
 let projects = [];
 let archivedProjects = [];
+let isDeleteMode = false;
+let selectedForDeletion = new Set();
 
+// Projekte laden und rendern
 function loadProjects() {
     const storedProjects = localStorage.getItem('projects');
     const storedArchivedProjects = localStorage.getItem('archivedProjects');
     
-    if (storedProjects) {
-        projects = JSON.parse(storedProjects);
-    }
-    
-    if (storedArchivedProjects) {
-        archivedProjects = JSON.parse(storedArchivedProjects);
-    }
+    projects = storedProjects ? JSON.parse(storedProjects) : [];
+    archivedProjects = storedArchivedProjects ? JSON.parse(storedArchivedProjects) : [];
     
     renderProjects();
-    syncWithServer(); // Versuche, mit dem Server zu synchronisieren
+    syncWithServer();
 }
 
+// Projekte rendern
 function renderProjects(projectsToRender = null) {
     const grid = document.getElementById('projectGrid');
     grid.innerHTML = '';
@@ -29,48 +29,97 @@ function renderProjects(projectsToRender = null) {
         const tile = document.createElement('div');
         tile.className = 'project-tile';
         tile.textContent = project.name;
-        tile.onclick = () => openProject(project.id);
         
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = '🗑️';
-        deleteButton.className = 'delete-button';
-        deleteButton.onclick = (e) => {
-            e.stopPropagation();
-            deleteProject(project.id);
-        };
-        tile.appendChild(deleteButton);
+        if (isDeleteMode) {
+            tile.onclick = () => selectForDeletion(project.id, tile);
+            if (selectedForDeletion.has(project.id)) {
+                tile.classList.add('selected-for-deletion');
+            }
+        } else {
+            tile.onclick = () => openProject(project.id);
+        }
         
         grid.appendChild(tile);
     });
 }
 
-function openProject(id) {
-    // Implementierung für das Öffnen eines Projekts
-    window.location.href = `project.html?id=${id}`;
+// Löschmodus umschalten
+function toggleDeleteMode() {
+    isDeleteMode = !isDeleteMode;
+    document.body.classList.toggle('delete-mode', isDeleteMode);
+    updateDeleteButtons();
+    selectedForDeletion.clear();
+    renderProjects();
 }
 
-function searchProjects() {
-    const searchTerm = document.getElementById('searchBar').value.toLowerCase();
-    const currentProjects = window.location.pathname.includes('archive.html') ? archivedProjects : projects;
-    const filteredProjects = currentProjects.filter(project => 
-        project.name.toLowerCase().includes(searchTerm)
-    );
-    renderProjects(filteredProjects);
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadProjects();
-    document.getElementById('searchBar').addEventListener('input', searchProjects);
-    if (document.getElementById('archiveButton')) {
-        document.getElementById('archiveButton').addEventListener('click', () => {
-            window.location.href = 'archive.html';
-        });
+// Löschen-Buttons aktualisieren
+function updateDeleteButtons() {
+    const deleteButton = document.getElementById('deleteButton');
+    const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+    const cancelDeleteButton = document.getElementById('cancelDeleteButton');
+    const newInvoiceButton = document.getElementById('newInvoiceButton');
+    
+    if (isDeleteMode) {
+        deleteButton.style.display = 'none';
+        confirmDeleteButton.style.display = 'block';
+        cancelDeleteButton.style.display = 'block';
+        if (newInvoiceButton) newInvoiceButton.style.display = 'none';
+    } else {
+        deleteButton.style.display = 'block';
+        confirmDeleteButton.style.display = 'none';
+        cancelDeleteButton.style.display = 'none';
+        if (newInvoiceButton) newInvoiceButton.style.display = 'block';
     }
-});
+}
 
-document.getElementById('newInvoiceButton').addEventListener('click', showNewInvoiceModal);
-document.getElementById('searchBar').addEventListener('input', searchProjects);
+// Für Löschung auswählen
+function selectForDeletion(id, element) {
+    if (selectedForDeletion.has(id)) {
+        selectedForDeletion.delete(id);
+        element.classList.remove('selected-for-deletion');
+    } else {
+        selectedForDeletion.add(id);
+        element.classList.add('selected-for-deletion');
+    }
+}
 
+// Ausgewählte Projekte löschen
+function deleteSelectedProjects() {
+    if (selectedForDeletion.size === 0) return;
+
+    const modal = document.getElementById('deleteConfirmationModal');
+    modal.style.display = 'block';
+    
+    document.getElementById('confirmDelete').onclick = () => {
+        const currentProjects = window.location.pathname.includes('archive.html') ? archivedProjects : projects;
+        const updatedProjects = currentProjects.filter(p => !selectedForDeletion.has(p.id));
+        
+        if (window.location.pathname.includes('archive.html')) {
+            archivedProjects = updatedProjects;
+        } else {
+            projects = updatedProjects;
+        }
+        
+        saveProjects();
+        exitDeleteMode();
+        closeModal('deleteConfirmationModal');
+        renderProjects();
+    };
+    
+    document.getElementById('cancelDelete').onclick = () => {
+        closeModal('deleteConfirmationModal');
+    };
+}
+
+// Löschmodus verlassen
+function exitDeleteMode() {
+    isDeleteMode = false;
+    selectedForDeletion.clear();
+    document.body.classList.remove('delete-mode');
+    updateDeleteButtons();
+}
+
+// Neue Rechnung erstellen
 function createNewInvoice() {
     const newInvoiceName = document.getElementById('newInvoiceName').value.trim();
     if (newInvoiceName) {
@@ -84,42 +133,60 @@ function createNewInvoice() {
         
         projects.unshift(newProject);
         saveProjects();
-        closeModal();
+        closeModal('newInvoiceModal');
         renderProjects();
     }
 }
 
+// Projekte speichern
 function saveProjects() {
     localStorage.setItem('projects', JSON.stringify(projects));
     localStorage.setItem('archivedProjects', JSON.stringify(archivedProjects));
-    saveProjectLocally(currentProject);
 }
 
+// Modal für neue Rechnung anzeigen
 function showNewInvoiceModal() {
     document.getElementById('newInvoiceModal').style.display = 'block';
 }
 
+// Modal schließen
 function closeModal() {
     document.getElementById('newInvoiceModal').style.display = 'none';
+    document.getElementById('deleteConfirmationModal').style.display = 'none';
 }
 
-function deleteProject(id) {
-    showDeleteConfirmation(id);
+// Projekt öffnen
+function openProject(id) {
+    window.location.href = `project.html?id=${id}`;
 }
 
-function showDeleteConfirmation(id) {
-    const modal = document.getElementById('deleteConfirmationModal');
-    modal.style.display = 'block';
-    document.getElementById('confirmDelete').onclick = () => {
-        const index = projects.findIndex(p => p.id === id);
-        if (index > -1) {
-            projects.splice(index, 1);
-            saveProjects();
-            renderProjects();
-        }
-        modal.style.display = 'none';
-    };
-    document.getElementById('cancelDelete').onclick = () => {
-        modal.style.display = 'none';
-    };
+// Projekte suchen
+function searchProjects() {
+    const searchTerm = document.getElementById('searchBar').value.toLowerCase();
+    const currentProjects = window.location.pathname.includes('archive.html') ? archivedProjects : projects;
+    const filteredProjects = currentProjects.filter(project => 
+        project.name.toLowerCase().includes(searchTerm)
+    );
+    renderProjects(filteredProjects);
 }
+
+// Event Listener hinzufügen
+document.addEventListener('DOMContentLoaded', () => {
+    loadProjects();
+    document.getElementById('searchBar').addEventListener('input', searchProjects);
+    document.getElementById('deleteButton').addEventListener('click', toggleDeleteMode);
+    document.getElementById('confirmDeleteButton').addEventListener('click', deleteSelectedProjects);
+    document.getElementById('cancelDeleteButton').addEventListener('click', exitDeleteMode);
+    
+    if (document.getElementById('newInvoiceButton')) {
+        document.getElementById('newInvoiceButton').addEventListener('click', showNewInvoiceModal);
+    }
+    if (document.getElementById('createNewInvoice')) {
+        document.getElementById('createNewInvoice').addEventListener('click', createNewInvoice);
+    }
+    if (document.getElementById('archiveButton')) {
+        document.getElementById('archiveButton').addEventListener('click', () => {
+            window.location.href = 'archive.html';
+        });
+    }
+});

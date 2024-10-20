@@ -49,25 +49,6 @@ async function sendChange(change) {
     if (!response.ok) throw new Error('Fehler beim Senden der Änderung');
 }
 
-function saveProjectLocally(project) {
-    const index = projects.findIndex(p => p.id === project.id);
-    if (index !== -1) {
-        projects[index] = project;
-    } else {
-        projects.push(project);
-    }
-    localStorage.setItem('projects', JSON.stringify(projects));
-    
-    offlineChanges.push({
-        projectId: project.id,
-        data: project,
-    });
-    localStorage.setItem('offlineChanges', JSON.stringify(offlineChanges));
-    
-    hasUnsavedChanges = true;
-    showOfflineNotification();
-}
-
 function showOfflineNotification() {
     if (hasUnsavedChanges) {
         const notification = document.getElementById('offlineNotification');

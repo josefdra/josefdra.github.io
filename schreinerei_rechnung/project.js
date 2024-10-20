@@ -1,6 +1,27 @@
+let currentProject;
+
 document.addEventListener('DOMContentLoaded', () => {
     loadProjects();
 });
+
+function loadProject() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectId = urlParams.get('id');
+    currentProject = projects.find(p => p.id === projectId) || archivedProjects.find(p => p.id === projectId);
+    
+    if (currentProject) {
+        renderProject();
+    } else {
+        alert('Projekt nicht gefunden');
+    }
+}
+
+function renderProject() {
+    document.getElementById('projectName').textContent = currentProject.name;
+    renderItems();
+    renderImages();
+    updateArchiveButton();
+}
 
 function renderItems() {
     const tbody = document.querySelector('#itemsTable tbody');
@@ -16,7 +37,7 @@ function renderItems() {
 function createItemRow(item, index) {
     const row = document.createElement('tr');
     row.innerHTML = `
-        <td><input type="number" value="${item.quantity}" onchange="updateItem(${index}, 'quantity', this.value)"></td>
+        <td><input type="number" value="${item.quantity || ''}" onchange="updateItem(${index}, 'quantity', this.value)"></td>
         <td>
             <select onchange="updateItem(${index}, 'unit', this.value)">
                 <option value="Stk" ${item.unit === 'Stk' ? 'selected' : ''}>Stk</option>
@@ -24,8 +45,8 @@ function createItemRow(item, index) {
                 <option value="Std" ${item.unit === 'Std' ? 'selected' : ''}>Std</option>
             </select>
         </td>
-        <td><input type="number" value="${item.pricePerUnit}" onchange="updateItem(${index}, 'pricePerUnit', this.value)"></td>
-        <td>${(item.quantity * item.pricePerUnit || 0).toFixed(2)} €</td>
+        <td><input type="number" value="${item.pricePerUnit || ''}" onchange="updateItem(${index}, 'pricePerUnit', this.value)"></td>
+        <td>${((item.quantity || 0) * (item.pricePerUnit || 0)).toFixed(2)} €</td>
     `;
     return row;
 }
@@ -35,7 +56,7 @@ function updateItem(index, field, value) {
         // Wenn es sich um die letzte (leere) Zeile handelt, fügen Sie ein neues Item hinzu
         currentProject.items.push({quantity: '', unit: '', pricePerUnit: ''});
     }
-    currentProject.items[index][field] = value;
+    currentProject.items[index][field] = value !== '' ? parseFloat(value) : '';
     currentProject.lastEdited = new Date().toISOString();
     renderItems();
     saveProjects();

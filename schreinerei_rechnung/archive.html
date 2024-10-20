@@ -9,22 +9,29 @@
 <body>
     <header>
         <h1>Archiv</h1>
-        <input type="text" id="searchBar" placeholder="Rechnungsname suchen...">
+        <input type="text" id="searchBar" placeholder="Archivierte Rechnungen suchen...">
     </header>
-    <button id="backButton" onclick="window.location.href='index.html'">&larr;</button>
-    <main id="projectGrid"></main>
-    <script src="api.js"></script>
-    <script src="app.js"></script>
-    <script src="archive.js"></script>
+
+    <a href="index.html" id="backButton" class="floating-button">←</a>
+
+    <main id="projectGrid" role="main"></main>
+
+    <button id="deleteButton" class="floating-button">-</button>
+    <button id="confirmDeleteButton" class="floating-button confirm">✓</button>
+    <button id="cancelDeleteButton" class="floating-button cancel">✗</button>
+
     <div id="deleteConfirmationModal" class="modal">
         <div class="modal-content">
-            <h2>Rechnung löschen</h2>
-            <p>Möchten Sie diese Rechnung wirklich löschen?</p>
+            <h2>Rechnungen löschen</h2>
+            <p>Möchten Sie die ausgewählten archivierten Rechnungen wirklich löschen?</p>
             <div class="modal-buttons">
                 <button id="confirmDelete">Löschen</button>
                 <button id="cancelDelete">Abbrechen</button>
             </div>
         </div>
     </div>
+
+    <script src="app.js"></script>
+    <script src="api.js"></script>
 </body>
 </html>
