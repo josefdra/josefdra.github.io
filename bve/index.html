@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anmeldeformular Gründungsfest BV "Enzian" Steinsberg</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/validator/13.11.0/validator.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c5282;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .checkbox-group {
+            margin: 10px 0;
+        }
+        .person-count {
+            width: 100px !important;
+            margin-left: 10px;
+        }
+        .radio-group {
+            margin: 10px 0;
+        }
+        .radio-group label {
+            display: inline;
+            margin-right: 20px;
+        }
+        button {
+            background-color: #2c5282;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #2b6cb0;
+        }
+        .error {
+            color: #e53e3e;
+            font-size: 0.8em;
+            margin-top: 5px;
+            display: none;
+        }
+        .success {
+            color: #38a169;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="step1" class="step active">
+            <h1>Anmeldung für das Gründungsfest des BV „Enzian" Steinsberg<br>
+                <small>11. bis 13. Juli 2025</small></h1>
+            
+            <div class="form-group">
+                <label for="email">E-Mail-Adresse *</label>
+                <input type="email" id="email" name="email" required>
+                <div class="error" id="emailError">Bitte geben Sie eine gültige E-Mail-Adresse ein</div>
+            </div>
+            <button onclick="sendVerificationCode()">Verifizierungscode anfordern</button>
+        </div>
+
+        <div id="step2" class="step">
+            <h1>E-Mail Verifizierung</h1>
+            <p>Bitte geben Sie den Verifizierungscode ein, den wir an Ihre E-Mail-Adresse gesendet haben.</p>
+            <div class="form-group">
+                <label for="verificationCode">Verifizierungscode</label>
+                <input type="text" id="verificationCode" maxlength="6" style="letter-spacing: 3px; text-align: center;">
+                <div class="error" id="codeError">Ungültiger Code</div>
+            </div>
+            <button onclick="verifyCode()">Code bestätigen</button>
+            <button onclick="resendCode()" style="background-color: #718096; margin-top: 10px;">Code erneut senden</button>
+        </div>
+
+        <div id="step3" class="step">
+            <h1>Anmeldung für das Gründungsfest des BV „Enzian" Steinsberg<br>
+                <small>11. bis 13. Juli 2025</small></h1>
+            
+            <form action="https://formspree.io/f/xdkkdpoa" method="POST" id="anmeldeform" onsubmit="return validateForm()">
+                <input type="hidden" id="finalEmail" name="email">
+                
+                <div class="form-group">
+                    <label for="vereinsname">Vereinsname *</label>
+                    <input type="text" id="vereinsname" name="vereinsname" required>
+                    <div class="error" id="vereinsnameError">Bitte geben Sie den Vereinsnamen ein</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ansprechpartner">Ansprechpartner *</label>
+                    <input type="text" id="ansprechpartner" name="ansprechpartner" required>
+                    <div class="error" id="ansprechpartnerError">Bitte geben Sie einen Ansprechpartner an</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="anschrift">Anschrift *</label>
+                    <input type="text" id="anschrift" name="anschrift" required>
+                    <div class="error" id="anschriftError">Bitte geben Sie eine Anschrift ein</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="telefon">Telefon *</label>
+                    <input type="tel" id="telefon" name="telefon" required>
+                    <div class="error" id="telefonError">Bitte geben Sie eine gültige Telefonnummer ein</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Teilnahme an folgenden Tagen:</label>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="freitag" name="freitag">
+                        <label for="freitag">Freitag, 11.07.2025</label>
+                        <input type="number" id="freitagPersonen" name="freitagPersonen" class="person-count" min="0" placeholder="Personen">
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="samstag" name="samstag">
+                        <label for="samstag">Samstag, 12.07.2025</label>
+                        <input type="number" id="samstagPersonen" name="samstagPersonen" class="person-count" min="0" placeholder="Personen">
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="sonntag" name="sonntag">
+                        <label for="sonntag">Sonntag, 13.07.2025 (mit traditionellem Festzug)</label>
+                        <input type="number" id="sonntagPersonen" name="sonntagPersonen" class="person-count" min="0" placeholder="Personen">
+                    </div>
+                    <div class="error" id="tageError">Bitte wählen Sie mindestens einen Tag aus</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Anreise mit Bus:</label>
+                    <div class="radio-group">
+                        <input type="radio" id="busJa" name="bus" value="ja">
+                        <label for="busJa">Ja</label>
+                        <input type="radio" id="busNein" name="bus" value="nein">
+                        <label for="busNein">Nein</label>
+                    </div>
+                    <div class="error" id="busError">Bitte wählen Sie die Anreiseart aus</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="getraenkemarken">Anzahl benötigter Getränkemarken</label>
+                    <input type="number" id="getraenkemarken" name="getraenkemarken" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="festabzeichen">Anzahl benötigter Festabzeichen</label>
+                    <input type="number" id="festabzeichen" name="festabzeichen" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="festschrift">Anzahl benötigter Festschriften</label>
+                    <input type="number" id="festschrift" name="festschrift" min="0">
+                </div>
+
+                <button type="submit">Anmeldung absenden</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let verificationCode = '';
+        let verifiedEmail = '';
+
+        function showStep(stepNumber) {
+            document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+            document.getElementById('step' + stepNumber).classList.add('active');
+        }
+
+        function generateCode() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        function sendVerificationCode() {
+            const email = document.getElementById('email').value;
+            if (!validator.isEmail(email)) {
+                document.getElementById('emailError').style.display = 'block';
+                return;
+            }
+
+            verificationCode = generateCode();
+            console.log('Verifizierungscode:', verificationCode);
+
+            const formData = new FormData();
+            formData.append('email', email);
+            formData.append('verification_code', verificationCode);
+            formData.append('_subject', 'Ihr Verifizierungscode für die Festanmeldung');
+
+            fetch('https://formspree.io/f/mjkkopvk', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            showStep(2);
+        }
+
+        function verifyCode() {
+            const inputCode = document.getElementById('verificationCode').value;
+            if (inputCode === verificationCode) {
+                verifiedEmail = document.getElementById('email').value;
+                document.getElementById('finalEmail').value = verifiedEmail;
+                showStep(3);
+            } else {
+                document.getElementById('codeError').style.display = 'block';
+            }
+        }
+
+        function resendCode() {
+            sendVerificationCode();
+            document.getElementById('codeError').style.display = 'none';
+        }
+
+        function validateForm() {
+            if (!verifiedEmail) {
+                alert('Bitte verifizieren Sie zuerst Ihre E-Mail-Adresse.');
+                return false;
+            }
+
+            let isValid = true;
+            
+            // Pflichtfelder prüfen
+            const requiredFields = ['vereinsname', 'ansprechpartner', 'anschrift', 'telefon'];
+            requiredFields.forEach(field => {
+                const value = document.getElementById(field).value;
+                if (!value || value.trim() === '') {
+                    document.getElementById(field + 'Error').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById(field + 'Error').style.display = 'none';
+                }
+            });
+
+            // Telefonnummer validieren
+            const telefon = document.getElementById('telefon').value;
+            if (!validator.isMobilePhone(telefon, 'de-DE') && !validator.isMobilePhone(telefon, 'any')) {
+                document.getElementById('telefonError').style.display = 'block';
+                isValid = false;
+            }
+
+            // Mindestens ein Tag muss ausgewählt sein
+            const tage = ['freitag', 'samstag', 'sonntag'];
+            const mindestensEinTag = tage.some(tag => document.getElementById(tag).checked);
+            if (!mindestensEinTag) {
+                document.getElementById('tageError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('tageError').style.display = 'none';
+            }
+
+            // Personenzahl für ausgewählte Tage prüfen
+            tage.forEach(tag => {
+                const checkbox = document.getElementById(tag);
+                const personenInput = document.getElementById(tag + 'Personen');
+                if (checkbox.checked && (!personenInput.value || personenInput.value < 1)) {
+                    isValid = false;
+                    alert(`Bitte geben Sie die Anzahl der Personen für ${tag} an`);
+                }
+            });
+
+            // Busanreise muss ausgewählt sein
+            const busSelected = document.querySelector('input[name="bus"]:checked');
+            if (!busSelected) {
+                document.getElementById('busError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('busError').style.display = 'none';
+            }
+
+            return isValid;
+        }
+
+        // Event Listener für Checkbox-Änderungen
+        ['freitag', 'samstag', 'sonntag'].forEach(tag => {
+            document.getElementById(tag).addEventListener('change', function() {
+                const personenInput = document.getElementById(tag + 'Personen');
+                personenInput.required = this.checked;
+                if (!this.checked) {
+                    personenInput.value = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
