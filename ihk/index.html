@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Navier-Stokes Simulation</title>
+    
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/black.min.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #bfdbfe;
+            --secondary: #64748b;
+            --accent: #0ea5e9;
+            --background: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --success: #059669;
+            --border: #e2e8f0;
+        }
+        
+        .reveal {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: var(--text);
+        }
+
+        .reveal h1, .reveal h2, .reveal h3 {
+            color: var(--text);
+            text-transform: none;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            text-align: center;
+        }
+
+        .reveal h1 {
+            font-size: 2.5em;
+            margin-bottom: 0.5em;
+            background: linear-gradient(120deg, var(--primary) 0%, var(--accent) 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .reveal h2 {
+            font-size: 2em;
+            color: var(--primary);
+            margin-bottom: 1em;
+        }
+
+        .reveal h3 {
+            font-size: 1.5em;
+            color: var(--secondary);
+            margin-bottom: 0.5em;
+        }
+        
+        .reveal .slides {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .reveal .slides section {
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(8px);
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 100%;
+            margin: 20px auto;
+            align-items: start;
+        }
+        
+        .code-wrapper {
+            max-height: 400px;
+            overflow-y: auto;
+            background: #1E1E1E;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            width: 90%;
+        }
+        
+        pre {
+            margin: 0;
+            font-size: 0.8em;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .performance-table {
+            font-size: 0.9em;
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .performance-table th {
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .performance-table td {
+            padding: 12px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+        
+        .performance-table tr:hover {
+            background: #f8fafc;
+        }
+        
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            position: relative;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary-light);
+            z-index: 1;
+        }
+        
+        .timeline-item {
+            text-align: center;
+            flex: 1;
+            padding: 20px;
+            font-size: 0.9em;
+            background: white;
+            border-radius: 12px;
+            margin: 0 15px;
+            z-index: 2;
+            transition: transform 0.3s ease;
+            border: 2px solid var(--primary-light);
+        }
+        
+        .timeline-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .timeline-item h4 {
+            color: var(--primary);
+            margin: 0 0 10px 0;
+            font-weight: 600;
+        }
+        
+        .image-container {
+            max-width: 100%;
+            height: auto;
+            margin: 30px auto;
+            text-align: center;
+        }
+        
+        .image-container img {
+            max-width: 90%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transition: transform 0.3s ease;
+        }
+        
+        .image-container img:hover {
+            transform: scale(1.02);
+        }
+
+        .math {
+            font-size: 1em;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            text-align: center;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, var(--primary-light) 0%, rgba(14, 165, 233, 0.2) 100%);
+            padding: 8px 16px;
+            border-radius: 8px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        ul li {
+            position: relative;
+            padding-left: 1.5em;
+            margin-bottom: 0.8em;
+            line-height: 1.5;
+        }
+        
+        ul li::before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .progress {
+            color: var(--primary) !important;
+            height: 4px !important;
+        }
+        
+        .controls {
+            color: var(--primary) !important;
+        }
+        
+        .slide-number {
+            color: var(--text-light) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Titelfolie -->
+            <section>
+                <h1>Entwicklung einer 2D-Simulation der Navier-Stokes-Gleichungen</h1>
+                <p>Josef Dräxl</p>
+                <p><small>BMW Group | Oktober 2024</small></p>
+            </section>
+
+            <!-- Überblick -->
+            <section>
+                <h2>Projektüberblick</h2>
+                <div class="grid-container">
+                    <div>
+                        <h3>Ausgangssituation</h3>
+                        <ul>
+                            <li>1D Burgers-Gleichung Simulation</li>
+                            <li>Basis für Strömungssimulation</li>
+                            <li>CPU-basierte Implementierung</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Ziele</h3>
+                        <ul>
+                            <li>Erweiterung auf 2D</li>
+                            <li>GPU-Beschleunigung</li>
+                            <li>Visualisierung der Kelvin-Helmholtz-Instabilität</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Theoretische Grundlagen -->
+            <section>
+                <h2>Theoretische Grundlagen</h2>
+                <div class="grid-container">
+                    <div>
+                        <h3>Navier-Stokes-Gleichungen</h3>
+                        <div class="math">
+                            \[ \frac{\partial u}{\partial t} + (u \cdot \nabla)u = -\nabla p + \frac{1}{Re} \nabla^2 u \]
+                            \[ \nabla \cdot u = 0 \]
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Parameter</h3>
+                        <ul>
+                            <li>Reynolds-Zahl: Re = 200·10³</li>
+                            <li>Gitterauflösung: 1024 × 1024</li>
+                            <li>CFL-Nummer: 0.7</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Numerische Methoden -->
+            <section>
+                <h2>Numerische Methoden</h2>
+                <div class="grid-container">
+                    <div>
+                        <h3>Räumliche Diskretisierung</h3>
+                        <ul>
+                            <li>Fourier-Spektralmethode</li>
+                            <li>Finite-Differenzen (2.-8. Ordnung)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Zeitliche Integration</h3>
+                        <ul>
+                            <li>Runge-Kutta 4. Ordnung</li>
+                            <li>Adaptiver Zeitschritt (CFL)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Implementierung -->
+            <section>
+                <h2>Implementierung</h2>
+                <div class="grid-container">
+                    <div>
+                        <h3>Modulstruktur</h3>
+                        <ul>
+                            <li>data.py: Datenstrukturen</li>
+                            <li>operations.py: Numerik</li>
+                            <li>solver.py: Lösungsalgorithmen</li>
+                            <li>plot.py: Visualisierung</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Technologien</h3>
+                        <ul>
+                            <li>Python mit NumPy/CuPy</li>
+                            <li>CUDA für GPU-Beschleunigung</li>
+                            <li>Matplotlib für Visualisierung</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Code-Beispiel -->
+            <section>
+                <h2>Code-Beispiel: FFT-Ableitung</h2>
+                <div class="code-wrapper">
+                    <pre><code class="python">def _get_fft1_derivative(self, axis, M):
+    return np.real(np.fft.ifft2(
+        1j * self.con_data.K[axis] * 
+        np.fft.fft2(M)
+    ))</code></pre>
+                </div>
+            </section>
+
+            <!-- Performance -->
+            <section>
+                <h2>Performance-Analyse</h2>
+                <table class="performance-table">
+                    <thead>
+                        <tr>
+                            <th>Implementierung</th>
+                            <th>Mittlere Schrittzeit (ms)</th>
+                            <th>Beschleunigung</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>CPU-FFT</td>
+                            <td>5798.79</td>
+                            <td>1.0x</td>
+                        </tr>
+                        <tr>
+                            <td>CPU-FD</td>
+                            <td>2053.91</td>
+                            <td>2.8x</td>
+                        </tr>
+                        <tr>
+                            <td>GPU-FFT</td>
+                            <td>438.00</td>
+                            <td>13.2x</td>
+                        </tr>
+                        <tr>
+                            <td>GPU-FD</td>
+                            <td>244.75</td>
+                            <td>23.7x</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Visualisierung -->
+            <section>
+                <h2>Visualisierung der Kelvin-Helmholtz-Instabilität</h2>
+                <div class="grid-container">
+                    <div>
+                        <h3>Darstellungsmethoden</h3>
+                        <ul>
+                            <li>Geschwindigkeitsvektoren</li>
+                            <li>Wirbelstärke-Konturplot</li>
+                            <li>Zeitliche Evolution</li>
+                        </ul>
+                    </div>
+                    <div class="image-container">
+                        <img src="/api/placeholder/400/300" alt="Kelvin-Helmholtz Simulation">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Timeline -->
+            <section>
+                <h2>Projektablauf</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h4>Phase 1</h4>
+                        <p>Analysephase</p>
+                        <p>15h</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>Phase 2</h4>
+                        <p>Entwicklung</p>
+                        <p>40h</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>Phase 3</h4>
+                        <p>Tests</p>
+                        <p>15h</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>Phase 4</h4>
+                        <p>Dokumentation</p>
+                        <p>10h</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Herausforderungen -->
+            <section>
+                <h2>Herausforderungen und Lösungen</h2>
+                <div class="grid-container">
+                    <div>
+                        <h3>Herausforderungen</h3>
+                        <ul>
+                            <li>Numerische Stabilität</li>
+                            <li>GPU-Speichermanagement</li>
+                            <li>Performance-Optimierung</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Lösungen</h3>
+                        <ul>
+                            <li>Adaptiver Zeitschritt</li>
+                            <li>Effiziente Datentransfers</li>
+                            <li>Vektorisierung</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ergebnisse -->
+            <section>
+                <h2>Ergebnisse</h2>
+                <div class="grid-container">
+                    <div>
+                        <h3>Technisch</h3>
+                        <ul>
+                            <li>23.7x Beschleunigung</li>
+                            <li>Stabile numerische Lösung</li>
+                            <li>Effiziente Implementierung</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Physikalisch</h3>
+                        <ul>
+                            <li>Korrekte Wirbelbildung</li>
+                            <li>Energieerhaltung</li>
+                            <li>Realistische Turbulenz</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ausblick -->
+            <section>
+                <h2>Ausblick</h2>
+                <div class="grid-container">
+                    <div>
+                        <h3>Kurzfristig</h3>
+                        <ul>
+                            <li>Zusätzliche Randbedingungen</li>
+                            <li>Turbulenzmodelle</li>
+                            <li>UI-Entwicklung</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Langfristig</h3>
+                        <ul>
+                            <li>3D-Erweiterung</li>
+                            <li>Adaptive Verfeinerung</li>
+                            <li>Integration in BMW-Prozesse</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Vielen Dank -->
+            <section>
+                <h1>Vielen Dank für Ihre Aufmerksamkeit</h1>
+                <p>Fragen?</p>
+            </section>
+        </div>
+    </div>
+
+    <!-- Reveal.js Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/math/math.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/highlight/highlight.min.js"></script>
+    
+    <script>
+        Reveal.initialize({
+            hash: true,
+            width: '100%',
+            height: '100%',
+            margin: 0.04,
+            minScale: 0.2,
+            maxScale: 2.0,
+            
+            // Präsentationseinstellungen
+            controls: true,
+            progress: true,
+            center: false,
+            
+            // Transition Effekte
+            transition: 'slide',
+            transitionSpeed: 'default',
+            
+            // Plugins
+            plugins: [RevealMath.KaTeX, RevealHighlight],
+            
+            // Anpassungen für verschiedene Bildschirmgrößen
+            responsive: true,
+            
+            // Weitere Einstellungen
+            hideInactiveCursor: true,
+            hideCursorTime: 3000,
+            
+            // Tastatursteuerung
+            keyboard: {
+                // Eigene Tastaturkürzel
+                38: 'prev',
+                40: 'next',
+            },
+            
+            // Mathe-Plugin Konfiguration
+            math: {
+                mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+                config: 'TeX-AMS_HTML-full'
+            },
+            
+            // Code-Highlighting Konfiguration
+            highlight: {
+                tabReplace: '    ',
+                escapeHTML: false,
+            },
+            
+            // Automatische Anpassung der Schriftgrößen
+            dependencies: [{
+                src: 'plugin/zoom-js/zoom.js',
+                async: true
+            }],
+            
+            // Event Listener für responsive Anpassungen
+            ready: function() {
+                // Initialisierung nach dem Laden
+                updateStyles();
+                
+                // Event Listener für Fenstergrößenänderungen
+                window.addEventListener('resize', function() {
+                    updateStyles();
+                });
+            }
+        });
+        
+        // Funktion zur Anpassung der Styles basierend auf der Fenstergröße
+        function updateStyles() {
+            const width = window.innerWidth;
+            const slides = document.querySelectorAll('.reveal .slides section');
+            
+            slides.forEach(slide => {
+                // Anpassung der Schriftgrößen
+                if (width < 600) {
+                    slide.style.fontSize = '0.7em';
+                } else if (width < 900) {
+                    slide.style.fontSize = '0.8em';
+                } else {
+                    slide.style.fontSize = '1em';
+                }
+                
+                // Anpassung der Gridlayouts
+                const grids = slide.querySelectorAll('.grid-container');
+                grids.forEach(grid => {
+                    if (width < 600) {
+                        grid.style.gridTemplateColumns = '1fr';
+                    } else {
+                        grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(250px, 1fr))';
+                    }
+                });
+                
+                // Anpassung der Tabellen
+                const tables = slide.querySelectorAll('table');
+                tables.forEach(table => {
+                    if (width < 600) {
+                        table.style.fontSize = '0.6em';
+                    } else {
+                        table.style.fontSize = '0.8em';
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>
