@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support - ProjectHive</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+        header {
+            background-color: #2C5E1A;
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        nav {
+            background-color: #8d693a;
+            padding: 0.5rem;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .support-section {
+            background-color: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .faq {
+            margin-top: 2rem;
+        }
+        .faq-item {
+            margin-bottom: 1.5rem;
+        }
+        .faq-question {
+            font-weight: bold;
+            color: #2C5E1A;
+            margin-bottom: 0.5rem;
+        }
+        .contact-form {
+            margin-top: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #2C5E1A;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #234a14;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 2rem;
+        }
+        footer a {
+            color: #aaa;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        footer a:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>ProjectHive</h1>
+        <p>Support & Hilfe</p>
+    </header>
+    
+    <div class="container">
+        <section class="support-section">
+            <h2>Support für Beta-Tester</h2>
+            <p>Als Beta-Tester der ProjectHive App haben Sie direkten Zugang zu unserem Support-Team. Wir helfen Ihnen gerne bei allen Fragen zur Nutzung der App und nehmen Ihr Feedback entgegen, um die App kontinuierlich zu verbessern.</p>
+            
+            <div class="faq">
+                <h3>Häufig gestellte Fragen</h3>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Wie funktioniert die Offline-Nutzung?</div>
+                    <div class="faq-answer">
+                        <p>Die App speichert alle Ihre Daten lokal auf dem Gerät. 
+                        </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Kann ich die Daten zwischen Geräten synchronisieren?</div>
+                    <div class="faq-answer">
+                        <p>In der aktuellen Beta-Version ist die Synchronisierung zwischen Geräten noch nicht implementiert. Diese Funktion ist für zukünftige Versionen geplant.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="contact-form">
+                <h3>Kontaktformular</h3>
+                <p>Haben Sie weitere Fragen oder Feedback? Kontaktieren Sie uns direkt:</p>
+                
+                <form>
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">E-Mail</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Betreff</label>
+                        <input type="text" id="subject" name="subject" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Nachricht</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    
+                    <button type="submit">Absenden</button>
+                </form>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 ProjectHive. Alle Rechte vorbehalten.</p>
+    </footer>
+</body>
+</html>
