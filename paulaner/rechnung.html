@@ -219,122 +219,131 @@
     </footer>
     <button id="reset-button" onclick="resetAll()"><span>Reset</span>↺</button>
     <script>
-        // Preisdefinitionen für Menüs
-        const PREIS_ENTEN_MENU = 645;
-        const PREIS_BRAUMEISTER_MENU = 655;
-        const PREIS_VEGGIE_MENU = 535;
-
         const menu = [
-            {
-                category: "Gutscheine",
-                items: [
-                    {name: "Essenszeichen", price: 11.5, type: "food"},
-                    {name: "Wertmarken", price: 18, type: "other"},
-                    {name: "Bierzeichen", price: 13.74, type: "other"}
-                ]
-            },
             {
                 category: "Getränke",
                 items: [
-                    {name: "Bier", price: 15.10, type: "other"},
-                    {name: "Wasser 0,5l", price: 5.95, type: "other"},
-                    {name: "Spezi 0,5l", price: 6.50, type: "other"},
-                    {name: "Apfelschorle 0,5l", price: 6.15, type: "other"},
-                    {name: "Wasser 0,75l", price: 11.20, type: "other"},
-                    {name: "Weinschorle 0,5l weiß", price: 16.00, type: "other"},
+                    {name: "Bier 1,0l", price: 15.40, type: "other"},
+                    {name: "Alkfrei Bier 1,0l", price: 15.40, type: "other"},
+                    {name: "Radler 1,0l", price: 15.40, type: "other"},
+                    {name: "Wasser 0,5l", price: 6.70, type: "other"},
+                    {name: "Apfelschorle 0,5l", price: 6.70, type: "other"},
+                    {name: "Spezi 0,5l", price: 6.70, type: "other"},
+                    {name: "Bad Brambacher Gourmet 0,75l", price: 12.40, type: "other"},
                     {name: "Weißwein 0,5l", price: 27.50, type: "other"},
-                    {name: "Willi 4cl", price: 11.00, type: "other"},
-                    {name: "Jägermeister 2cl", price: 7.50, type: "other"},
-                    {name: "Feigling 2cl", price: 6.00, type: "other"}
+                    {name: "Wein-Schorle weiß 0,5l", price: 16.00, type: "other"},
+                    {name: "Roséwein 0,5l", price: 27.50, type: "other"},
+                    {name: "Wein-Schorle rosé 0,5l", price: 16.00, type: "other"},
+                    {name: "Willi 4cl", price: 12.80, type: "other"},
+                    {name: "Jägermeister 2cl", price: 8.80, type: "other"},
+                    {name: "Feigling 2cl", price: 6.80, type: "other"},
+                    {name: "Kaffee inkl. Haferl", price: 10.90, type: "other"}
                 ]
             },
             {
-                category: "Brotzeiten",
+                category: "Vorweg & zwischendurch",
                 items: [
-                    {name: "Bayerisches Carpaccio", price: 19.80, type: "food"},
-                    {name: "Obatzda / Wurstsalat", price: 16.80, type: "food"},
-                    {name: "Schweizer Wurstsalat", price: 18.00, type: "food"},
-                    {name: "Geflügelsalat", price: 17.80, type: "food"},
-                    {name: "Wiesnbrezn", price: 7.40, type: "food"},
-                    {name: "Kleine Breze", price: 2.20, type: "food"},
-                    {name: "Speckstange", price: 4.90, type: "food"}
+                    {name: "Münchner Wurstsalat", price: 17.80, type: "food"},
+                    {name: "Schweizer Wurstsalat", price: 19.90, type: "food"},
+                    {name: "Obatzter", price: 17.80, type: "food"},
+                    {name: "Geflügelsalat", price: 18.90, type: "food"},
+                    {name: "Rinds-Tatar", price: 22.80, type: "food"},
+                    {name: "Vorspeisenbrettl für 2 Pax", price: 39.00, type: "food"}
                 ]
             },
             {
                 category: "Suppen",
                 items: [
-                    {name: "Pfannenkuchensuppe", price: 8.80, type: "food"},
-                    {name: "Tomaten-Orangen-Creme-Suppe", price: 10.80, type: "food"},
-                    {name: "Leberknödelsuppe", price: 10.80, type: "food"}
+                    {name: "Kürbis-Kokossuppe", price: 11.50, type: "food"},
+                    {name: "Rinds-Gulaschsuppe", price: 13.90, type: "food"},
+                    {name: "Pfannkuchensuppe", price: 9.50, type: "food"},
+                    {name: "Leberknödelsuppe", price: 11.50, type: "food"}
                 ]
             },
             {
-                category: "Würstlküche",
+                category: "Wurstkuchl",
                 items: [
-                    {name: "Würstl-Mix / Leberk.-Salat", price: 17.80, type: "food"},
-                    {name: "Weißwurst", price: 10.80, type: "food"},
-                    {name: "Nürnberger-Rostbratwürstl", price: 18.80, type: "food"}
+                    {name: "\"Würstl-Mix\"", price: 18.90, type: "food"},
+                    {name: "2 Stück Weißwürste", price: 11.50, type: "food"},
+                    {name: "6 Stück Nürnberger", price: 19.90, type: "food"},
+                    {name: "Portion Leberkäs mit Kartoffelsalat", price: 18.90, type: "food"}
                 ]
             },
             {
-                category: "Unsere Zeltklassiker",
+                category: "Unsere Zelt-Klassiker",
                 items: [
-                    {name: "Hirschbraten", price: 30.80, type: "food"},
-                    {name: "Backhendl / Rindsgulasch", price: 25.80, type: "food"},
-                    {name: "Bio-Hendl", price: 23.00, type: "food"},
-                    {name: "Schweinhaxe 1/2", price: 26.80, type: "food"},
-                    {name: "1/4 Ente", price: 29.80, type: "food"},
-                    {name: "1/2 Ente", price: 39.80, type: "food"},
-                    {name: "Schweinebraten", price: 24.80, type: "food"},
-                    {name: "Ochsenbraten", price: 29.80, type: "food"},
-                    {name: "Kalbshaxn", price: 29.80, type: "food"}
+                    {name: "1/2 BIO-Hendl", price: 24.50, type: "food"},
+                    {name: "Backhendl", price: 26.70, type: "food"},
+                    {name: "1/2 Ente", price: 40.90, type: "food"},
+                    {name: "1/4 Ente", price: 32.50, type: "food"},
+                    {name: "1/2 Schweinshaxe", price: 27.80, type: "food"},
+                    {name: "Schweinsbraten", price: 25.80, type: "food"},
+                    {name: "Rindsgulasch", price: 29.90, type: "food"},
+                    {name: "Ochsenbraten", price: 30.90, type: "food"},
+                    {name: "Spanferkel", price: 33.50, type: "food"},
+                    {name: "Wiener Schnitzel", price: 34.80, type: "food"},
+                    {name: "Rehgulasch", price: 30.90, type: "food"}
                 ]
             },
             {
-                category: "Vegetarisch",
+                category: "Vegetarisch & VEGAN",
                 items: [
-                    {name: "Nudeltascherl", price: 19.80, type: "food"},
-                    {name: "Currywurst (vegan) / Käsespätzle", price: 18.80, type: "food"},
-                    {name: "Rahmschwammerl", price: 21.80, type: "food"}
+                    {name: "Kartoffel-Schupfnudeln", price: 20.50, type: "food"},
+                    {name: "Käsespätzle", price: 20.50, type: "food"},
+                    {name: "Rahm-Schwammerl", price: 22.80, type: "food"},
+                    {name: "Currywurst (vegan)", price: 19.90, type: "food"}
+                ]
+            },
+            {
+                category: "Mittagsschmankerl",
+                items: [
+                    {name: "Kalbssemerrolle", price: 24.50, type: "food"},
+                    {name: "\"Burschen-Reindl\"", price: 38.90, type: "food"},
+                    {name: "Gemüsepflanzerl", price: 20.50, type: "food"},
+                    {name: "Apfelkücherl", price: 15.60, type: "food"}
+                ]
+            },
+            {
+                category: "Für unsere kleinen Zwergerl",
+                items: [
+                    {name: "Kleine Portion Backhendl", price: 20.50, type: "food"},
+                    {name: "Kleine Portion Käsespätzle", price: 16.70, type: "food"}
+                ]
+            },
+            {
+                category: "Was Süßes",
+                items: [
+                    {name: "Kaiserschmarrn", price: 21.00, type: "food"},
+                    {name: "Zwetschgen-Rohrnudel", price: 15.60, type: "food"},
+                    {name: "Dunkle Schokoladenmousse", price: 15.60, type: "food"}
                 ]
             },
             {
                 category: "Beilagen",
                 items: [
-                    {name: "Kartoffel / Krautsalat/ Bayr. Kraut", price: 6.50, type: "food"},
-                    {name: "Blaukraut/ Sauerkraut", price: 6.50, type: "food"},
-                    {name: "Knödel m. Soße Semmel/Kartoffel", price: 6.50, type: "food"}
+                    {name: "Kartoffelsalat", price: 7.25, type: "food"},
+                    {name: "Krautsalat", price: 7.25, type: "food"},
+                    {name: "Blaukraut", price: 7.25, type: "food"},
+                    {name: "Sauerkraut", price: 7.25, type: "food"},
+                    {name: "Bayrisch Kraut", price: 7.25, type: "food"},
+                    {name: "1 Kartoffelknödel", price: 7.25, type: "food"},
+                    {name: "1 Semmelknödel", price: 7.25, type: "food"}
                 ]
             },
             {
-                category: "Süßes",
+                category: "Menüs",
                 items: [
-                    {name: "Kaiserschmarrn", price: 19.80, type: "food"},
-                    {name: "Dampfnudel/ Apfelstrudel /Mouse", price: 14.00, type: "food"},
-                    {name: "Kaffee", price: 9.90, type: "other"}
+                    {name: "Schnitzel-Menü", price: 52.80, type: "food"},
+                    {name: "Enten-Menü", price: 56.80, type: "food"},
+                    {name: "Wirtshaus-Menü", price: 49.50, type: "food"},
+                    {name: "Veggie-Menü", price: 45.50, type: "food"}
                 ]
             },
             {
-                category: "Für die Kleinen",
+                category: "Vorverkauf",
                 items: [
-                    {name: "Käsespätzle", price: 15.00, type: "food"},
-                    {name: "Backhendl", price: 18.00, type: "food"}
-                ]
-            },
-            {
-                category: "Mittagsgericht",
-                items: [
-                    {name: "Wiener-Schnitzel", price: 29.80, type: "food"},
-                    {name: "Burschen-Reindl", price: 36.80, type: "food"},
-                    {name: "Spinatknödel", price: 22.80, type: "food"}
-                ]
-            },
-            {
-                category: "Menü",
-                items: [
-                    {name: "Enten-Menü", price: PREIS_ENTEN_MENU, type: "food"},
-                    {name: "Braumeister-Menü", price: PREIS_BRAUMEISTER_MENU, type: "food"},
-                    {name: "Veggie-Menü", price: PREIS_VEGGIE_MENU, type: "food"}
+                    {name: "Brotzeitbrettl für 10 Personen", price: 195.00, type: "food"},
+                    {name: "Tiroler Schlutzkrapfen", price: 25.00, type: "food"}
                 ]
             }
         ];
@@ -342,7 +351,7 @@
         function resetAll() {
             menu.forEach(category => {
                 category.items.forEach(item => {
-                    const input = document.getElementById(item.name.replace(/\s+/g, '-'));
+                    const input = document.getElementById(item.name.replace(/\s+/g, '-').replace(/"/g, ''));
                     if (input) input.value = 0;
                 });
             });
@@ -378,7 +387,7 @@
                                 </div>
                                 <div class="item-quantity">
                                     <button onclick="changeQuantity('${item.name}', -1)">-</button>
-                                    <input type="number" id="${item.name.replace(/\s+/g, '-')}" value="0" min="0" 
+                                    <input type="number" id="${item.name.replace(/\s+/g, '-').replace(/"/g, '')}" value="0" min="0" 
                                         onchange="updateTotal()" 
                                         onfocus="handleFocus(this)" 
                                         onblur="handleBlur(this)">
@@ -392,7 +401,7 @@
         }
         
         function changeQuantity(itemName, change) {
-            const input = document.getElementById(itemName.replace(/\s+/g, '-'));
+            const input = document.getElementById(itemName.replace(/\s+/g, '-').replace(/"/g, ''));
             if (input) {
                 const newValue = Math.max(0, parseInt(input.value || '0') + change);
                 input.value = newValue;
@@ -404,29 +413,15 @@
         function updateTotal() {
             let foodTotal = 0;
             let otherTotal = 0;
-            let menuTotal = 0;
-            let usedVouchers115 = 0;
-            let usedVouchers18 = 0;
-            let usedBierzeichen = 0;
             
             menu.forEach(category => {
                 category.items.forEach(item => {
-                    const input = document.getElementById(item.name.replace(/\s+/g, '-'));
+                    const input = document.getElementById(item.name.replace(/\s+/g, '-').replace(/"/g, ''));
                     if (input) {
                         const quantity = parseInt(input.value || '0');
                         if (quantity > 0) {
                             const itemTotal = item.price * quantity;
-                            if (category.category === "Gutscheine") {
-                                if (item.name === "Essenszeichen") {
-                                    usedVouchers115 += quantity;
-                                } else if (item.name === "Wertmarken") {
-                                    usedVouchers18 += quantity;
-                                } else if (item.name === "Bierzeichen") {
-                                    usedBierzeichen += quantity;
-                                }
-                            } else if (category.category === "Menü") {
-                                menuTotal += itemTotal;
-                            } else if (item.type === "food") {
+                            if (item.type === "food") {
                                 foodTotal += itemTotal;
                             } else {
                                 otherTotal += itemTotal;
@@ -436,59 +431,16 @@
                 });
             });
 
-            const totalRevenue = foodTotal + otherTotal + menuTotal;
-
-            // Berechnung für Essen (ohne Menü)
-            const usedFoodVouchers = Math.min(Math.floor(foodTotal / 11.5), usedVouchers115);
-            const foodVoucherValue = usedFoodVouchers * 11.5;
-            let foodRemainder = foodTotal - foodVoucherValue;
-
-            // Berechnung für andere Artikel
-            const usedBierzeichenCount = Math.min(Math.floor(otherTotal / 13.74), usedBierzeichen);
-            const bierzeichenValue = usedBierzeichenCount * 13.74;
-            let remainingAfterBierzeichen = otherTotal - bierzeichenValue;
-            
-            let usedOtherVouchers = Math.min(Math.floor(remainingAfterBierzeichen / 18), usedVouchers18);
-            let otherVoucherValue = usedOtherVouchers * 18;
-            
-            let otherRemainder = remainingAfterBierzeichen - otherVoucherValue;
-            
-            // Gesamtbetrag zu zahlen
-            let totalToPay = foodRemainder + otherRemainder;
-
-            // Zusätzliche Wertmarke verrechnen, wenn der Gesamtbetrag über 18€ liegt
-            if (totalToPay > 18 && usedOtherVouchers < usedVouchers18) {
-                usedOtherVouchers++;
-                otherVoucherValue += 18;
-                if (otherRemainder >= 18) {
-                    otherRemainder -= 18;
-                } else {
-                    const remainingDeduction = 18 - otherRemainder;
-                    otherRemainder = 0;
-                    foodRemainder -= remainingDeduction;
-                }
-                totalToPay -= 18;
-            }
-
-            const returnFood = usedVouchers115 - usedFoodVouchers;
-            const returnBierzeichen = usedBierzeichen - usedBierzeichenCount;
-            const returnOther = usedVouchers18 - usedOtherVouchers;
+            const totalRevenue = foodTotal + otherTotal;
 
             document.getElementById('total').innerHTML = `
                 <div class="summary-item"><span>Gesamtumsatz:</span> <span>${totalRevenue.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Gesamtumsatz Essen (ohne Menü):</span> <span>${foodTotal.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Gesamtumsatz Getränke:</span> <span>${otherTotal.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Davon Menü bezahlt:</span> <span>${menuTotal.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Restsumme Essen:</span> <span>${foodRemainder.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Restsumme Getränke:</span> <span>${otherRemainder.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Gesamtbetrag zu zahlen:</span> <span>${totalToPay.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Zurückzugebende Essenszeichen:</span> <span>${returnFood}</span></div>
-                <div class="summary-item"><span>Zurückzugebende Bierzeichen:</span> <span>${returnBierzeichen}</span></div>
-                <div class="summary-item"><span>Zurückzugebende Wertmarken:</span> <span>${returnOther}</span></div>
+                <div class="summary-item"><span>Davon Essen:</span> <span>${foodTotal.toFixed(2)} €</span></div>
+                <div class="summary-item"><span>Davon Getränke:</span> <span>${otherTotal.toFixed(2)} €</span></div>
+                <div class="summary-item"><span><strong>Zu zahlen:</strong></span> <span><strong>${totalRevenue.toFixed(2)} €</strong></span></div>
             `;
             saveState();
             trackEvent('Calculation', 'Update Total', 'Total Revenue', totalRevenue);
-            trackEvent('Calculation', 'Update Total', 'Total to Pay', totalToPay);
         }
 
         function downloadBill() {
@@ -507,7 +459,7 @@
 
             menu.forEach(category => {
                 category.items.forEach(item => {
-                    const input = document.getElementById(item.name.replace(/\s+/g, '-'));
+                    const input = document.getElementById(item.name.replace(/\s+/g, '-').replace(/"/g, ''));
                     if (input) {
                         const quantity = parseInt(input.value || '0');
                         if (quantity > 0) {
@@ -541,7 +493,7 @@
                 menuItems: menu.flatMap(category => 
                     category.items.map(item => ({
                         name: item.name,
-                        quantity: document.getElementById(item.name.replace(/\s+/g, '-')).value
+                        quantity: document.getElementById(item.name.replace(/\s+/g, '-').replace(/"/g, '')).value
                     }))
                 ),
                 name: document.getElementById('name-input').value
@@ -554,7 +506,7 @@
             if (savedState) {
                 const state = JSON.parse(savedState);
                 state.menuItems.forEach(item => {
-                    const input = document.getElementById(item.name.replace(/\s+/g, '-'));
+                    const input = document.getElementById(item.name.replace(/\s+/g, '-').replace(/"/g, ''));
                     if (input) input.value = item.quantity;
                 });
                 document.getElementById('name-input').value = state.name || '';
@@ -589,11 +541,11 @@
             for (let i = 2; i < lines.length; i++) {
                 const line = lines[i].trim();
                 if (line === '') continue;
-                if (line.startsWith('Gesamtumsatz') || line.startsWith('Zurückzugebende') || line.startsWith('Rückgeld') || line.startsWith('Zu zahlender')) break;
+                if (line.startsWith('Gesamtumsatz') || line.startsWith('Davon') || line.startsWith('Zu zahlen')) break;
 
                 const [itemName, rest] = line.split(':');
                 const quantity = parseInt(rest.split('x')[0]);
-                const itemInput = document.getElementById(itemName.trim().replace(/\s+/g, '-'));
+                const itemInput = document.getElementById(itemName.trim().replace(/\s+/g, '-').replace(/"/g, ''));
                 if (itemInput) {
                     itemInput.value = quantity;
                 }
