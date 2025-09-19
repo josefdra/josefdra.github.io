@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Abrechnung</title>
+    <title>Abrechnung Oktoberfest 2025</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,7 +20,7 @@
 			text-align: center;
 			color: #888;
 			padding: 20px 0;
-			background: #1e1e1e; /* Gleiche Farbe wie der Hintergrund */
+			background: #1e1e1e;
 			margin-top: 20px;
 		}
 		.main-container {
@@ -142,43 +142,13 @@
             margin-right: 5px;
         }
     </style>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7F6TEXZ1YL"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-    
-      gtag('config', 'G-7F6TEXZ1YL', {
-        'page_path': window.location.pathname
-      });
-    
-      // Funktion zum Tracken von Ereignissen
-      function trackEvent(category, action, label, value) {
-        gtag('event', action, {
-          'event_category': category,
-          'event_label': label,
-          'value': value
-        });
-      }
-    
-      // Funktion zum Tracken von Seitenaufrufen
-      function trackPageView(pagePath) {
-        gtag('config', 'G-7F6TEXZ1YL', {
-          'page_path': pagePath
-        });
-      }
-    
-      // Tracke den initialen Seitenaufruf
-      trackPageView(window.location.pathname);
-    </script>
 </head>
 <body>
-<a href="index.html" style="position: fixed; top: 10px; left: 10px; background: #0066b3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px;" onclick="trackEvent('Navigation', 'Click', 'Back to Home')">Zurück</a>
+<a href="index.html" style="position: fixed; top: 10px; left: 10px; background: #0066b3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px;">Zurück</a>
     <div class="container main-container">
     </div>
     <div class="container">
-        <h1>Abrechnung</h1>
+        <h1>Abrechnung Oktoberfest 2025</h1>
         
         <div id="menu"></div>
         
@@ -199,45 +169,144 @@
         <div id="total"></div>
     </div>
 <footer>
-    <p>Erstellt von Josef Dräxl</p>
+    <p>Erstellt von Josef Dräxl - Oktoberfest 2025</p>
 </footer>
 <button id="reset-button" onclick="resetAll()"><span>Reset</span>↺</button>
     <script>
         const menu = [
             {
-                category: "Bargeld",
-                items: [
-                    {name: "Kleingeld", price: 1},
-                    {name: "5€ Schein", price: 5},
-                    {name: "10€ Schein", price: 10},
-                    {name: "20€ Schein", price: 20},
-                    {name: "50€ Schein", price: 50},
-                    {name: "100€ Schein", price: 100},
-                    {name: "200€ Schein", price: 200}
-                ]
-            },
-            {
-                category: "Gutscheine",
-                items: [
-                    {name: "Essenszeichen", price: 11.5},
-                    {name: "Wertmarken", price: 18},
-                    {name: "Bierzeichen", price: 13.74}
-                ]
-            },
-            {
                 category: "Getränke",
                 items: [
-                    {name: "Wasser", price: 5.4},
-                    {name: "Apfelschorle", price: 5.6},
-                    {name: "Spezi", price: 5.9}
+                    {name: "Bier 1,0l", price: 15.40},
+                    {name: "Alkfreies Bier 1,0l", price: 15.40},
+                    {name: "Radler 1,0l", price: 15.40},
+                    {name: "Wasser 0,5l", price: 6.70},
+                    {name: "Apfelschorle 0,5l", price: 6.70},
+                    {name: "Spezi 0,5l", price: 6.70},
+                    {name: "Bad Brambacher Gourmet 0,75l", price: 12.40}
                 ]
             },
             {
-                category: "Menü",
+                category: "Wein & Weinschorle",
                 items: [
-                    {name: "Enten-Menü", price: 58},
-                    {name: "Braumeister-Menü", price: 59},
-                    {name: "Veggie-Menü", price: 48}
+                    {name: "Weißwein 0,5l", price: 27.50},
+                    {name: "Wein-Schorle weiß 0,5l", price: 16.00},
+                    {name: "Roséwein 0,5l", price: 27.50},
+                    {name: "Wein-Schorle rosé 0,5l", price: 16.00}
+                ]
+            },
+            {
+                category: "Schnäpse",
+                items: [
+                    {name: "Willi 4cl", price: 12.80},
+                    {name: "Jägermeister 2cl", price: 8.80},
+                    {name: "Feigling 2cl", price: 6.80}
+                ]
+            },
+            {
+                category: "Kaffee",
+                items: [
+                    {name: "Kaffee inkl. Haferl", price: 10.90}
+                ]
+            },
+            {
+                category: "Vorweg & zwischendurch",
+                items: [
+                    {name: "Münchner Wurstsalat", price: 17.80},
+                    {name: "Schweizer Wurstsalat", price: 19.90},
+                    {name: "Obatzter", price: 17.80},
+                    {name: "Geflügelsalat", price: 18.90},
+                    {name: "Rinds-Tatar", price: 22.80},
+                    {name: "Vorspeisenbrettl für 2 Pax", price: 39.00}
+                ]
+            },
+            {
+                category: "Suppen",
+                items: [
+                    {name: "Kürbis-Kokossuppe", price: 11.50},
+                    {name: "Rinds-Gulaschsuppe", price: 13.90},
+                    {name: "Pfannkuchensuppe", price: 9.50},
+                    {name: "Leberknödelsuppe", price: 11.50}
+                ]
+            },
+            {
+                category: "Wurstkuchl",
+                items: [
+                    {name: "Würstl-Mix", price: 18.90},
+                    {name: "2 Stück Weißwürste", price: 11.50},
+                    {name: "6 Stück Nürnberger", price: 19.90},
+                    {name: "Portion Leberkäs mit Kartoffelsalat", price: 18.90}
+                ]
+            },
+            {
+                category: "Zelt-Klassiker",
+                items: [
+                    {name: "1/2 BIO-Hendl", price: 24.50},
+                    {name: "Backhendl", price: 26.70},
+                    {name: "1/2 Ente", price: 40.90},
+                    {name: "1/4 Ente", price: 32.50},
+                    {name: "1/2 Schweinshaxe", price: 27.80},
+                    {name: "Schweinsbraten", price: 25.80},
+                    {name: "Rindsgulasch", price: 29.90},
+                    {name: "Ochsenbraten", price: 30.90},
+                    {name: "Spanferkel", price: 33.50},
+                    {name: "Wiener Schnitzel", price: 34.80},
+                    {name: "Rehgulasch", price: 30.90}
+                ]
+            },
+            {
+                category: "Vegetarisch & Vegan",
+                items: [
+                    {name: "Kartoffel-Schupfnudeln", price: 20.50},
+                    {name: "Käsespätzle", price: 20.50},
+                    {name: "Rahm-Schwammerl", price: 22.80},
+                    {name: "Currywurst (vegan)", price: 19.90},
+                    {name: "Gemüsepflanzerl", price: 20.50}
+                ]
+            },
+            {
+                category: "Beilagen",
+                items: [
+                    {name: "Kartoffelsalat", price: 7.25},
+                    {name: "Krautsalat", price: 7.25},
+                    {name: "Blaukraut", price: 7.25},
+                    {name: "Sauerkraut", price: 7.25},
+                    {name: "Bayrisch Kraut", price: 7.25},
+                    {name: "1 Kartoffelknödel", price: 7.25},
+                    {name: "1 Semmelknödel", price: 7.25}
+                ]
+            },
+            {
+                category: "Mittagsschmankerl",
+                items: [
+                    {name: "Kalbssemerrolle", price: 24.50},
+                    {name: "Burschen-Reindl", price: 38.90}
+                ]
+            },
+            {
+                category: "Für kleine Zwergerl",
+                items: [
+                    {name: "Kleine Portion Backhendl", price: 20.50},
+                    {name: "Kleine Portion Käsespätzle", price: 16.70}
+                ]
+            },
+            {
+                category: "Süßspeisen",
+                items: [
+                    {name: "Apfelkücherlkaiserschmarrn", price: 21.00},
+                    {name: "Zwetschgen-Rohrnudel", price: 15.60},
+                    {name: "Dunkle Schokoladenmousse", price: 15.60}
+                ]
+            },
+            {
+                category: "Vorverkauf Menüs",
+                items: [
+                    {name: "Brotzeitbrettl für 10 Personen", price: 195.00},
+                    {name: "Menü 1 - Schnitzel-Menü", price: 52.80},
+                    {name: "Menü 2 - Enten-Menü", price: 56.80},
+                    {name: "Menü 3 - Wirtshaus-Menü", price: 49.50},
+                    {name: "Menü 4 - Veggie-Menü", price: 45.50},
+                    {name: "Tiroler Schlutzkrapfen", price: 25.00}
                 ]
             }
         ];
@@ -260,21 +329,21 @@
                 menuItems: menu.flatMap(category => 
                     category.items.map(item => ({
                         name: item.name,
-                        quantity: document.getElementById(item.name.replace(/\s+/g, '-')).value
+                        quantity: document.getElementById(item.name.replace(/\s+/g, '-').replace(/[^\w-]/g, '')).value
                     }))
                 ),
                 teamSize: document.getElementById('teamSize').value,
                 startAmount: document.getElementById('startAmount').value
             };
-            localStorage.setItem('abrechnungState', JSON.stringify(state));
+            localStorage.setItem('abrechnungState2025', JSON.stringify(state));
         }
 
         function loadState() {
-            const savedState = localStorage.getItem('abrechnungState');
+            const savedState = localStorage.getItem('abrechnungState2025');
             if (savedState) {
                 const state = JSON.parse(savedState);
                 state.menuItems.forEach(item => {
-                    const input = document.getElementById(item.name.replace(/\s+/g, '-'));
+                    const input = document.getElementById(item.name.replace(/\s+/g, '-').replace(/[^\w-]/g, ''));
                     if (input) input.value = item.quantity;
                 });
                 document.getElementById('teamSize').value = state.teamSize;
@@ -286,7 +355,7 @@
         function resetAll() {
             menu.forEach(category => {
                 category.items.forEach(item => {
-                    const input = document.getElementById(item.name.replace(/\s+/g, '-'));
+                    const input = document.getElementById(item.name.replace(/\s+/g, '-').replace(/[^\w-]/g, ''));
                     input.value = '0';
                 });
             });
@@ -294,7 +363,6 @@
             document.getElementById('startAmount').value = '0';
             updateTotal();
             saveState();
-            trackEvent('UI', 'Reset All', '');
         }
         
         function renderMenu() {
@@ -310,7 +378,7 @@
                                 </div>
                                 <div class="item-quantity">
                                     <button onclick="changeQuantity('${item.name}', -1)">-</button>
-                                    <input type="number" id="${item.name.replace(/\s+/g, '-')}" value="0" min="0" 
+                                    <input type="number" id="${item.name.replace(/\s+/g, '-').replace(/[^\w-]/g, '')}" value="0" min="0" 
                                         onchange="updateTotal()" 
                                         onfocus="handleFocus(this)" 
                                         onblur="handleBlur(this)">
@@ -324,11 +392,10 @@
         }
         
         function changeQuantity(itemName, change) {
-            const input = document.getElementById(itemName.replace(/\s+/g, '-'));
+            const input = document.getElementById(itemName.replace(/\s+/g, '-').replace(/[^\w-]/g, ''));
             const newValue = Math.max(0, parseInt(input.value || '0') + change);
             input.value = newValue;
             updateTotal();
-            trackEvent('Item', 'Change Quantity', itemName, newValue);
         }
         
         function updateTotal() {
@@ -336,7 +403,7 @@
             
             menu.forEach(category => {
                 category.items.forEach(item => {
-                    const quantity = parseInt(document.getElementById(item.name.replace(/\s+/g, '-')).value || '0');
+                    const quantity = parseInt(document.getElementById(item.name.replace(/\s+/g, '-').replace(/[^\w-]/g, '')).value || '0');
                     total += item.price * quantity;
                 });
             });
@@ -354,8 +421,6 @@
                 <p>Gewinn pro Person: ${profitPerPerson.toFixed(2)} €</p>
             `;
             saveState();
-            trackEvent('Calculation', 'Update Total', 'Total', total);
-            trackEvent('Calculation', 'Update Profit', 'Profit', profit);
         }
         
         document.getElementById('teamSize').addEventListener('focus', function() { handleFocus(this); });
@@ -364,17 +429,14 @@
         document.getElementById('startAmount').addEventListener('blur', function() { handleBlur(this); });
         document.getElementById('teamSize').addEventListener('change', function() {
             updateTotal();
-            trackEvent('Team', 'Change Team Size', 'Team Size', this.value);
         });
         document.getElementById('startAmount').addEventListener('change', function() {
             updateTotal();
-            trackEvent('Team', 'Change Start Amount', 'Start Amount', this.value);
         });
         document.addEventListener('DOMContentLoaded', function() {
             renderMenu();
             loadState();
             updateTotal();
-            trackEvent('Page', 'Load', 'Abrechnung');
         });
     </script>
 </body>
