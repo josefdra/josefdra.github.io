@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="de">
 <head>
 	<link rel="icon" type="../image/png" href="./logo.png">
@@ -95,6 +96,47 @@
             margin: 0 5px;
             border-radius: 5px;
         }
+        .voucher-item {
+            background: #fff2e6;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 0.9em;
+            border: 2px solid #ff8c00;
+        }
+        .voucher-item .menu-item-price {
+            color: #ff8c00;
+        }
+        .voucher-item .item-quantity button {
+            background: #ff8c00;
+        }
+        .voucher-item .item-quantity button:hover {
+            background: #e67c00;
+        }
+        .prepaid-item {
+            background: #e6ffe6;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 0.9em;
+            border: 2px solid #28a745;
+        }
+        .prepaid-item .menu-item-price {
+            color: #28a745;
+        }
+        .prepaid-item .item-quantity button {
+            background: #28a745;
+        }
+        .prepaid-item .item-quantity button:hover {
+            background: #1e7e34;
+        }
+        .prepaid-item .item-quantity input {
+            border: 1px solid #28a745;
+        }
         #total {
             background: white;
             border-radius: 8px;
@@ -136,6 +178,14 @@
             justify-content: space-between;
             margin-bottom: 10px;
         }
+        .prepaid-summary {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .voucher-summary {
+            color: #ff8c00;
+            font-weight: bold;
+        }
         #name-input {
             width: 100%;
             padding: 10px;
@@ -171,30 +221,33 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-    
-      gtag('config', 'G-7F6TEXZ1YL', {
-        'page_path': window.location.pathname
-      });
-    
-      // Funktion zum Tracken von Ereignissen
-      function trackEvent(category, action, label, value) {
-        gtag('event', action, {
-          'event_category': category,
-          'event_label': label,
-          'value': value
-        });
-      }
-    
-      // Funktion zum Tracken von Seitenaufrufen
-      function trackPageView(pagePath) {
-        gtag('config', 'G-7F6TEXZ1YL', {
-          'page_path': pagePath
-        });
-      }
-    
-      // Tracke den initialen Seitenaufruf
-      trackPageView(window.location.pathname);
-    </script>
+
+```
+  gtag('config', 'G-7F6TEXZ1YL', {
+    'page_path': window.location.pathname
+  });
+
+  // Funktion zum Tracken von Ereignissen
+  function trackEvent(category, action, label, value) {
+    gtag('event', action, {
+      'event_category': category,
+      'event_label': label,
+      'value': value
+    });
+  }
+
+  // Funktion zum Tracken von Seitenaufrufen
+  function trackPageView(pagePath) {
+    gtag('config', 'G-7F6TEXZ1YL', {
+      'page_path': pagePath
+    });
+  }
+
+  // Tracke den initialen Seitenaufruf
+  trackPageView(window.location.pathname);
+</script>
+```
+
 </head>
 <body>
     <a href="index.html" style="position: fixed; top: 10px; left: 10px; background: #0066b3; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px;" onclick="trackEvent('Navigation', 'Click', 'Back to Home')">Zurück</a>
@@ -204,368 +257,414 @@
     </div>
     <div class="container">
         <div id="menu"></div>
-        
-        <div class="summary">
-            <h3>Zusammenfassung</h3>
-            <div id="total"></div>
-        </div>
 
-        <div class="action-buttons">
-            <button id="download-button" class="action-button" onclick="downloadBill()">Rechnung herunterladen</button>
-            <button id="load-button" class="action-button" onclick="loadBill()">Rechnung laden</button>
-        </div>
+```
+    <div class="summary">
+        <h3>Zusammenfassung</h3>
+        <div id="total"></div>
     </div>
-    <footer>
-        <p>Erstellt von Josef Dräxl</p>
-    </footer>
-    <button id="reset-button" onclick="resetAll()"><span>Reset</span>↺</button>
-    <script>
-        const menu = [
-            {
-                category: "Getränke",
-                items: [
-                    {name: "Bier 1,0l", price: 15.40, type: "other"},
-                    {name: "Alkfrei Bier 1,0l", price: 15.40, type: "other"},
-                    {name: "Radler 1,0l", price: 15.40, type: "other"},
-                    {name: "Wasser 0,5l", price: 6.70, type: "other"},
-                    {name: "Apfelschorle 0,5l", price: 6.70, type: "other"},
-                    {name: "Spezi 0,5l", price: 6.70, type: "other"},
-                    {name: "Bad Brambacher Gourmet 0,75l", price: 12.40, type: "other"},
-                    {name: "Weißwein 0,5l", price: 27.50, type: "other"},
-                    {name: "Wein-Schorle weiß 0,5l", price: 16.00, type: "other"},
-                    {name: "Roséwein 0,5l", price: 27.50, type: "other"},
-                    {name: "Wein-Schorle rosé 0,5l", price: 16.00, type: "other"},
-                    {name: "Willi 4cl", price: 12.80, type: "other"},
-                    {name: "Jägermeister 2cl", price: 8.80, type: "other"},
-                    {name: "Feigling 2cl", price: 6.80, type: "other"},
-                    {name: "Kaffee inkl. Haferl", price: 10.90, type: "other"}
-                ]
-            },
-            {
-                category: "Vorweg & zwischendurch",
-                items: [
-                    {name: "Münchner Wurstsalat", price: 17.80, type: "food"},
-                    {name: "Schweizer Wurstsalat", price: 19.90, type: "food"},
-                    {name: "Obatzter", price: 17.80, type: "food"},
-                    {name: "Geflügelsalat", price: 18.90, type: "food"},
-                    {name: "Rinds-Tatar", price: 22.80, type: "food"},
-                    {name: "Vorspeisenbrettl für 2 Pax", price: 39.00, type: "food"}
-                ]
-            },
-            {
-                category: "Suppen",
-                items: [
-                    {name: "Kürbis-Kokossuppe", price: 11.50, type: "food"},
-                    {name: "Rinds-Gulaschsuppe", price: 13.90, type: "food"},
-                    {name: "Pfannkuchensuppe", price: 9.50, type: "food"},
-                    {name: "Leberknödelsuppe", price: 11.50, type: "food"}
-                ]
-            },
-            {
-                category: "Wurstkuchl",
-                items: [
-                    {name: "\"Würstl-Mix\"", price: 18.90, type: "food"},
-                    {name: "2 Stück Weißwürste", price: 11.50, type: "food"},
-                    {name: "6 Stück Nürnberger", price: 19.90, type: "food"},
-                    {name: "Portion Leberkäs mit Kartoffelsalat", price: 18.90, type: "food"}
-                ]
-            },
-            {
-                category: "Unsere Zelt-Klassiker",
-                items: [
-                    {name: "1/2 BIO-Hendl", price: 24.50, type: "food"},
-                    {name: "Backhendl", price: 26.70, type: "food"},
-                    {name: "1/2 Ente", price: 40.90, type: "food"},
-                    {name: "1/4 Ente", price: 32.50, type: "food"},
-                    {name: "1/2 Schweinshaxe", price: 27.80, type: "food"},
-                    {name: "Schweinsbraten", price: 25.80, type: "food"},
-                    {name: "Rindsgulasch", price: 29.90, type: "food"},
-                    {name: "Ochsenbraten", price: 30.90, type: "food"},
-                    {name: "Spanferkel", price: 33.50, type: "food"},
-                    {name: "Wiener Schnitzel", price: 34.80, type: "food"},
-                    {name: "Rehgulasch", price: 30.90, type: "food"}
-                ]
-            },
-            {
-                category: "Vegetarisch & VEGAN",
-                items: [
-                    {name: "Kartoffel-Schupfnudeln", price: 20.50, type: "food"},
-                    {name: "Käsespätzle", price: 20.50, type: "food"},
-                    {name: "Rahm-Schwammerl", price: 22.80, type: "food"},
-                    {name: "Currywurst (vegan)", price: 19.90, type: "food"}
-                ]
-            },
-            {
-                category: "Mittagsschmankerl",
-                items: [
-                    {name: "Kalbssemerrolle", price: 24.50, type: "food"},
-                    {name: "\"Burschen-Reindl\"", price: 38.90, type: "food"},
-                    {name: "Gemüsepflanzerl", price: 20.50, type: "food"}
-                ]
-            },
-            {
-                category: "Für unsere kleinen Zwergerl",
-                items: [
-                    {name: "Kleine Portion Backhendl", price: 20.50, type: "food"},
-                    {name: "Kleine Portion Käsespätzle", price: 16.70, type: "food"}
-                ]
-            },
-            {
-                category: "Was Süßes",
-                items: [
-                    {name: "Apfelkücherl", price: 15.60, type: "food"},
-                    {name: "Kaiserschmarrn", price: 21.00, type: "food"},
-                    {name: "Zwetschgen-Rohrnudel", price: 15.60, type: "food"},
-                    {name: "Dunkles Schokoladenmousse", price: 15.60, type: "food"}
-                ]
-            },
-            {
-                category: "Beilagen",
-                items: [
-                    {name: "Kartoffelsalat", price: 7.25, type: "food"},
-                    {name: "Krautsalat", price: 7.25, type: "food"},
-                    {name: "Blaukraut", price: 7.25, type: "food"},
-                    {name: "Sauerkraut", price: 7.25, type: "food"},
-                    {name: "Bayrisch Kraut", price: 7.25, type: "food"},
-                    {name: "1 Kartoffelknödel", price: 7.25, type: "food"},
-                    {name: "1 Semmelknödel", price: 7.25, type: "food"}
-                ]
-            },
-            {
-                category: "Menüs",
-                items: [
-                    {name: "Schnitzel-Menü", price: 52.80, type: "food"},
-                    {name: "Enten-Menü", price: 56.80, type: "food"},
-                    {name: "Wirtshaus-Menü", price: 49.50, type: "food"},
-                    {name: "Veggie-Menü", price: 45.50, type: "food"}
-                ]
-            },
-            {
-                category: "Vorverkauf",
-                items: [
-                    {name: "Brotzeitbrettl für 10 Personen", price: 195.00, type: "food"},
-                    {name: "Tiroler Schlutzkrapfen", price: 25.00, type: "food"}
-                ]
-            }
-        ];
-        
-        function resetAll() {
-            menu.forEach(category => {
-                category.items.forEach(item => {
-                    const input = document.getElementById(item.name.replace(/\s+/g, '-').replace(/"/g, ''));
-                    if (input) input.value = 0;
-                });
-            });
-            document.getElementById('name-input').value = '';
-            updateTotal();
-            saveState();
-            trackEvent('UI', 'Reset All', '');
-        }
 
-        function handleFocus(input) {
-            if (input.value === '0') {
-                input.value = '';
-            }
+    <div class="action-buttons">
+        <button id="download-button" class="action-button" onclick="downloadBill()">Rechnung herunterladen</button>
+        <button id="load-button" class="action-button" onclick="loadBill()">Rechnung laden</button>
+    </div>
+</div>
+<footer>
+    <p>Erstellt von Josef Dräxl</p>
+</footer>
+<button id="reset-button" onclick="resetAll()"><span>Reset</span>↺</button>
+<script>
+    const menu = [
+        {
+            category: "Getränke",
+            items: [
+                {name: "Bier 1,0l", price: 15.40, type: "other"},
+                {name: "Alkfrei Bier 1,0l", price: 15.40, type: "other"},
+                {name: "Radler 1,0l", price: 15.40, type: "other"},
+                {name: "Wasser 0,5l", price: 6.70, type: "other"},
+                {name: "Apfelschorle 0,5l", price: 6.70, type: "other"},
+                {name: "Spezi 0,5l", price: 6.70, type: "other"},
+                {name: "Bad Brambacher Gourmet 0,75l", price: 12.40, type: "other"},
+                {name: "Weißwein 0,5l", price: 27.50, type: "other"},
+                {name: "Wein-Schorle weiß 0,5l", price: 16.00, type: "other"},
+                {name: "Roséwein 0,5l", price: 27.50, type: "other"},
+                {name: "Wein-Schorle rosé 0,5l", price: 16.00, type: "other"},
+                {name: "Willi 4cl", price: 12.80, type: "other"},
+                {name: "Jägermeister 2cl", price: 8.80, type: "other"},
+                {name: "Feigling 2cl", price: 6.80, type: "other"},
+                {name: "Kaffee inkl. Haferl", price: 10.90, type: "other"}
+            ]
+        },
+        {
+            category: "Vorweg & zwischendurch",
+            items: [
+                {name: "Münchner Wurstsalat", price: 17.80, type: "food"},
+                {name: "Schweizer Wurstsalat", price: 19.90, type: "food"},
+                {name: "Obatzter", price: 17.80, type: "food"},
+                {name: "Geflügelsalat", price: 18.90, type: "food"},
+                {name: "Rinds-Tatar", price: 22.80, type: "food"},
+                {name: "Vorspeisenbrettl für 2 Pax", price: 39.00, type: "food"}
+            ]
+        },
+        {
+            category: "Suppen",
+            items: [
+                {name: "Kürbis-Kokossuppe", price: 11.50, type: "food"},
+                {name: "Rinds-Gulaschsuppe", price: 13.90, type: "food"},
+                {name: "Pfannkuchensuppe", price: 9.50, type: "food"},
+                {name: "Leberknödelsuppe", price: 11.50, type: "food"}
+            ]
+        },
+        {
+            category: "Wurstkuchl",
+            items: [
+                {name: "\"Würstl-Mix\"", price: 18.90, type: "food"},
+                {name: "2 Stück Weißwürste", price: 11.50, type: "food"},
+                {name: "6 Stück Nürnberger", price: 19.90, type: "food"},
+                {name: "Portion Leberkäs mit Kartoffelsalat", price: 18.90, type: "food"}
+            ]
+        },
+        {
+            category: "Unsere Zelt-Klassiker",
+            items: [
+                {name: "1/2 BIO-Hendl", price: 24.50, type: "food"},
+                {name: "Backhendl", price: 26.70, type: "food"},
+                {name: "1/2 Ente", price: 40.90, type: "food"},
+                {name: "1/4 Ente", price: 32.50, type: "food"},
+                {name: "1/2 Schweinshaxe", price: 27.80, type: "food"},
+                {name: "Schweinsbraten", price: 25.80, type: "food"},
+                {name: "Rindsgulasch", price: 29.90, type: "food"},
+                {name: "Ochsenbraten", price: 30.90, type: "food"},
+                {name: "Spanferkel", price: 33.50, type: "food"},
+                {name: "Wiener Schnitzel", price: 34.80, type: "food"},
+                {name: "Rehgulasch", price: 30.90, type: "food"}
+            ]
+        },
+        {
+            category: "Vegetarisch & VEGAN",
+            items: [
+                {name: "Kartoffel-Schupfnudeln", price: 20.50, type: "food"},
+                {name: "Käsespätzle", price: 20.50, type: "food"},
+                {name: "Rahm-Schwammerl", price: 22.80, type: "food"},
+                {name: "Currywurst (vegan)", price: 19.90, type: "food"}
+            ]
+        },
+        {
+            category: "Mittagsschmankerl",
+            items: [
+                {name: "Kalbssemerrolle", price: 24.50, type: "food"},
+                {name: "\"Burschen-Reindl\"", price: 38.90, type: "food"},
+                {name: "Gemüsepflanzerl", price: 20.50, type: "food"}
+            ]
+        },
+        {
+            category: "Für unsere kleinen Zwergerl",
+            items: [
+                {name: "Kleine Portion Backhendl", price: 20.50, type: "food"},
+                {name: "Kleine Portion Käsespätzle", price: 16.70, type: "food"}
+            ]
+        },
+        {
+            category: "Was Süßes",
+            items: [
+                {name: "Apfelkücherl", price: 15.60, type: "food"},
+                {name: "Kaiserschmarrn", price: 21.00, type: "food"},
+                {name: "Zwetschgen-Rohrnudel", price: 15.60, type: "food"},
+                {name: "Dunkles Schokoladenmousse", price: 15.60, type: "food"}
+            ]
+        },
+        {
+            category: "Beilagen",
+            items: [
+                {name: "Kartoffelsalat", price: 7.25, type: "food"},
+                {name: "Krautsalat", price: 7.25, type: "food"},
+                {name: "Blaukraut", price: 7.25, type: "food"},
+                {name: "Sauerkraut", price: 7.25, type: "food"},
+                {name: "Bayrisch Kraut", price: 7.25, type: "food"},
+                {name: "1 Kartoffelknödel", price: 7.25, type: "food"},
+                {name: "1 Semmelknödel", price: 7.25, type: "food"}
+            ]
+        },
+        {
+            category: "Menüs",
+            items: [
+                {name: "Schnitzel-Menü", price: 52.80, type: "prepaid"},
+                {name: "Enten-Menü", price: 56.80, type: "prepaid"},
+                {name: "Wirtshaus-Menü", price: 49.50, type: "prepaid"},
+                {name: "Veggie-Menü", price: 45.50, type: "prepaid"}
+            ]
+        },
+        {
+            category: "Vorverkauf",
+            items: [
+                {name: "Brotzeitbrettl für 10 Personen", price: 195.00, type: "prepaid"},
+                {name: "Tiroler Schlutzkrapfen", price: 25.00, type: "prepaid"}
+            ]
+        },
+        {
+            category: "Gutscheine",
+            items: [
+                {name: "Bierzeichen", price: 14.01, type: "voucher"},
+                {name: "AFG-Marke", price: 6.10, type: "voucher"},
+                {name: "Hendl-Zeichen", price: 22.30, type: "voucher"}
+            ]
         }
-        
-        function handleBlur(input) {
-            if (input.value === '') {
-                input.value = '0';
-            }
-            saveState();
+    ];
+    
+    function resetAll() {
+        menu.forEach(category => {
+            category.items.forEach(item => {
+                const input = document.getElementById(item.name.replace(/\s+/g, '-').replace(/"/g, ''));
+                if (input) input.value = 0;
+            });
+        });
+        document.getElementById('name-input').value = '';
+        updateTotal();
+        saveState();
+        trackEvent('UI', 'Reset All', '');
+    }
+
+    function handleFocus(input) {
+        if (input.value === '0') {
+            input.value = '';
         }
-        
-        function renderMenu() {
-            document.getElementById('menu').innerHTML = menu.map(category => `
-                <div class="menu-category">
-                    <h3>${category.category}</h3>
-                    <div class="menu-grid">
-                        ${category.items.map(item => `
-                            <div class="menu-item">
-                                <div>
-                                    <div class="menu-item-name">${item.name}</div>
-                                    <div class="menu-item-price">${item.price.toFixed(2)} €</div>
-                                </div>
-                                <div class="item-quantity">
-                                    <button onclick="changeQuantity('${item.name}', -1)">-</button>
-                                    <input type="number" id="${item.name.replace(/\s+/g, '-').replace(/"/g, '')}" value="0" min="0" 
-                                        onchange="updateTotal()" 
-                                        onfocus="handleFocus(this)" 
-                                        onblur="handleBlur(this)">
-                                    <button onclick="changeQuantity('${item.name}', 1)">+</button>
-                                </div>
+    }
+    
+    function handleBlur(input) {
+        if (input.value === '') {
+            input.value = '0';
+        }
+        saveState();
+    }
+    
+    function renderMenu() {
+        document.getElementById('menu').innerHTML = menu.map(category => `
+            <div class="menu-category">
+                <h3>${category.category}</h3>
+                <div class="menu-grid">
+                    ${category.items.map(item => `
+                        <div class="${item.type === 'voucher' ? 'voucher-item' : item.type === 'prepaid' ? 'prepaid-item' : 'menu-item'}">
+                            <div>
+                                <div class="menu-item-name">${item.name}${item.type === 'prepaid' ? ' (vorher bezahlt)' : ''}</div>
+                                <div class="menu-item-price">${item.type === 'voucher' ? '-' : ''}${item.price.toFixed(2)} €</div>
                             </div>
-                        `).join('')}
-                    </div>
+                            <div class="item-quantity">
+                                <button onclick="changeQuantity('${item.name}', -1)">-</button>
+                                <input type="number" id="${item.name.replace(/\s+/g, '-').replace(/"/g, '')}" value="0" min="0" 
+                                    onchange="updateTotal()" 
+                                    onfocus="handleFocus(this)" 
+                                    onblur="handleBlur(this)">
+                                <button onclick="changeQuantity('${item.name}', 1)">+</button>
+                            </div>
+                        </div>
+                    `).join('')}
                 </div>
-            `).join('');
+            </div>
+        `).join('');
+    }
+    
+    function changeQuantity(itemName, change) {
+        const input = document.getElementById(itemName.replace(/\s+/g, '-').replace(/"/g, ''));
+        if (input) {
+            const newValue = Math.max(0, parseInt(input.value || '0') + change);
+            input.value = newValue;
+            updateTotal();
+            trackEvent('Item', 'Change Quantity', itemName, newValue);
         }
+    }
+    
+    function updateTotal() {
+        let foodTotal = 0;
+        let otherTotal = 0;
+        let voucherTotal = 0;
+        let prepaidTotal = 0;
         
-        function changeQuantity(itemName, change) {
-            const input = document.getElementById(itemName.replace(/\s+/g, '-').replace(/"/g, ''));
-            if (input) {
-                const newValue = Math.max(0, parseInt(input.value || '0') + change);
-                input.value = newValue;
-                updateTotal();
-                trackEvent('Item', 'Change Quantity', itemName, newValue);
-            }
-        }
-        
-        function updateTotal() {
-            let foodTotal = 0;
-            let otherTotal = 0;
-            
-            menu.forEach(category => {
-                category.items.forEach(item => {
-                    const input = document.getElementById(item.name.replace(/\s+/g, '-').replace(/"/g, ''));
-                    if (input) {
-                        const quantity = parseInt(input.value || '0');
-                        if (quantity > 0) {
-                            const itemTotal = item.price * quantity;
-                            if (item.type === "food") {
-                                foodTotal += itemTotal;
-                            } else {
-                                otherTotal += itemTotal;
-                            }
+        menu.forEach(category => {
+            category.items.forEach(item => {
+                const input = document.getElementById(item.name.replace(/\s+/g, '-').replace(/"/g, ''));
+                if (input) {
+                    const quantity = parseInt(input.value || '0');
+                    if (quantity > 0) {
+                        const itemTotal = item.price * quantity;
+                        if (item.type === "food") {
+                            foodTotal += itemTotal;
+                        } else if (item.type === "voucher") {
+                            voucherTotal += itemTotal;
+                        } else if (item.type === "prepaid") {
+                            foodTotal += itemTotal;
+                            prepaidTotal += itemTotal;
+                        } else {
+                            otherTotal += itemTotal;
                         }
                     }
-                });
-            });
-
-            const totalRevenue = foodTotal + otherTotal;
-
-            document.getElementById('total').innerHTML = `
-                <div class="summary-item"><span>Gesamtumsatz:</span> <span>${totalRevenue.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Davon Essen:</span> <span>${foodTotal.toFixed(2)} €</span></div>
-                <div class="summary-item"><span>Davon Getränke:</span> <span>${otherTotal.toFixed(2)} €</span></div>
-                <div class="summary-item"><span><strong>Zu zahlen:</strong></span> <span><strong>${totalRevenue.toFixed(2)} €</strong></span></div>
-            `;
-            saveState();
-            trackEvent('Calculation', 'Update Total', 'Total Revenue', totalRevenue);
-        }
-
-        function downloadBill() {
-            let name = document.getElementById('name-input').value.trim();
-            if (name === '') {
-                name = prompt("Bitte geben Sie einen Namen für die Rechnung ein:");
-                if (name === null || name.trim() === '') {
-                    alert('Ein Name ist erforderlich, um die Rechnung zu speichern.');
-                    return;
                 }
-                document.getElementById('name-input').value = name;
-            }
-
-            const date = new Date().toLocaleDateString('de-DE');
-            let billContent = `Rechnung für ${name}\nDatum: ${date}\n\n`;
-
-            menu.forEach(category => {
-                category.items.forEach(item => {
-                    const input = document.getElementById(item.name.replace(/\s+/g, '-').replace(/"/g, ''));
-                    if (input) {
-                        const quantity = parseInt(input.value || '0');
-                        if (quantity > 0) {
-                            billContent += `${item.name}: ${quantity} x ${item.price.toFixed(2)} € = ${(quantity * item.price).toFixed(2)} €\n`;
-                        }
-                    }
-                });
             });
+        });
 
-            billContent += `\n${document.getElementById('total').innerText}\n`;
+        const totalRevenue = foodTotal + otherTotal;
+        const finalAmount = totalRevenue - voucherTotal - prepaidTotal;
 
-            const blob = new Blob([billContent], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            
-            if (navigator.msSaveBlob) {
-                navigator.msSaveBlob(blob, `Rechnung_${name}_${date.replace(/\./g, '-')}.txt`);
-            } else {
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `Rechnung_${name}_${date.replace(/\./g, '-')}.txt`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            }
-            URL.revokeObjectURL(url);
-            trackEvent('Bill', 'Download', name);
+        let totalHTML = `
+            <div class="summary-item"><span>Gesamtumsatz:</span> <span>${totalRevenue.toFixed(2)} €</span></div>
+            <div class="summary-item"><span>Davon Essen:</span> <span>${foodTotal.toFixed(2)} €</span></div>
+            <div class="summary-item"><span>Davon Getränke:</span> <span>${otherTotal.toFixed(2)} €</span></div>
+        `;
+        
+        if (prepaidTotal > 0) {
+            totalHTML += `<div class="summary-item prepaid-summary"><span>Davon vorher bezahlt:</span> <span>-${prepaidTotal.toFixed(2)} €</span></div>`;
         }
         
-        function saveState() {
-            const state = {
-                menuItems: menu.flatMap(category => 
-                    category.items.map(item => ({
-                        name: item.name,
-                        quantity: document.getElementById(item.name.replace(/\s+/g, '-').replace(/"/g, '')).value
-                    }))
-                ),
-                name: document.getElementById('name-input').value
-            };
-            localStorage.setItem('rechnungState', JSON.stringify(state));
+        if (voucherTotal > 0) {
+            totalHTML += `<div class="summary-item voucher-summary"><span>Abzug Gutscheine:</span> <span>-${voucherTotal.toFixed(2)} €</span></div>`;
         }
+        
+        totalHTML += `<div class="summary-item"><span><strong>Zu zahlen:</strong></span> <span><strong>${finalAmount.toFixed(2)} €</strong></span></div>`;
 
-        function loadState() {
-            const savedState = localStorage.getItem('rechnungState');
-            if (savedState) {
-                const state = JSON.parse(savedState);
-                state.menuItems.forEach(item => {
-                    const input = document.getElementById(item.name.replace(/\s+/g, '-').replace(/"/g, ''));
-                    if (input) input.value = item.quantity;
-                });
-                document.getElementById('name-input').value = state.name || '';
-                updateTotal();
+        document.getElementById('total').innerHTML = totalHTML;
+        saveState();
+        trackEvent('Calculation', 'Update Total', 'Final Amount', finalAmount);
+    }
+
+    function downloadBill() {
+        let name = document.getElementById('name-input').value.trim();
+        if (name === '') {
+            name = prompt("Bitte geben Sie einen Namen für die Rechnung ein:");
+            if (name === null || name.trim() === '') {
+                alert('Ein Name ist erforderlich, um die Rechnung zu speichern.');
+                return;
             }
-        }
-
-        function loadBill() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.txt';
-            input.onchange = function(event) {
-                const file = event.target.files[0];
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const content = e.target.result;
-                    parseBillContent(content);
-                    trackEvent('Bill', 'Load', file.name);
-                };
-                reader.readAsText(file);
-            };
-            input.click();
-        }
-
-        function parseBillContent(content) {
-            resetAll();
-            const lines = content.split('\n');
-            const nameLine = lines[0];
-            const name = nameLine.split('für ')[1];
             document.getElementById('name-input').value = name;
-
-            for (let i = 2; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (line === '') continue;
-                if (line.startsWith('Gesamtumsatz') || line.startsWith('Davon') || line.startsWith('Zu zahlen')) break;
-
-                const [itemName, rest] = line.split(':');
-                const quantity = parseInt(rest.split('x')[0]);
-                const itemInput = document.getElementById(itemName.trim().replace(/\s+/g, '-').replace(/"/g, ''));
-                if (itemInput) {
-                    itemInput.value = quantity;
-                }
-            }
-
-            updateTotal();
         }
 
-        document.getElementById('name-input').addEventListener('input', function() {
-            saveState();
-            trackEvent('Input', 'Name Change', this.value);
+        const date = new Date().toLocaleDateString('de-DE');
+        let billContent = `Rechnung für ${name}\nDatum: ${date}\n\n`;
+
+        menu.forEach(category => {
+            category.items.forEach(item => {
+                const input = document.getElementById(item.name.replace(/\s+/g, '-').replace(/"/g, ''));
+                if (input) {
+                    const quantity = parseInt(input.value || '0');
+                    if (quantity > 0) {
+                        let prefix = '';
+                        let pricePrefix = '';
+                        if (item.type === 'voucher') {
+                            prefix = 'Gutschein - ';
+                            pricePrefix = '-';
+                        } else if (item.type === 'prepaid') {
+                            prefix = 'Vorher bezahlt - ';
+                        }
+                        billContent += `${prefix}${item.name}: ${quantity} x ${pricePrefix}${item.price.toFixed(2)} € = ${pricePrefix}${(quantity * item.price).toFixed(2)} €\n`;
+                    }
+                }
+            });
         });
 
-        document.addEventListener('DOMContentLoaded', function() {
-            renderMenu();
-            loadState();
+        billContent += `\n${document.getElementById('total').innerText}\n`;
+
+        const blob = new Blob([billContent], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        
+        if (navigator.msSaveBlob) {
+            navigator.msSaveBlob(blob, `Rechnung_${name}_${date.replace(/\./g, '-')}.txt`);
+        } else {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Rechnung_${name}_${date.replace(/\./g, '-')}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+        URL.revokeObjectURL(url);
+        trackEvent('Bill', 'Download', name);
+    }
+    
+    function saveState() {
+        const state = {
+            menuItems: menu.flatMap(category => 
+                category.items.map(item => ({
+                    name: item.name,
+                    quantity: document.getElementById(item.name.replace(/\s+/g, '-').replace(/"/g, '')).value
+                }))
+            ),
+            name: document.getElementById('name-input').value
+        };
+        localStorage.setItem('rechnungState', JSON.stringify(state));
+    }
+
+    function loadState() {
+        const savedState = localStorage.getItem('rechnungState');
+        if (savedState) {
+            const state = JSON.parse(savedState);
+            state.menuItems.forEach(item => {
+                const input = document.getElementById(item.name.replace(/\s+/g, '-').replace(/"/g, ''));
+                if (input) input.value = item.quantity;
+            });
+            document.getElementById('name-input').value = state.name || '';
             updateTotal();
-            trackEvent('Page', 'Load', 'Rechnung');
-        });
-    </script>
+        }
+    }
+
+    function loadBill() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.txt';
+        input.onchange = function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                parseBillContent(content);
+                trackEvent('Bill', 'Load', file.name);
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    }
+
+    function parseBillContent(content) {
+        resetAll();
+        const lines = content.split('\n');
+        const nameLine = lines[0];
+        const name = nameLine.split('für ')[1];
+        document.getElementById('name-input').value = name;
+
+        for (let i = 2; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (line === '') continue;
+            if (line.startsWith('Gesamtumsatz') || line.startsWith('Davon') || line.startsWith('Zu zahlen') || line.startsWith('Abzug')) break;
+
+            let itemName, rest;
+            if (line.startsWith('Gutschein - ')) {
+                [itemName, rest] = line.substring(12).split(':');
+            } else if (line.startsWith('Vorher bezahlt - ')) {
+                [itemName, rest] = line.substring(17).split(':');
+            } else {
+                [itemName, rest] = line.split(':');
+            }
+            
+            const quantity = parseInt(rest.split('x')[0]);
+            const itemInput = document.getElementById(itemName.trim().replace(/\s+/g, '-').replace(/"/g, ''));
+            if (itemInput) {
+                itemInput.value = quantity;
+            }
+        }
+
+        updateTotal();
+    }
+
+    document.getElementById('name-input').addEventListener('input', function() {
+        saveState();
+        trackEvent('Input', 'Name Change', this.value);
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        renderMenu();
+        loadState();
+        updateTotal();
+        trackEvent('Page', 'Load', 'Rechnung');
+    });
+</script>
+```
+
 </body>
 </html>
