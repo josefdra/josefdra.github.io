@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Küchenrechner - Optimiert</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background: #1e1e1e;
+            color: #333;
+        }
+
+```
+    .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding-top: 20px;
+    }
+    
+    h1 {
+        color: #0066b3;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .search-section {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .search-box {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #0066b3;
+        border-radius: 8px;
+        font-size: 16px;
+        box-sizing: border-box;
+        margin-bottom: 15px;
+    }
+    
+    .search-box:focus {
+        outline: none;
+        border-color: #004d99;
+        box-shadow: 0 0 5px rgba(0, 102, 179, 0.3);
+    }
+    
+    .search-results {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 10px;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    
+    .menu-item {
+        background: #e6f2ff;
+        padding: 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: 2px solid transparent;
+        position: relative;
+    }
+    
+    .menu-item:hover {
+        background: #cce5ff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .menu-item-name {
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #333;
+    }
+    
+    .menu-item-price {
+        color: #0066b3;
+        font-weight: bold;
+        font-size: 1.1em;
+    }
+    
+    .menu-item-category {
+        font-size: 0.8em;
+        color: #666;
+        font-style: italic;
+        margin-top: 5px;
+    }
+    
+    .item-counter {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: #0066b3;
+        color: white;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    
+    .quantity-section {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .quantity-input {
+        width: 80px;
+        padding: 10px;
+        border: 2px solid #0066b3;
+        border-radius: 5px;
+        font-size: 18px;
+        text-align: center;
+        margin: 0 10px;
+    }
+    
+    .quantity-btn {
+        background: #0066b3;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 15px;
+        font-size: 18px;
+        cursor: pointer;
+        margin: 0 5px;
+    }
+    
+    .quantity-btn:hover {
+        background: #004d99;
+    }
+    
+    .add-btn {
+        background: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 12px 30px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    
+    .add-btn:hover {
+        background: #218838;
+    }
+    
+    .add-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }
+    
+    .order-section {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .order-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .order-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .order-item:last-child {
+        border-bottom: none;
+    }
+    
+    .item-details {
+        flex-grow: 1;
+    }
+    
+    .item-name {
+        font-weight: bold;
+        margin-bottom: 2px;
+    }
+    
+    .item-price {
+        color: #666;
+        font-size: 0.9em;
+    }
+    
+    .item-quantity {
+        font-weight: bold;
+        color: #0066b3;
+        margin-left: 10px;
+    }
+    
+    .item-total {
+        font-weight: bold;
+        color: #0066b3;
+        margin-left: 10px;
+    }
+    
+    .remove-item {
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 3px;
+        padding: 5px 10px;
+        cursor: pointer;
+        margin-left: 10px;
+    }
+    
+    .total-section {
+        background: #0066b3;
+        color: white;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .payment-section {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .hendl-config {
+        background: #f0f8ff;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #cce5ff;
+    }
+    
+    .hendl-config label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+    
+    .hendl-config input {
+        width: 100px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    
+    .payment-breakdown {
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #0066b3;
+    }
+    
+    .payment-line {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        padding: 5px 0;
+    }
+    
+    .payment-line.total {
+        font-weight: bold;
+        border-top: 2px solid #0066b3;
+        padding-top: 10px;
+        margin-top: 15px;
+        color: #0066b3;
+    }
+    
+    .controls {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .control-btn {
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        transition: all 0.3s;
+    }
+    
+    .control-btn:hover {
+        transform: scale(1.1);
+    }
+    
+    .no-results {
+        text-align: center;
+        color: #666;
+        font-style: italic;
+        padding: 20px;
+    }
+    
+    .selected-item {
+        border: 2px solid #0066b3;
+        background: #cce5ff;
+    }
+    
+    @media (max-width: 600px) {
+        .search-results {
+            grid-template-columns: 1fr;
+        }
+        
+        .quantity-input {
+            width: 60px;
+            font-size: 16px;
+        }
+        
+        .controls {
+            bottom: 10px;
+            right: 10px;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <div class="container">
+        <h1>🍗 Küchenrechner</h1>
+
+```
+    <!-- Suche -->
+    <div class="search-section">
+        <h2>Artikel suchen</h2>
+        <input type="text" class="search-box" id="searchBox" placeholder="Artikel suchen (z.B. Hendl, Schnitzel, Suppe...)">
+        <div class="search-results" id="searchResults"></div>
+    </div>
+    
+    <!-- Anzahl eingeben -->
+    <div class="quantity-section" id="quantitySection" style="display: none;">
+        <h3>Anzahl eingeben</h3>
+        <p id="selectedItemName"></p>
+        <div>
+            <button class="quantity-btn" onclick="changeQuantity(-1)">-</button>
+            <input type="number" class="quantity-input" id="quantityInput" value="1" min="1" max="99">
+            <button class="quantity-btn" onclick="changeQuantity(1)">+</button>
+        </div>
+        <button class="add-btn" onclick="addSelectedItem()">Zur Bestellung hinzufügen</button>
+    </div>
+    
+    <!-- Bestellung -->
+    <div class="order-section">
+        <h2>📋 Bestellung</h2>
+        <ul class="order-list" id="orderList"></ul>
+        <div id="emptyOrder" style="text-align: center; color: #666; font-style: italic;">
+            Noch keine Artikel in der Bestellung
+        </div>
+    </div>
+    
+    <!-- Gesamtpreis -->
+    <div class="total-section" id="totalSection">
+        <h2>Gesamtpreis: 0,00 €</h2>
+    </div>
+    
+    <!-- Optimale Bezahlung -->
+    <div class="payment-section">
+        <h2>💰 Bezahlung optimieren</h2>
+        <div class="hendl-config">
+            <label for="maxHendlMarken">Maximale Anzahl Hendl-Marken (à 22,30 €):</label>
+            <input type="number" id="maxHendlMarken" placeholder="Unbegrenzt" min="0" max="99" onchange="updatePaymentCalculation()">
+        </div>
+        <div id="paymentResult"></div>
+    </div>
+</div>
+
+<!-- Kontrollen -->
+<div class="controls">
+    <button class="control-btn" onclick="resetAll()" title="Alles zurücksetzen">🗑️</button>
+</div>
+
+<script>
+    const menu = [
+        {
+            category: "Vorweg & zwischendurch",
+            items: [
+                {name: "Münchner Wurstsalat", price: 16.20},
+                {name: "Schweizer Wurstsalat", price: 18.10},
+                {name: "Obatzter", price: 16.20},
+                {name: "Geflügelsalat", price: 17.20},
+                {name: "Rinds-Tatar", price: 20.75},
+                {name: "Vorspeisenbrettl für 2 Pax", price: 35.50}
+            ]
+        },
+        {
+            category: "Suppen",
+            items: [
+                {name: "Kürbis-Kokossuppe", price: 10.50},
+                {name: "Rinds-Gulaschsuppe", price: 12.65},
+                {name: "Pfannkuchensuppe", price: 8.65},
+                {name: "Leberknödelsuppe", price: 10.50}
+            ]
+        },
+        {
+            category: "Wurstkuchl",
+            items: [
+                {name: "Würstl-Mix", price: 17.20},
+                {name: "2 Stück Weißwürste", price: 10.50},
+                {name: "6 Stück Nürnberger", price: 18.10},
+                {name: "Portion Leberkäs mit Kartoffelsalat", price: 17.20}
+            ]
+        },
+        {
+            category: "Unsere Zelt-Klassiker",
+            items: [
+                {name: "1/2 BIO-Hendl", price: 22.30},
+                {name: "Backhendl", price: 24.30},
+                {name: "1/2 Ente", price: 37.25},
+                {name: "1/4 Ente", price: 29.60},
+                {name: "1/2 Schweinshaxe", price: 25.30},
+                {name: "Schweinsbraten", price: 23.50},
+                {name: "Rindsgulasch", price: 27.20},
+                {name: "Ochsenbraten", price: 28.15},
+                {name: "Spanferkel", price: 30.50},
+                {name: "Wiener Schnitzel", price: 31.70},
+                {name: "Rehgulasch", price: 28.15}
+            ]
+        },
+        {
+            category: "Vegetarisch & VEGAN",
+            items: [
+                {name: "Kartoffel-Schupfnudeln", price: 18.65},
+                {name: "Käsespätzle", price: 18.65},
+                {name: "Rahm-Schwammerl", price: 20.75},
+                {name: "Currywurst (vegan)", price: 18.10}
+            ]
+        },
+        {
+            category: "Beilagen",
+            items: [
+                {name: "Kartoffelsalat", price: 6.60},
+                {name: "Krautsalat", price: 6.60},
+                {name: "Blaukraut", price: 6.60},
+                {name: "Sauerkraut", price: 6.60},
+                {name: "Bayrisch Kraut", price: 6.60},
+                {name: "1 Kartoffelknödel", price: 6.60},
+                {name: "1 Semmelknödel", price: 6.60}
+            ]
+        },
+        {
+            category: "Mittagsschmankerl",
+            items: [
+                {name: "Kalbssemmelrolle", price: 22.30},
+                {name: "Burschen-Reindl", price: 35.40},
+                {name: "Gemüsepflanzerl", price: 18.65}
+            ]
+        },
+        {
+            category: "Für unsere kleinen Zwergerl",
+            items: [
+                {name: "Kleine Portion Backhendl", price: 18.65},
+                {name: "Kleine Portion Käsespätzle", price: 15.20}
+            ]
+        },
+        {
+            category: "Was Süßes",
+            items: [
+                {name: "Apfelküchel", price: 14.20},
+                {name: "Kaiserschmarrn", price: 19.15},
+                {name: "Zwetschgen-Rohrnudel", price: 14.20},
+                {name: "Dunkles Schokoladenmousse", price: 14.20}
+            ]
+        }
+    ];
+
+    let allItems = [];
+    let order = [];
+    let selectedItem = null;
+    const HENDL_MARKE_WERT = 22.30;
+
+    // Alle Artikel in eine flache Liste
+    function initializeItems() {
+        allItems = [];
+        menu.forEach(category => {
+            category.items.forEach(item => {
+                allItems.push({
+                    ...item,
+                    category: category.category
+                });
+            });
+        });
+    }
+
+    // Suche durchführen
+    function searchItems(searchTerm) {
+        if (!searchTerm.trim()) {
+            return [];
+        }
+        
+        const term = searchTerm.toLowerCase();
+        return allItems.filter(item => 
+            item.name.toLowerCase().includes(term) ||
+            item.category.toLowerCase().includes(term)
+        );
+    }
+
+    // Suchergebnisse anzeigen
+    function displaySearchResults(items) {
+        const resultsContainer = document.getElementById('searchResults');
+        
+        if (items.length === 0) {
+            resultsContainer.innerHTML = '<div class="no-results">Keine Artikel gefunden</div>';
+            return;
+        }
+        
+        resultsContainer.innerHTML = items.map(item => `
+            <div class="menu-item" onclick="selectItem('${encodeURIComponent(JSON.stringify(item))}')">
+                <div class="menu-item-name">${item.name}</div>
+                <div class="menu-item-price">${item.price.toFixed(2)} €</div>
+                <div class="menu-item-category">${item.category}</div>
+                <div class="item-counter" id="counter-${item.name.replace(/[^a-zA-Z0-9]/g, '_')}"></div>
+            </div>
+        `).join('');
+        
+        updateCounters();
+    }
+
+    // Artikel auswählen
+    function selectItem(itemJson) {
+        selectedItem = JSON.parse(decodeURIComponent(itemJson));
+        
+        // Alle Items deselektieren
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.classList.remove('selected-item');
+        });
+        
+        // Ausgewähltes Item markieren
+        event.target.closest('.menu-item').classList.add('selected-item');
+        
+        // Anzahl-Sektion anzeigen
+        document.getElementById('quantitySection').style.display = 'block';
+        document.getElementById('selectedItemName').textContent = selectedItem.name + ' - ' + selectedItem.price.toFixed(2) + ' €';
+        document.getElementById('quantityInput').value = 1;
+        
+        // Zu ausgewähltem Item scrollen
+        document.getElementById('quantitySection').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Anzahl ändern
+    function changeQuantity(delta) {
+        const input = document.getElementById('quantityInput');
+        const newValue = parseInt(input.value) + delta;
+        if (newValue >= 1 && newValue <= 99) {
+            input.value = newValue;
+        }
+    }
+
+    // Ausgewählten Artikel zur Bestellung hinzufügen
+    function addSelectedItem() {
+        if (!selectedItem) return;
+        
+        const quantity = parseInt(document.getElementById('quantityInput').value);
+        const existingItem = order.find(item => item.name === selectedItem.name);
+        
+        if (existingItem) {
+            existingItem.quantity += quantity;
+        } else {
+            order.push({
+                ...selectedItem,
+                quantity: quantity
+            });
+        }
+        
+        updateOrder();
+        updateCounters();
+        updateTotal();
+        updatePaymentCalculation();
+        
+        // Anzahl-Sektion ausblenden und Item deselektieren
+        document.getElementById('quantitySection').style.display = 'none';
+        selectedItem = null;
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.classList.remove('selected-item');
+        });
+        
+        // Zur Bestellung scrollen
+        document.getElementById('orderList').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Bestellung aktualisieren
+    function updateOrder() {
+        const orderList = document.getElementById('orderList');
+        const emptyOrder = document.getElementById('emptyOrder');
+        
+        if (order.length === 0) {
+            orderList.style.display = 'none';
+            emptyOrder.style.display = 'block';
+            return;
+        }
+        
+        orderList.style.display = 'block';
+        emptyOrder.style.display = 'none';
+        
+        orderList.innerHTML = order.map((item, index) => `
+            <li class="order-item">
+                <div class="item-details">
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-price">${item.price.toFixed(2)} € pro Stück</div>
+                </div>
+                <div class="item-quantity">x${item.quantity}</div>
+                <div class="item-total">${(item.price * item.quantity).toFixed(2)} €</div>
+                <button class="remove-item" onclick="removeOrderItem(${index})">×</button>
+            </li>
+        `).join('');
+    }
+
+    // Artikel aus Bestellung entfernen
+    function removeOrderItem(index) {
+        order.splice(index, 1);
+        updateOrder();
+        updateCounters();
+        updateTotal();
+        updatePaymentCalculation();
+    }
+
+    // Counter aktualisieren
+    function updateCounters() {
+        allItems.forEach(item => {
+            const counter = document.getElementById(`counter-${item.name.replace(/[^a-zA-Z0-9]/g, '_')}`);
+            if (counter) {
+                const orderItem = order.find(orderItem => orderItem.name === item.name);
+                if (orderItem && orderItem.quantity > 0) {
+                    counter.textContent = orderItem.quantity;
+                    counter.style.display = 'flex';
+                } else {
+                    counter.style.display = 'none';
+                }
+            }
+        });
+    }
+
+    // Gesamtpreis aktualisieren
+    function updateTotal() {
+        const total = order.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        document.getElementById('totalSection').innerHTML = `<h2>Gesamtpreis: ${total.toFixed(2)} €</h2>`;
+    }
+
+    // Optimale Bezahlung berechnen
+    function calculateOptimalPayment(totalAmount, maxHendlMarken) {
+        if (totalAmount === 0) return null;
+        
+        // Wenn keine Begrenzung eingegeben wurde, unbegrenzt verwenden
+        const isUnlimited = !maxHendlMarken || maxHendlMarken === 0;
+        
+        // Berechne die optimale Anzahl Hendl-Marken (niemals mehr als der Rechnungsbetrag)
+        const maxPossibleMarken = Math.floor(totalAmount / HENDL_MARKE_WERT);
+        let optimalMarken;
+        
+        if (isUnlimited) {
+            // Verwende die maximale Anzahl, die nicht den Rechnungsbetrag überschreitet
+            optimalMarken = maxPossibleMarken;
+        } else {
+            // Verwende das Minimum aus verfügbaren Marken und maximal möglichen
+            optimalMarken = Math.min(maxHendlMarken, maxPossibleMarken);
+        }
+        
+        const hendlWert = optimalMarken * HENDL_MARKE_WERT;
+        const barBetrag = totalAmount - hendlWert;
+        
+        return {
+            hendlMarken: optimalMarken,
+            hendlWert: hendlWert,
+            bar: barBetrag,
+            ruckgeld: 0, // Kein Rückgeld, da Hendl-Betrag nie höher als Rechnungsbetrag
+            gesamt: hendlWert + barBetrag
+        };
+    }
+
+    // Bezahlungsberechnung aktualisieren
+    function updatePaymentCalculation() {
+        const total = order.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const maxHendlMarkenInput = document.getElementById('maxHendlMarken').value;
+        const maxHendlMarken = maxHendlMarkenInput ? parseInt(maxHendlMarkenInput) : 0;
+        const resultContainer = document.getElementById('paymentResult');
+        
+        if (total === 0) {
+            resultContainer.innerHTML = '<p style="text-align: center; color: #666;">Keine Bestellung vorhanden</p>';
+            return;
+        }
+        
+        const payment = calculateOptimalPayment(total, maxHendlMarken);
+        
+        if (!payment) {
+            resultContainer.innerHTML = '<p style="text-align: center; color: #666;">Fehler bei der Berechnung</p>';
+            return;
+        }
+        
+        let resultHTML = '<div class="payment-breakdown">';
+        resultHTML += '<h3>📊 Optimale Bezahlung:</h3>';
+        
+        if (payment.hendlMarken > 0) {
+            resultHTML += `<div class="payment-line"><span>🍗 Hendl-Marken:</span><span>${payment.hendlMarken} Stück (${payment.hendlWert.toFixed(2)} €)</span></div>`;
+        }
+        
+        if (payment.bar > 0) {
+            resultHTML += `<div class="payment-line"><span>💵 Bar:</span><span>${payment.bar.toFixed(2)} €</span></div>`;
+        }
+        
+        resultHTML += `<div class="payment-line total"><span>Rechnungsbetrag:</span><span>${total.toFixed(2)} €</span></div>`;
+        resultHTML += `<div class="payment-line total"><span>Bezahlt gesamt:</span><span>${payment.gesamt.toFixed(2)} €</span></div>`;
+        resultHTML += '</div>';
+        
+        // Zusätzliche Informationen
+        if (!maxHendlMarkenInput) {
+            resultHTML += '<p style="text-align: center; color: #28a745; font-style: italic;">✅ Unbegrenzte Hendl-Marken verfügbar - optimale Ausnutzung!</p>';
+        } else if (payment.hendlMarken < maxHendlMarken) {
+            const savings = (maxHendlMarken - payment.hendlMarken) * HENDL_MARKE_WERT;
+            resultHTML += `<p style="text-align: center; color: #28a745; font-style: italic;">✅ Sie sparen ${maxHendlMarken - payment.hendlMarken} Hendl-Marken (${savings.toFixed(2)} €) für die nächste Bestellung!</p>`;
+        } else if (payment.bar > 0 && maxHendlMarkenInput) {
+            resultHTML += '<p style="text-align: center; color: #ff9800; font-style: italic;">⚠️ Alle verfügbaren Hendl-Marken werden verwendet.</p>';
+        }
+        
+        resultContainer.innerHTML = resultHTML;
+    }
+
+    // Alles zurücksetzen
+    function resetAll() {
+        if (order.length > 0 && !confirm('Möchten Sie wirklich alles zurücksetzen?')) {
+            return;
+        }
+        
+        order = [];
+        selectedItem = null;
+        document.getElementById('searchBox').value = '';
+        document.getElementById('searchResults').innerHTML = '';
+        document.getElementById('quantitySection').style.display = 'none';
+        updateOrder();
+        updateTotal();
+        updatePaymentCalculation();
+    }
+
+    // Event Listeners
+    document.getElementById('searchBox').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.trim();
+        if (searchTerm.length >= 2) {
+            const results = searchItems(searchTerm);
+            displaySearchResults(results);
+        } else {
+            document.getElementById('searchResults').innerHTML = '';
+        }
+    });
+
+    document.getElementById('quantityInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            addSelectedItem();
+        }
+    });
+
+    // Initialisierung
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeItems();
+        updateOrder();
+        updateTotal();
+        updatePaymentCalculation();
+    });
+</script>
+```
+
+</body>
+</html>
